@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .js,.jsx --ignore-path ./.gitignore src",
-    "format_check": "prettier --check --ignore-path ./.gitignore src"
+    "format_check": "prettier --check --ignore-path ./.gitignore src",
+    "validate": "npm run lint && npm run format_check && npm run build",
+    "prepare": "husky install"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -20,6 +22,7 @@
     "@vitejs/plugin-react-swc": "^3.0.0",
     "eslint": "^8.36.0",
     "eslint-plugin-react": "^7.32.2",
+    "husky": "^8.0.3",
     "prettier": "2.8.4",
     "vite": "^4.1.0"
   }
