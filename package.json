@@ -8,8 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .js,.jsx --ignore-path ./.gitignore src",
-    "format_check": "prettier --check --ignore-path ./.gitignore src",
-    "validate": "npm run lint && npm run format_check && npm run build",
+    "lint_server": "eslint -c ./server/.eslintrc.json --ext .ts --ignore-path ./server/.gitignore server",
+    "format_check": "prettier --check --ignore-path ./.gitignore .",
+    "validate": "npm run lint && npm run lint_server && npm run format_check && npm run build",
     "prepare": "husky install"
   },
   "dependencies": {
