@@ -12,8 +12,9 @@ export async function createCheckoutSession(req, res, next) {
       success_url,
       cancel_url
     );
-
-    res.redirect(303, session.url);
+    res
+      .status(200)
+      .send({ status: "success", data: { checkoutURL: session.url } });
   } catch (error) {
     next(error);
   }
