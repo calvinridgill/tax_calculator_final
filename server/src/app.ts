@@ -1,8 +1,10 @@
 import express, { Request, Response, NextFunction } from "express";
 import { router as paymentRouter } from "./routes/paymentRoutes";
 import { AppError } from "./utils/AppError";
+import cors from "cors";
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 
