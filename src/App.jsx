@@ -12,8 +12,6 @@ import { commonRoutes } from "./routes/commonRoutes";
 
 function App() {
   const auth = useAuth();
-
-  console.log("idid", "location", location);
   let routes = (
     <Route>
       {commonRoutes()}
