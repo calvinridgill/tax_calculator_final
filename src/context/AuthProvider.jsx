@@ -10,6 +10,7 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     console.log("idid", "logging out");
     setUser(null);
+    window.location.href = "/";
   };
   const login = async () => {
     console.log("idid", "logging in");
