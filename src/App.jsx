@@ -16,15 +16,15 @@ function App() {
   const auth = useAuth();
   let routes = (
     <Route errorElement={<ErrorPage />}>
-      {commonRoutes()}
-      {loggedOutRoutes()}
+      {commonRoutes}
+      {loggedOutRoutes}
     </Route>
   );
   if (auth.user)
     routes = (
       <Route errorElement={<ErrorPage />}>
-        {commonRoutes()}
-        {loggedInRoutes()}
+        {commonRoutes}
+        {loggedInRoutes}
       </Route>
     );
 
