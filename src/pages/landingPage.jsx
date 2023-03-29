@@ -8,20 +8,39 @@ import {
   Typography,
   Button,
   Snackbar,
+  Alert,
 } from "@mui/material";
+import { useFetcher } from "react-router-dom";
 
 export function LandingPage() {
+  const fetcher = useFetcher();
   const [snackbarState, setSnackbarState] = useState({
     open: false,
     message: "",
+    severity: "info",
   });
-  const handlePurchase = async () => {
-    console.log(
-      "processing your purchase",
-      " add a snack bar showing it is processing the purchase"
-    );
-    setSnackbarState({ open: true, message: "Processing purchasing..." });
+
+  React.useEffect(() => {
+    if (fetcher.state === "submitting") {
+      setSnackbarState({
+        open: true,
+        message: "Processing purchasing...",
+        severity: "info",
+      });
+    } else if (fetcher.data instanceof Error) {
+      setSnackbarState({
+        open: true,
+        message: "Error while processing your purchase",
+        severity: "error",
+      });
+    }
+  }, [fetcher]);
+
+  const handleSnackbarClose = (e, reason) => {
+    if (reason === "clickaway") return;
+    setSnackbarState({ open: false, message: "", severity: "info" });
   };
+
   return (
     <Box sx={{ pt: 5 }}>
       <Container>
@@ -43,9 +62,15 @@ export function LandingPage() {
               $20.00 per access
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "center", pt: 2 }}>
-              <Button variant="outlined" onClick={handlePurchase}>
-                Get Yours
-              </Button>
+              <fetcher.Form method="post" action="/purchase/priceId">
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  disabled={fetcher.state === "submitting"}
+                >
+                  Get Yours
+                </Button>
+              </fetcher.Form>
             </Box>
           </CardContent>
         </Card>
@@ -53,10 +78,14 @@ export function LandingPage() {
       <Snackbar
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={snackbarState.open}
-        onClose={() => setSnackbarState({ open: false, message: "" })}
-        message={snackbarState.message}
+        onClose={handleSnackbarClose}
         key={Date.now()}
-      />
+        autoHideDuration={6000}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
+          {snackbarState.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
