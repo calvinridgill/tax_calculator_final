@@ -11,6 +11,10 @@ import { loggedOutRoutes } from "./routes/loggedOutRoutes";
 import { commonRoutes } from "./routes/commonRoutes";
 import { CssBaseline } from "@mui/material";
 import { ErrorPage } from "./components/ErrorPage";
+import { ThemeProvider } from "@mui/material";
+import { customMuiTheme } from "./customMuiTheme";
+
+console.log("idid", "customMuiTheme", customMuiTheme);
 
 function App() {
   const auth = useAuth();
@@ -32,8 +36,10 @@ function App() {
 
   return (
     <>
-      <CssBaseline />
-      <RouterProvider router={router} />
+      <ThemeProvider theme={customMuiTheme}>
+        <CssBaseline />
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </>
   );
 }
