@@ -19,7 +19,9 @@ export function LoggedOutAppBar() {
           <Button color="inherit" onClick={handleLogin}>
             Login
           </Button>
-          <Button color="inherit">Sign Up</Button>
+          <Button color="inherit" href="/signup">
+            Sign Up
+          </Button>
         </Toolbar>
       </AppBar>
       <Outlet />
