@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import { handleStripeCheckOutFulfillment } from "./controllers/paymentController";
 
 const app = express();
-//TODO: handle cors properly
+// TODO: handle cors properly
 app.use(cors());
 
 app.get("/", (req, res) => {
