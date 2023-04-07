@@ -19,14 +19,14 @@ export function Signin() {
           },
         }}
       >
-        <Box sx={{ flex: 1, height: "92vh", p: 2 }}>
+        <Box sx={{ flex: 1, height: "94vh", p: 2 }}>
           <Typography>Some info about the company</Typography>
         </Box>
         <Box
           sx={{
             bgcolor: "#eee",
             flex: 1,
-            height: "92vh",
+            height: "94vh",
             display: "flex",
             alignItems: "center",
             flexDirection: "column",

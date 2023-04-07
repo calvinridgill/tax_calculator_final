@@ -2,17 +2,27 @@ import express, { Request, Response, NextFunction } from "express";
 import { router as paymentRouter } from "./routes/paymentRoutes";
 import { AppError } from "./utils/AppError";
 import cors from "cors";
+import bodyParser from "body-parser";
+import { handleStripeCheckOutFulfillment } from "./controllers/paymentController";
 
 const app = express();
+//TODO: handle cors properly
 app.use(cors());
-
-app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+// this handler must use its own body parser
+app.post(
+  "/api/v1/payment/handle_checkout_session",
+  bodyParser.raw({ type: "application/json" }),
+  handleStripeCheckOutFulfillment
+);
 
-app.use("/api/v1/payment", paymentRouter);
+const appRoutes = express.Router();
+appRoutes.use("/api/v1/payment", paymentRouter);
+
+app.use(express.json(), appRoutes);
 
 // this handler must be at the end of all express middleware
 // global error handler
