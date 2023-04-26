@@ -12,8 +12,7 @@ const axioss = pureAxios.create({
     },
   },
 });
-
-export const getAxios = () => {
+const getAxios = () => {
   const sleepTime = 1000;
   if (import.meta.env.DEV) {
     return {
