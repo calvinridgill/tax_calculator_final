@@ -1,12 +1,13 @@
 import { MyStripe } from "../services/MyStripe";
 import Stripe from "stripe";
+import { User } from "../models/user";
+import { Order } from "../models/order";
 
 export async function createCheckoutSession(req, res, next) {
-  const { productId } = req.body;
-  // check if the price id is a valid one, use mystripe module to do that, if not valid throw an error
   try {
+    const { productId, quantity = 1 } = req.body;
     const myStripe = new MyStripe();
-    const session = await myStripe.createCheckoutSession(productId);
+    const session = await myStripe.createCheckoutSession(productId, quantity);
     res
       .status(200)
       .send({ status: "success", data: { checkoutURL: session.url } });
@@ -39,7 +40,7 @@ export async function handleStripeCheckOutFulfillment(req, res, next) {
             expand: ["line_items"],
           });
         // Fulfill the purchase...
-        fulfillOrder(sessionWithLineItems);
+        await fulfillOrder(sessionWithLineItems);
       }
     } catch (err) {
       console.log("error in handling stripe checkout fulfilment ", err);
@@ -51,22 +52,35 @@ export async function handleStripeCheckOutFulfillment(req, res, next) {
   }
 }
 
-function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
-  console.log("session ------->", session);
-  // console.log("customer detail ------->", session.customer_details);
-  // console.log("product detail -------> ", session.line_items);
-  // console.log("product detail -------> ", session.line_items.data[0].price);
-
-  // What should be done when after the user pays for the order
-  // - get the product information
+async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
   // - get the user information
-  // - create a new order in the database
-  // - send an email to the user
-  // - send an email to the admin
-  // - create a user account if the user is new
+  const { email, name } = session.customer_details;
+  // - check if the user exists in the database
+  let user = await User.findOne({ email });
+  if (!user) {
+    // - create a new user in the database
+    user = new User({ firstName: name, email });
+    await user.save();
+  }
 
-  //TODO: before all that
-  // - create a user account model
-  // - create a product model
-  // - create an order model
+  // - get the product information
+  const productId = session.metadata.productId;
+  const product = session.line_items.data[0];
+  // - create a new order in the database
+  const newOrder = new Order({
+    total: session.amount_total,
+    products: [
+      {
+        product: productId,
+        quantity: product.quantity,
+      },
+    ],
+    status: "completed",
+    user: user._id,
+  });
+  await newOrder.save();
+  // - TODO: send an email to the user Or
+  // you can configure stripe to send an email to the user after the payment is successful
+  // - TODO: send an email to the admin
+  // I will do this
 }

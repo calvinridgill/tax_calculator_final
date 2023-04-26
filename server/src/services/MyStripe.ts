@@ -1,23 +1,6 @@
 import Stripe from "stripe";
-
-const products = new Map<
-  string,
-  { name: string; description?: string; images?: string[] }
->([
-  [
-    "productOneId",
-    {
-      name: "Product ONE Name",
-      description: "This is the description of product ONE",
-      images: [
-        "https://picsum.photos/300/400",
-        "https://picsum.photos/300/400",
-      ],
-    },
-  ],
-  ["two", { name: "TWO", description: "Two two" }],
-  ["three", { name: "THREE" }],
-]);
+import { Product } from "../models/product";
+import { Types } from "mongoose";
 
 export class MyStripe {
   private stripe: Stripe;
@@ -31,14 +14,20 @@ export class MyStripe {
     if (cancelURL) this.cancelURL = cancelURL;
   }
 
-  public async createCheckoutSession(productId: string) {
-    const product = products.get(productId);
+  public async createCheckoutSession(productId: string, quantity = 1) {
+    if (!Types.ObjectId.isValid(productId)) {
+      throw { statusCode: 400, message: "Invalid product id" };
+    }
+    const product = await Product.findById(productId);
+    if (!product) {
+      throw { statusCode: 400, message: "Invalid product id" };
+    }
 
     const session = await this.stripe.checkout.sessions.create({
       mode: "payment",
       line_items: [
         {
-          quantity: 3,
+          quantity,
           price_data: {
             currency: "usd",
             unit_amount: 2000,
