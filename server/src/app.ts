@@ -1,9 +1,10 @@
 import express, { Request, Response, NextFunction } from "express";
-import { router as paymentRouter } from "./routes/paymentRoutes";
+import { paymentRouter } from "./routes/paymentRoutes";
 import { AppError } from "./utils/AppError";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { handleStripeCheckOutFulfillment } from "./controllers/paymentController";
+import { productRouter } from "./routes/productRoutes";
 
 const app = express();
 // TODO: handle cors properly
@@ -20,9 +21,11 @@ app.post(
 );
 
 const appRoutes = express.Router();
-appRoutes.use("/api/v1/payment", paymentRouter);
 
-app.use(express.json(), appRoutes);
+appRoutes.use("/payment", paymentRouter);
+appRoutes.use("/product", productRouter);
+
+app.use("/api/v1", express.json(), appRoutes);
 
 // this handler must be at the end of all express middleware
 // global error handler
