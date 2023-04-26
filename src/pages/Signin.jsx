@@ -20,7 +20,7 @@ export function Signin() {
         }}
       >
         <Box sx={{ flex: 1, height: "94vh", p: 2 }}>
-          <Typography>Some info about the company</Typography>
+          <Typography p={10}>Some info about the company</Typography>
         </Box>
         <Box
           sx={{
@@ -30,6 +30,7 @@ export function Signin() {
             display: "flex",
             alignItems: "center",
             flexDirection: "column",
+            p: 2,
           }}
         >
           {/* layout element start */}
@@ -46,13 +47,13 @@ export function Signin() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: 2,
-              width: "90%",
+              gap: 4,
+              width: "100%",
               maxWidth: 400,
               mb: 4,
             }}
           >
-            <Typography variant="h4">Welcome</Typography>
+            <Typography variant="h2">Welcome</Typography>
             <TextField
               variant="outlined"
               type="email"

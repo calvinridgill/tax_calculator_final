@@ -10,10 +10,12 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { useFetcher } from "react-router-dom";
+import { useFetcher, useLoaderData } from "react-router-dom";
+import { getAllProducts } from "../api/product";
 
 export function LandingPage() {
   const fetcher = useFetcher();
+  const { products } = useLoaderData();
   const [snackbarState, setSnackbarState] = useState({
     open: false,
     message: "",
@@ -43,37 +45,44 @@ export function LandingPage() {
 
   return (
     <Box sx={{ pt: 5 }}>
-      <Container>
-        <Card sx={{ maxWidth: 400 }}>
-          <CardMedia
-            sx={{ height: 160 }}
-            image="https://images.unsplash.com/photo-1598432439250-0330f9130e14?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80"
-            title="Tax Return"
-          />
-          <CardContent>
-            <Typography variant="h6" textAlign={"center"}>
-              Tax Preparation Spreadsheet
-            </Typography>
-            <Typography textAlign={"center"}>
-              Introducing the Tax Preparation Spreadsheet designed for
-              individuals, a comprehensive tool to help you manage ...
-            </Typography>
-            <Typography sx={{ pt: 2 }} textAlign={"center"}>
-              $20.00 per access
-            </Typography>
-            <Box sx={{ display: "flex", justifyContent: "center", pt: 2 }}>
-              <fetcher.Form method="post" action="/purchase/priceId">
-                <Button
-                  type="submit"
-                  variant="outlined"
-                  disabled={fetcher.state === "submitting"}
-                >
-                  Get Yours
-                </Button>
-              </fetcher.Form>
-            </Box>
-          </CardContent>
-        </Card>
+      <Container sx={{ display: "flex", gap: 5 }}>
+        {products.map((product) => (
+          <Card sx={{ maxWidth: 400 }} key={product._id}>
+            <CardMedia
+              sx={{ height: 160 }}
+              image={product.images[0]}
+              title="Tax Return"
+            />
+            <CardContent>
+              <Typography variant="h6" textAlign={"center"}>
+                {product.name}
+              </Typography>
+              <Typography textAlign={"center"}>
+                {product.description}
+              </Typography>
+              <Typography sx={{ pt: 2 }} textAlign={"center"}>
+                ${product.price / 100} per access
+              </Typography>
+              <Box sx={{ display: "flex", justifyContent: "center", pt: 2 }}>
+                <fetcher.Form method="post" action="/purchase/productId">
+                  <input
+                    hidden
+                    readOnly
+                    name="productId"
+                    value={product._id} // took this from the database
+                  />
+                  <Button
+                    type="submit"
+                    variant="outlined"
+                    disabled={fetcher.state === "submitting"}
+                  >
+                    Get Yours
+                  </Button>
+                </fetcher.Form>
+              </Box>
+            </CardContent>
+          </Card>
+        ))}
       </Container>
       <Snackbar
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -88,4 +97,15 @@ export function LandingPage() {
       </Snackbar>
     </Box>
   );
+}
+
+export async function loader() {
+  try {
+    const products = await getAllProducts();
+    return { products };
+  } catch (error) {
+    //TODO: handle error
+    console.log(error);
+    throw error;
+  }
 }

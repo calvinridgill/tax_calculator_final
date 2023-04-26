@@ -1,6 +1,5 @@
 import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import { Outlet } from "react-router-dom";
 import { Container } from "@mui/system";
 import { useTheme, useMediaQuery } from "@mui/material";
 
@@ -36,7 +35,6 @@ export function LoggedOutAppBar() {
           </Toolbar>
         </Container>
       </AppBar>
-      <Outlet />
     </>
   );
 }

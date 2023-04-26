@@ -6,7 +6,8 @@ const authContext = createContext(null);
 export const useAuth = () => useContext(authContext);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState({ name: "Biruk" });
+  // const [user, setUser] = useState({ name: "Biruk" });
+  const [user, setUser] = useState(null);
   const logout = async () => {
     console.log("idid", "logging out");
     setUser(null);

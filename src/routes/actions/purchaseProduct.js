@@ -1,11 +1,9 @@
-import { sleep } from "../../utils/index";
 import { makePayment } from "../../api/payment";
-export const action = async ({ params }) => {
+export const action = async ({ request }) => {
   try {
-    await sleep(1000);
-    const { priceId } = params;
-    console.log("priceId", priceId);
-    const redirectURL = await makePayment(); //TODO: pass priceId to makePayment once you start getting the right priceId
+    const formData = await request.formData();
+    const productId = formData.get("productId");
+    const redirectURL = await makePayment(productId);
     window.location.href = redirectURL;
     return null;
   } catch (error) {
