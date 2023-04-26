@@ -1,6 +1,6 @@
-import express from "express";
-import { createCheckoutSession } from "../controllers/paymentController";
+import express from "express"
+import { createCheckoutSession } from "../controllers/paymentController"
 
-export const paymentRouter = express.Router();
+export const paymentRouter = express.Router()
 
-paymentRouter.post("/create_checkout_session", createCheckoutSession);
+paymentRouter.post("/create_checkout_session", createCheckoutSession)

@@ -1,26 +1,26 @@
-import Stripe from "stripe";
-import { Product } from "../models/product";
-import { Types } from "mongoose";
+import Stripe from "stripe"
+import { Product } from "../models/product"
+import { Types } from "mongoose"
 
 export class MyStripe {
-  private stripe: Stripe;
-  private successURL = `${process.env.CLIENT_APP_URL}/checkout?success=true`;
-  private cancelURL = `${process.env.CLIENT_APP_URL}/checkout?success=false`;
+  private stripe: Stripe
+  private successURL = `${process.env.CLIENT_APP_URL}/checkout?success=true`
+  private cancelURL = `${process.env.CLIENT_APP_URL}/checkout?success=false`
 
   constructor(apiKey?: string, successURL?: string, cancelURL?: string) {
-    if (!apiKey) apiKey = process.env.STRIPE_API_KEY;
-    this.stripe = new Stripe(apiKey, { apiVersion: "2022-11-15" });
-    if (successURL) this.successURL = successURL;
-    if (cancelURL) this.cancelURL = cancelURL;
+    if (!apiKey) apiKey = process.env.STRIPE_API_KEY
+    this.stripe = new Stripe(apiKey, { apiVersion: "2022-11-15" })
+    if (successURL) this.successURL = successURL
+    if (cancelURL) this.cancelURL = cancelURL
   }
 
   public async createCheckoutSession(productId: string, quantity = 1) {
     if (!Types.ObjectId.isValid(productId)) {
-      throw { statusCode: 400, message: "Invalid product id" };
+      throw { statusCode: 400, message: "Invalid product id" }
     }
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId)
     if (!product) {
-      throw { statusCode: 400, message: "Invalid product id" };
+      throw { statusCode: 400, message: "Invalid product id" }
     }
 
     const session = await this.stripe.checkout.sessions.create({
@@ -45,23 +45,23 @@ export class MyStripe {
       metadata: {
         productId,
       },
-    });
-    return session;
+    })
+    return session
   }
 
   public async getProductList() {
-    const productList = await this.stripe.products.list();
-    return productList;
+    const productList = await this.stripe.products.list()
+    return productList
   }
 
   get _stripe() {
-    return this.stripe;
+    return this.stripe
   }
 
   setSuccessURL(url: string) {
-    this.successURL = url;
+    this.successURL = url
   }
   setCancelURL(url: string) {
-    this.cancelURL = url;
+    this.cancelURL = url
   }
 }
