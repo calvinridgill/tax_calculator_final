@@ -5,6 +5,7 @@ import cors from "cors"
 import bodyParser from "body-parser"
 import { handleStripeCheckOutFulfillment } from "./controllers/paymentController"
 import { productRouter } from "./routes/productRoutes"
+import { userRouter } from "./routes/userRoutes"
 
 const app = express()
 // TODO: handle cors properly
@@ -24,6 +25,7 @@ const appRoutes = express.Router()
 
 appRoutes.use("/payment", paymentRouter)
 appRoutes.use("/product", productRouter)
+appRoutes.use("/user", userRouter)
 
 app.use("/api/v1", express.json(), appRoutes)
 
