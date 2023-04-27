@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer"
 import { htmlToText } from "html-to-text"
-import fs from "fs"
 
 export class Email {
   private to: string
@@ -9,10 +8,10 @@ export class Email {
   private from: string
 
   constructor(user, url) {
-    this.to = user.email
+    this.to = user.to
     this.firstName = user.firstName
     this.url = url
-    this.from = `Dana Snel <${process.env.EMAIL_FROM}>`
+    this.from = `Biruk Berhanu <${process.env.EMAIL_FROM}>`
   }
 
   newTransport() {
@@ -26,10 +25,22 @@ export class Email {
         },
       })
     }
+    if (
+      !(
+        process.env.EMAIL_PORT &&
+        process.env.EMAIL_HOST &&
+        process.env.EMAIL_USERNAME &&
+        process.env.EMAIL_PASSWORD
+      )
+    )
+      throw new Error(
+        "Email host, Email port, username and password is required",
+      )
 
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: Number(process.env.EMAIL_PORT),
+      secure: false,
       auth: {
         user: process.env.EMAIL_USERNAME,
         pass: process.env.EMAIL_PASSWORD,
@@ -51,11 +62,10 @@ export class Email {
       html,
       text: htmlToText(html),
     }
-    if (process.env.NODE_ENV === "development") {
-      fs.writeFileSync("email.html", html)
-    }
+
     // 3) Create a transport and send email
-    // await this.newTransport().sendMail(mailOptions)
+    const transport = this.newTransport()
+    await transport.sendMail(mailOptions)
   }
 
   async sendWelcome() {

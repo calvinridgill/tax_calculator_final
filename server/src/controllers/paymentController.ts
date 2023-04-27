@@ -2,6 +2,8 @@ import { MyStripe } from "../services/MyStripe"
 import Stripe from "stripe"
 import { User } from "../models/user"
 import { Order } from "../models/order"
+import { generatePassword } from "../utils"
+import { Email } from "../utils/email"
 
 export async function createCheckoutSession(req, res, next) {
   try {
@@ -53,34 +55,47 @@ export async function handleStripeCheckOutFulfillment(req, res, next) {
 }
 
 async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
-  // - get the user information
-  const { email, name } = session.customer_details
-  // - check if the user exists in the database
-  let user = await User.findOne({ email })
-  if (!user) {
-    // - create a new user in the database
-    user = new User({ firstName: name, email })
-    await user.save()
-  }
+  try {
+    // - get the user information
+    const { email, name } = session.customer_details
+    // - check if the user exists in the database
+    let user = await User.findOne({ email })
 
-  // - get the product information
-  const productId = session.metadata.productId
-  const product = session.line_items.data[0]
-  // - create a new order in the database
-  const newOrder = new Order({
-    total: session.amount_total,
-    products: [
-      {
-        product: productId,
-        quantity: product.quantity,
-      },
-    ],
-    status: "completed",
-    user: user._id,
-  })
-  await newOrder.save()
-  // - TODO: send an email to the user Or
-  // you can configure stripe to send an email to the user after the payment is successful
-  // - TODO: send an email to the admin
-  // I will do this
+    if (!user) {
+      // - create a new user in the database
+      const password = generatePassword(10)
+      user = new User({ firstName: name, email, password })
+      await user.save()
+      // - TODO: send and email to the user with username(their email) and password
+      const url = `${process.env.CLIENT_APP_URL}/signin?email=${user.email}&password=${password}`
+      console.log("password", password)
+      await new Email({ to: user.email, firstName: user.firstName }, url).send(
+        null,
+        "Subject",
+      )
+    }
+    // - get the product information
+    const productId = session.metadata.productId
+    const product = session.line_items.data[0]
+    // - create a new order in the database
+    const newOrder = new Order({
+      total: session.amount_total,
+      products: [
+        {
+          product: productId,
+          quantity: product.quantity,
+        },
+      ],
+      status: "completed",
+      user: user._id,
+    })
+    await newOrder.save()
+    // - TODO: send an email reciept to the user Or
+    // you can configure stripe to send an email to the user after the payment is successful
+
+    // - TODO: send an email to the admin
+    // I will do this
+  } catch (error) {
+    console.log("error in fulfilling order ", error)
+  }
 }
