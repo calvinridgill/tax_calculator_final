@@ -1,13 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Paper, TextField, Typography, Button } from "@mui/material";
 import { InputAdornment } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
-import { Form, useNavigation } from "react-router-dom";
-import { sleep } from "../utils";
+import {
+  Form,
+  useNavigation,
+  useActionData,
+  useNavigate,
+} from "react-router-dom";
+import { signin } from "../api/auth";
+import LocalStorage from "../utils/localStorage";
+import { axios } from "../utils/axios";
+import { useAuth } from "../context/AuthProvider";
 
 export function Signin() {
   const navigation = useNavigation();
+  const actionData = useActionData();
+  const navigate = useNavigate();
+  const auth = useAuth();
+  useEffect(() => {
+    if (actionData?.user) {
+      auth.getIdentity().then(() => {
+        navigate("/app");
+        console.log("redirecting to /app");
+      });
+    }
+  }, [actionData]);
   return (
     <Form method="post">
       <Box
@@ -57,6 +76,7 @@ export function Signin() {
             <TextField
               variant="outlined"
               type="email"
+              name="email"
               placeholder="Enter your email"
               fullWidth
               InputProps={{
@@ -73,6 +93,7 @@ export function Signin() {
             <TextField
               variant="outlined"
               type="password"
+              name="password"
               placeholder="Enter your password"
               fullWidth
               InputProps={{
@@ -107,7 +128,28 @@ export function Signin() {
   );
 }
 
-export const action = async () => {
-  await sleep(2000);
-  return null;
+export const action = async ({ request }) => {
+  try {
+    // * 1. Get the email and password from the form
+    const formData = await request.formData();
+    const email = formData.get("email");
+    const password = formData.get("password");
+    // * 2. Send the email and password to the backend
+    const res = await signin(email, password);
+    // * 3. If the email and password are correct, the backend will send back a token
+    const token = res.token;
+    const user = res.data.user;
+    if (token) {
+      //* 4. Store the token in local storage and in axios headers
+      LocalStorage.setItem("token", token);
+      axios.defaults.headers.Authorization = token ? `Bearer ${token}` : "";
+    }
+    return { user };
+  } catch (error) {
+    console.log(error);
+    return new Response("Unauthorized", {
+      status: 401,
+      statusText: "Unauthorized",
+    });
+  }
 };

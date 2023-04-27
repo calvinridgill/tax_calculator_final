@@ -14,8 +14,6 @@ import { ErrorPage } from "./components/ErrorPage";
 import { ThemeProvider } from "@mui/material";
 import { customMuiTheme } from "./customMuiTheme";
 
-console.log("idid", "customMuiTheme", customMuiTheme);
-
 function App() {
   const auth = useAuth();
   let routes = (

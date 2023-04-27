@@ -7,15 +7,17 @@ const token = localStorage.getItem("token");
 const axioss = pureAxios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
-    common: {
-      "x-auth": token,
-    },
+    Authorization: token ? `Bearer ${token}` : "",
   },
 });
+
+axioss.defaults.headers;
+
 const getAxios = () => {
   const sleepTime = 1000;
   if (import.meta.env.DEV) {
     return {
+      ...axioss,
       get: async (...rest) => {
         await sleep(sleepTime);
         return axioss.get(...rest);
