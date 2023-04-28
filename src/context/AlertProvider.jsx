@@ -20,7 +20,7 @@ export function AlertProvider({ children }) {
     setAlert({ open: true, message, severity: "success", duration });
   };
   const showInfo = (message, duration = 6000) => {
-    setAlert({ open: true, message, severity: "info,", duration });
+    setAlert({ open: true, message, severity: "info", duration });
   };
   const showWarning = (message, duration = 6000) => {
     setAlert({ open: true, message, severity: "warning", duration });

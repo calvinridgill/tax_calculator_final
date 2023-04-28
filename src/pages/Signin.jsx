@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Box, Paper, TextField, Typography, Button } from "@mui/material";
 import { InputAdornment } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
@@ -8,6 +8,7 @@ import {
   useNavigation,
   useActionData,
   useNavigate,
+  useLocation,
 } from "react-router-dom";
 import { signin } from "../api/auth";
 import LocalStorage from "../utils/localStorage";
@@ -21,7 +22,12 @@ export function Signin() {
   const navigate = useNavigate();
   const auth = useAuth();
   const alert = useAlert();
-  console.log(alert);
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const email = params.get("email");
+  const password = params.get("password");
+  const loginButtonRef = useRef(null);
 
   useEffect(() => {
     if (actionData?.error) {
@@ -31,10 +37,17 @@ export function Signin() {
     if (actionData?.user) {
       auth.getIdentity().then(() => {
         navigate("/app");
-        console.log("redirecting to /app");
       });
     }
   }, [actionData]);
+
+  useEffect(() => {
+    if (email && password) {
+      alert.showInfo("Logging you in...", 3000);
+      loginButtonRef.current.click();
+    }
+  }, [email, password]);
+
   return (
     <Form method="post">
       <Box
@@ -85,7 +98,9 @@ export function Signin() {
               variant="outlined"
               type="email"
               name="email"
+              defaultValue={email}
               placeholder="Enter your email"
+              disabled={navigation.state === "submitting"}
               fullWidth
               InputProps={{
                 startAdornment: (
@@ -102,7 +117,9 @@ export function Signin() {
               variant="outlined"
               type="password"
               name="password"
+              defaultValue={password}
               placeholder="Enter your password"
+              disabled={navigation.state === "submitting"}
               fullWidth
               InputProps={{
                 startAdornment: (
@@ -126,6 +143,7 @@ export function Signin() {
               size="large"
               disabled={navigation.state === "submitting"}
               type="submit"
+              ref={loginButtonRef}
             >
               Login
             </Button>
