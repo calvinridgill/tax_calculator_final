@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Route } from "react-router-dom";
-import { LoggedOutAppBar } from "../components/LoggedOutAppBar";
+import { AppBar } from "../components/AppBar";
 import { LandingPage, loader as landingPageLoader } from "../pages/landingPage";
 import { action as purchaseProductAction } from "../routes/actions/purchaseProduct";
 
@@ -8,7 +8,7 @@ export const commonRoutes = (
   <Route
     element={
       <>
-        <LoggedOutAppBar />
+        <AppBar />
         <Outlet />
       </>
     }

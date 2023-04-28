@@ -10,7 +10,6 @@ import {
 
 import { AccountCircle } from "@mui/icons-material";
 import { useAuth } from "../context/AuthProvider";
-import { Outlet } from "react-router-dom";
 
 export function LoggedInAppBar() {
   const auth = useAuth();
@@ -65,7 +64,6 @@ export function LoggedInAppBar() {
           </div>
         </Toolbar>
       </AppBar>
-      <Outlet />
     </>
   );
 }
