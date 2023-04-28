@@ -13,13 +13,21 @@ import { signin } from "../api/auth";
 import LocalStorage from "../utils/localStorage";
 import { axios } from "../utils/axios";
 import { useAuth } from "../context/AuthProvider";
+import { useAlert } from "../context/AlertProvider";
 
 export function Signin() {
   const navigation = useNavigation();
   const actionData = useActionData();
   const navigate = useNavigate();
   const auth = useAuth();
+  const alert = useAlert();
+  console.log(alert);
+
   useEffect(() => {
+    if (actionData?.error) {
+      console.log(actionData.error);
+      alert.showError(actionData.error);
+    }
     if (actionData?.user) {
       auth.getIdentity().then(() => {
         navigate("/app");
@@ -146,10 +154,9 @@ export const action = async ({ request }) => {
     }
     return { user };
   } catch (error) {
-    console.log(error);
-    return new Response("Unauthorized", {
-      status: 401,
-      statusText: "Unauthorized",
-    });
+    // console.log(error);
+    if (error?.response?.data?.message) {
+      return { error: error.response.data.message };
+    }
   }
 };
