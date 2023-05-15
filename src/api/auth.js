@@ -5,6 +5,11 @@ export const signin = async (email, password) => {
   return res;
 };
 
+export const logout = async () => {
+  const res = (await axios.get("/user/logout")).data;
+  return res;
+};
+
 export const getMe = async () => {
   const res = (await axios.get("/user/me")).data;
   return res;

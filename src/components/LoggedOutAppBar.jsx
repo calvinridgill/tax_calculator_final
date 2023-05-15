@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { Container } from "@mui/system";
 import { useTheme, useMediaQuery } from "@mui/material";
@@ -17,10 +18,13 @@ export function LoggedOutAppBar() {
               width="40px"
               height="40px"
             />
-
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Tax Calculator
-            </Typography>
+            <Box sx={{ flex: 1 }}>
+              <Link to="/" style={{ textDecoration: "none", color: "black" }}>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                  Tax Calculator
+                </Typography>
+              </Link>
+            </Box>
             <Button
               href="/login"
               sx={{

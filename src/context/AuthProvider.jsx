@@ -1,14 +1,15 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
-import { getMe } from "../api/auth";
+import { getMe, logout as logMeOut } from "../api/auth";
 import { CircularProgress, Box } from "@mui/material";
 import LocalStorage from "../utils/localStorage";
-
+import { useAlert } from "./AlertProvider";
 const authContext = createContext(null);
 
 export const useAuth = () => useContext(authContext);
 
 export function AuthProvider({ children }) {
+  const alert = useAlert();
   const [user, setUser] = useState(undefined);
 
   useEffect(() => {
@@ -24,12 +25,20 @@ export function AuthProvider({ children }) {
       const user = res.data.data;
       setUser(user);
     } catch (error) {
-      console.log("error", error);
+      alert.showError("Error fetching user data");
       setUser(null);
     }
-    console.log("idid", "getting user");
   };
-  const value = { user, getIdentity };
+  const logout = async () => {
+    try {
+      await logMeOut();
+      setUser(null);
+      LocalStorage.removeItem("token");
+    } catch (error) {
+      alert.showError("Error logging out");
+    }
+  };
+  const value = { user, getIdentity, logout };
 
   if (user === undefined)
     return (

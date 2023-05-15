@@ -10,4 +10,7 @@ export default class LocalStorage {
   static clear() {
     localStorage.clear();
   }
+  static removeItem(key) {
+    localStorage.removeItem(key);
+  }
 }

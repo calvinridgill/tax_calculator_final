@@ -7,7 +7,7 @@ export class Email {
   private url: string
   private from: string
 
-  constructor(user, url) {
+  constructor(user: { to: string; firstName: string }, url: string) {
     this.to = user.to
     this.firstName = user.firstName
     this.url = url

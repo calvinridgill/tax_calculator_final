@@ -6,7 +6,9 @@ import {
   IconButton,
   MenuItem,
   Menu,
+  Box,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 
 import { AccountCircle } from "@mui/icons-material";
 import { useAuth } from "../context/AuthProvider";
@@ -29,9 +31,13 @@ export function LoggedInAppBar() {
     <>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Tax Calculator
-          </Typography>
+          <Box sx={{ flex: 1 }}>
+            <Link to="/app" style={{ textDecoration: "none", color: "white" }}>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Tax Calculator
+              </Typography>
+            </Link>
+          </Box>
           <div>
             <IconButton
               size="large"
