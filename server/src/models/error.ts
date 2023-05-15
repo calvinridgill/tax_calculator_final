@@ -1,7 +1,17 @@
 import mongoose from "mongoose"
 import { AppError } from "../utils/AppError"
 
-const ErrorSchema = new mongoose.Schema(
+interface IError {
+  timeStamp: Date
+  message: string
+  stackTrace: string
+  requestURL: string
+  requestMethod: string
+  requestPayload: object
+  userID: string
+}
+
+const ErrorSchema = new mongoose.Schema<IError>(
   {
     timeStamp: { type: Date, default: Date.now },
     message: {
@@ -28,7 +38,7 @@ const ErrorSchema = new mongoose.Schema(
   { timestamps: true },
 )
 
-export const Error = mongoose.model("Error", ErrorSchema)
+export const Error = mongoose.model<IError>("Error", ErrorSchema)
 
 export const saveError = async (error: AppError) => {
   try {

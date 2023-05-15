@@ -1,10 +1,21 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { MyStripe } from "../services/MyStripe"
 import { config } from "dotenv"
 config({ path: "../../.env" })
+import { Email } from "../utils/email"
 ;(async () => {
-  const stripe = new MyStripe()
-  const res = await stripe.getProductList()
-  console.log("products ------>", res)
+  try {
+    const start = Date.now()
+    console.log("idid", "----> ", "sending")
+    const email = new Email(
+      { to: "meetbirukberhanu@gmail.com", firstName: "Biruk" },
+      "https://google.com",
+    )
+    const progress = Date.now()
+    console.log("idid", "----> ", "in progress", (progress - start) / 1000)
+
+    await email.send("template", "my subject")
+    console.log("idid", "----> ", "complete", (Date.now() - progress) / 1000)
+  } catch (error) {
+    console.log("=-====> ", error)
+  }
 })()

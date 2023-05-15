@@ -29,17 +29,7 @@ export function Signin() {
   const password = params.get("password");
   const loginButtonRef = useRef(null);
 
-  useEffect(() => {
-    if (actionData?.error) {
-      console.log(actionData.error);
-      alert.showError(actionData.error);
-    }
-    if (actionData?.user) {
-      auth.getIdentity().then(() => {
-        navigate("/app");
-      });
-    }
-  }, [actionData]);
+  const token = LocalStorage.getItem("token");
 
   useEffect(() => {
     if (email && password) {
@@ -47,6 +37,18 @@ export function Signin() {
       loginButtonRef.current.click();
     }
   }, [email, password]);
+
+  useEffect(() => {
+    if (actionData?.error) {
+      console.log(actionData.error);
+      alert.showError(actionData.error);
+    }
+    if (actionData?.user || token) {
+      auth.getIdentity().then(() => {
+        navigate("/app");
+      });
+    }
+  }, [actionData, token]);
 
   return (
     <Form method="post">

@@ -6,8 +6,10 @@ import bodyParser from "body-parser"
 import { handleStripeCheckOutFulfillment } from "./controllers/paymentController"
 import { productRouter } from "./routes/productRoutes"
 import { userRouter } from "./routes/userRoutes"
+import morgan from "morgan"
 
 const app = express()
+app.use(morgan("tiny"))
 // TODO: handle cors properly
 app.use(cors())
 

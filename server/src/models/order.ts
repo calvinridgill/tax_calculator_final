@@ -1,6 +1,16 @@
-import mongoose, { Schema } from "mongoose"
+import mongoose, { Schema, Types } from "mongoose"
 
-const OrderSchema = new Schema(
+interface IOrder {
+  user: Types.ObjectId
+  products: {
+    product: string
+    quantity: number
+  }[]
+  status: string
+  total: number
+}
+
+const OrderSchema = new Schema<IOrder>(
   {
     user: {
       type: Schema.Types.ObjectId,
@@ -33,4 +43,4 @@ const OrderSchema = new Schema(
   { timestamps: true },
 )
 
-export const Order = mongoose.model("Order", OrderSchema)
+export const Order = mongoose.model<IOrder>("Order", OrderSchema)
