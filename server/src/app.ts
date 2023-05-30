@@ -6,6 +6,7 @@ import bodyParser from "body-parser"
 import { handleStripeCheckOutFulfillment } from "./controllers/paymentController"
 import { productRouter } from "./routes/productRoutes"
 import { userRouter } from "./routes/userRoutes"
+import { orderRouter } from "./routes/orderRoutes"
 import morgan from "morgan"
 
 const app = express()
@@ -28,6 +29,7 @@ const appRoutes = express.Router()
 appRoutes.use("/payment", paymentRouter)
 appRoutes.use("/product", productRouter)
 appRoutes.use("/user", userRouter)
+appRoutes.use("/order", orderRouter)
 
 app.use("/api/v1", express.json(), appRoutes)
 
