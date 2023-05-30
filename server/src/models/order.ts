@@ -8,6 +8,7 @@ interface IOrder {
   }[]
   status: string
   total: number
+  spreadSheetUrl: string
 }
 
 const OrderSchema = new Schema<IOrder>(
@@ -37,6 +38,10 @@ const OrderSchema = new Schema<IOrder>(
     },
     total: {
       type: Number,
+      required: true,
+    },
+    spreadSheetUrl: {
+      type: String,
       required: true,
     },
   },

@@ -4,6 +4,7 @@ import { User } from "../models/user"
 import { Order } from "../models/order"
 import { generatePassword } from "../utils"
 import { Email } from "../utils/email"
+import { GoogleSheet } from "../services/GoogleSheet"
 
 export async function createCheckoutSession(req, res, next) {
   try {
@@ -68,7 +69,6 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
       await user.save()
       // - TODO: send and email to the user with username(their email) and password
       const url = `${process.env.CLIENT_APP_URL}/signin?email=${user.email}&password=${password}`
-      console.log("password", password)
       await new Email({ to: user.email, firstName: user.firstName }, url).send(
         null,
         "Subject",
@@ -78,6 +78,10 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
     const productId = session.metadata.productId
     const product = session.line_items.data[0]
     // - create a new order in the database
+
+    const googleSheet = await GoogleSheet.createInstance()
+    const spreadSheetUrl = await googleSheet.copyTaxCalculatorContent()
+
     const newOrder = new Order({
       total: session.amount_total,
       products: [
@@ -88,6 +92,7 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
       ],
       status: "completed",
       user: user._id,
+      spreadSheetUrl,
     })
     await newOrder.save()
     // - TODO: send an email reciept to the user Or
