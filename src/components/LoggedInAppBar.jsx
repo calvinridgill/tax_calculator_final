@@ -30,19 +30,20 @@ export function LoggedInAppBar() {
   };
   return (
     <>
-      <AppBar position="relative" color="transparent" enableColorOnDark>
+      <AppBar position="relative" enableColorOnDark>
         <Container>
-          <Toolbar sx={{ gap: { xs: 1, md: 2 }, p: 0 }}>
+          <Toolbar sx={{ p: 0 }}>
             <Box
               component="img"
-              src="/images/tax-calculate.png"
+              src="/images/calculator.png"
               width="40px"
               height="40px"
+              color={"white"}
             />
             <Box sx={{ flex: 1 }}>
               <Link
                 to="/app"
-                style={{ textDecoration: "none", color: "black" }}
+                style={{ textDecoration: "none", color: "white" }}
               >
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                   Tax Calculator
@@ -56,7 +57,7 @@ export function LoggedInAppBar() {
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 onClick={handleMenu}
-                color="primary"
+                sx={{ color: "white" }}
               >
                 <AccountCircle />
               </IconButton>
@@ -75,7 +76,6 @@ export function LoggedInAppBar() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleLogout}>Log out</MenuItem>
               </Menu>
             </div>
