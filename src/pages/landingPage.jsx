@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Box, Snackbar, Alert } from "@mui/material";
 import { getAllProducts } from "../api/product";
 import { Hero } from "../components/LandingPage/Hero";
+import { Promo } from "../components/LandingPage/Promo";
 
 export function LandingPage() {
   const [snackbarState, setSnackbarState] = useState({
@@ -18,6 +19,7 @@ export function LandingPage() {
   return (
     <Box>
       <Hero />
+      <Promo />
       <Snackbar
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={snackbarState.open}
