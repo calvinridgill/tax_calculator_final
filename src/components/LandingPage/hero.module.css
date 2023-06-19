@@ -1,66 +1,93 @@
+.heroImage {
+  background-image: url(/images/hero/hero_original.jpeg);
+}
+
 @media only screen and (min-width: 0px) and (max-width: 320px) {
   .heroImage {
-    background-image: url(https://img77.uenicdn.com/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg);
-    background-image: -webkit-image-set(url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c320_700a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 1x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c640_1400a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 2x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c960_2100a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 3x);
-    background-image: image-set(url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c320_700a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 1x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c640_1400a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 2x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c960_2100a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 3x);
+    background-image: -webkit-image-set(
+      url(/images/hero/hero_320_700.jpeg) 1x,
+      url(/images/hero/hero_610_1400.jpeg) 2x,
+      url(/images/hero/hero_960_2100.jpeg) 3x
+    );
+    background-image: image-set(
+      url(/images/hero/hero_320_700.jpeg) 1x,
+      url(/images/hero/hero_610_1400.jpeg) 2x,
+      url(/images/hero/hero_960_2100.jpeg) 3x
+    );
   }
 }
+
 @media only screen and (min-width: 321px) and (max-width: 575px) {
   .heroImage {
-    background-image: url(https://img77.uenicdn.com/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg);
-    background-image: -webkit-image-set(url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c575_800a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 1x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c1150_1600a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 2x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c1725_2400a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 3x);
-    background-image: image-set(url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c575_800a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 1x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c1150_1600a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 2x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c1725_2400a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 3x);
+    background-image: -webkit-image-set(
+      url(/images/hero/hero_575_800.jpeg) 1x,
+      url(/images/hero/hero_1150_1600.webp) 2x,
+      url(/images/hero/hero_1725_2400.jpeg) 3x
+    );
+    background-image: image-set(
+      url(/images/hero/hero_575_800.jpeg) 1x,
+      url(/images/hero/hero_1150_1600.webp) 2x,
+      url(/images/hero/hero_1725_2400.jpeg) 3x
+    );
   }
 }
+
 @media only screen and (min-width: 576px) and (max-width: 767px) {
   .heroImage {
-    background-image: url(https://img77.uenicdn.com/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg);
-    background-image: -webkit-image-set(url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c767_800a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 1x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c1534_1600a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 2x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c2301_2400a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 3x);
-    background-image: image-set(url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c767_800a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 1x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c1534_1600a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 2x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c2301_2400a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 3x);
+    background-image: -webkit-image-set(
+      url(/images/hero/hero_767_800.jpeg) 1x,
+      url(/images/hero/hero_1534_1600.webp) 2x,
+      url(/images/hero/hero_2301_2400.jpeg) 3x
+    );
+    background-image: image-set(
+      url(/images/hero/hero_767_800.jpeg) 1x,
+      url(/images/hero/hero_1534_1600.webp) 2x,
+      url(/images/hero/hero_2301_2400.jpeg) 3x
+    );
   }
 }
+
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .heroImage {
-    background-image: url(https://img77.uenicdn.com/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg);
-    background-image: -webkit-image-set(url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c991_800a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 1x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c1982_1600a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 2x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c2973_2400a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 3x);
-    background-image: image-set(url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c991_800a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 1x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c1982_1600a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 2x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c2973_2400a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 3x);
+    background-image: -webkit-image-set(
+      url(/images/hero/hero_991_800.jpeg) 1x,
+      url(/images/hero/hero_1982_1600.webp) 2x,
+      url(/images/hero/hero_2973_2400.jpeg) 3x
+    );
+    background-image: image-set(
+      url(/images/hero/hero_991_800.jpeg) 1x,
+      url(/images/hero/hero_1982_1600.webp) 2x,
+      url(/images/hero/hero_2973_2400.jpeg) 3x
+    );
   }
 }
+
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
   .heroImage {
-    background-image: url(https://img77.uenicdn.com/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg);
-    background-image: -webkit-image-set(url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c1199_800a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 1x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c2398_1600a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 2x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c3597_2400a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 3x);
-    background-image: image-set(url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c1199_800a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 1x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c2398_1600a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 2x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c3597_2400a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 3x);
+    background-image: -webkit-image-set(
+      url(/images/hero/hero_1199_800.jpeg) 1x,
+      url(/images/hero/hero_2398_1600.webp) 2x,
+      url(/images/hero/hero_3597_2400.jpeg) 3x
+    );
+    background-image: image-set(
+      url(/images/hero/hero_1199_800.jpeg) 1x,
+      url(/images/hero/hero_2398_1600.webp) 2x,
+      url(/images/hero/hero_3597_2400.jpeg) 3x
+    );
   }
 }
+
 @media only screen and (min-width: 1200px) {
   .heroImage {
-    background-image: url(https://img77.uenicdn.com/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg);
-    background-image: -webkit-image-set(url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c1920_800a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 1x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c3840_1600a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 2x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c5760_2400a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 3x);
-    background-image: image-set(url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c1920_800a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 1x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c3840_1600a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 2x,
-url(https://speedy.uenicdn.com/b277339c-ad19-4357-b65e-7828f2f69d03/c5760_2400a/image/upload/v1655220868/service_images/shutterstock_2039877848.jpg) 3x);
+    background-image: -webkit-image-set(
+      url(/images/hero/hero_1920_800.jpeg) 1x,
+      url(/images/hero/hero_3840_1600.webp) 2x,
+      url(/images/hero/hero_5760_2400.jpeg) 3x
+    );
+    background-image: image-set(
+      url(/images/hero/hero_1920_800.jpeg) 1x,
+      url(/images/hero/hero_3840_1600.webp) 2x,
+      url(/images/hero/hero_5760_2400.jpeg) 3x
+    );
   }
 }
