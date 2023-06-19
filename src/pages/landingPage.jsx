@@ -3,6 +3,8 @@ import { Box, Snackbar, Alert } from "@mui/material";
 import { getAllProducts } from "../api/product";
 import { Hero } from "../components/LandingPage/Hero";
 import { Promo } from "../components/LandingPage/Promo";
+import { About } from "../components/LandingPage/About";
+import { Why } from "../components/LandingPage/Why";
 
 export function LandingPage() {
   const [snackbarState, setSnackbarState] = useState({
@@ -20,6 +22,9 @@ export function LandingPage() {
     <Box>
       <Hero />
       <Promo />
+      <About />
+      <Why />
+
       <Snackbar
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={snackbarState.open}
