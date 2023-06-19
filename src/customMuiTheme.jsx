@@ -29,7 +29,7 @@ let customMuiTheme = createTheme({
         fontSize: "0.94rem",
       },
     },
-    htmlFontSize: 17,
+    htmlFontSize: 16,
   },
   components: {
     MuiLink: {
