@@ -4,7 +4,8 @@ import { useLoaderData } from "react-router-dom";
 import { SubHeader } from "../components/LandingPage/SubHeader";
 import { aboutContents, Service } from "../components/LandingPage/About";
 import { ContactUs } from "../components/ContactUs";
-import { CustomButton } from "../components/common/CustomButton";
+
+import { PurchaseButton } from "../components/PurchaseButton";
 
 export function AboutDetail() {
   const content = useLoaderData();
@@ -30,7 +31,10 @@ export function AboutDetail() {
               Our advanced tax calculator simplifies the process of determining
               your taxes. Say goodbye to complicated calculations!
             </Typography>
-            <CustomButton size="large">Get Yours</CustomButton>
+
+            <PurchaseButton size="large" type="submit">
+              Get Yours
+            </PurchaseButton>
           </Box>
         </Box>
       </Container>

@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, Container, Typography, IconButton } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import styles from "./hero.module.css";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { PurchaseButton } from "../PurchaseButton";
 
 export function Hero() {
   return (
@@ -96,7 +97,12 @@ export function Hero() {
                   },
                 })}
               >
-                <IconButton>
+                <PurchaseButton
+                  sx={{
+                    bgcolor: "transparent !important",
+                    borderWidth: "0px !important",
+                  }}
+                >
                   <Box
                     sx={{
                       display: "flex",
@@ -121,7 +127,7 @@ export function Hero() {
                       sx={{ fill: "black" }}
                     />
                   </Box>
-                </IconButton>
+                </PurchaseButton>
               </Box>
             </Box>
           </Container>
