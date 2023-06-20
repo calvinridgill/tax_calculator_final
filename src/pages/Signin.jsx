@@ -59,16 +59,37 @@ export function Signin() {
             xs: "column-reverse",
             md: "row",
           },
+          minHeight: "100vh",
         }}
       >
-        <Box sx={{ flex: 1, height: "94vh", p: 2 }}>
-          <Typography p={10}>Some info about the company</Typography>
+        <Box
+          sx={{
+            flex: 1,
+            p: 3,
+            display: "flex",
+            flexDirection: "column",
+            alignContent: "center",
+            textAlign: "center",
+            backgroundImage: "url(/images/tax_calculator_graphics_2000.jpg)",
+            backgroundPosition: "50% 50%",
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            bgcolor: "#fff",
+            minHeight: 600,
+          }}
+        >
+          <Typography
+            variant="h3"
+            component={"h1"}
+            sx={{ mt: { md: 5 }, fontFamily: "Montserrat sans-serif" }}
+          >
+            EZ Profit & Loss Statements plus Schedule C
+          </Typography>
         </Box>
         <Box
           sx={{
             bgcolor: "#eee",
             flex: 1,
-            height: "94vh",
             display: "flex",
             alignItems: "center",
             flexDirection: "column",
@@ -78,7 +99,7 @@ export function Signin() {
           {/* layout element start */}
           <Box
             sx={{
-              height: "150px",
+              height: { md: "150px", xs: "10px" },
             }}
           />
           {/* layout element end */}
@@ -91,11 +112,16 @@ export function Signin() {
               alignItems: "center",
               gap: 4,
               width: "100%",
-              maxWidth: 400,
+              maxWidth: 500,
               mb: 4,
             }}
           >
-            <Typography variant="h2">Welcome</Typography>
+            <Typography
+              variant="h3"
+              sx={{ fontFamily: "Montserrat sans-serif" }}
+            >
+              Welcome
+            </Typography>
             <TextField
               variant="outlined"
               type="email"
