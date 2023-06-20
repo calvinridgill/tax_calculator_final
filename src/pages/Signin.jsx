@@ -70,7 +70,7 @@ export function Signin() {
             flexDirection: "column",
             alignContent: "center",
             textAlign: "center",
-            backgroundImage: "url(/images/tax_calculator_graphics_2000.jpg)",
+            backgroundImage: "url(/images/tax_calculator_graphics_1000.jpg)",
             backgroundPosition: "50% 50%",
             backgroundSize: "contain",
             backgroundRepeat: "no-repeat",

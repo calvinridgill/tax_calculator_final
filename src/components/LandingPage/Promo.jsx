@@ -1,39 +1,49 @@
 import { Box, Stack, Typography, Container } from "@mui/material";
 import React from "react";
+import { PurchaseButton } from "../PurchaseButton";
 
 export function Promo() {
   return (
     <Box>
       <Container maxWidth="sm" sx={{ mt: 10, mb: 10 }}>
-        <Stack
-          spacing={1}
+        <PurchaseButton
           sx={{
-            bgcolor: "#343434",
-            color: "white",
-            flexDirection: {
-              xs: "column",
-              sm: "row",
-            },
-            borderRadius: 1,
+            width: 1,
+            borderWidth: "0 !important",
+            bgcolor: "inherit !important",
           }}
         >
-          <Box sx={{ width: "35%", paddingLeft: 8 }}>
-            <PromoIcon />
-          </Box>
-          <Stack sx={{ flex: 1, gap: 2, p: 3 }}>
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: 600, fontFamily: "Montserrat, sans-serif" }}
-            >
-              Limited Time Offer
-            </Typography>
-            <Typography
-              sx={{ fontWeight: 700, fontFamily: "Lato, sans-serif" }}
-            >
-              $20 limited time!
-            </Typography>
+          <Stack
+            spacing={1}
+            sx={{
+              bgcolor: "#343434",
+              color: "white",
+              flexDirection: {
+                xs: "column",
+                sm: "row",
+              },
+              borderRadius: 1,
+              width: 1,
+            }}
+          >
+            <Box sx={{ width: "35%", paddingLeft: 8 }}>
+              <PromoIcon />
+            </Box>
+            <Stack sx={{ flex: 1, gap: 2, p: 3 }}>
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 600, fontFamily: "Montserrat, sans-serif" }}
+              >
+                Limited Time Offer
+              </Typography>
+              <Typography
+                sx={{ fontWeight: 700, fontFamily: "Lato, sans-serif" }}
+              >
+                $20 limited time!
+              </Typography>
+            </Stack>
           </Stack>
-        </Stack>
+        </PurchaseButton>
       </Container>
     </Box>
   );
