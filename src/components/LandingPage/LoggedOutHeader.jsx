@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Box, Container, Typography } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthProvider";
 
 export function LoggedOutHeader() {
+  const { user } = useAuth();
   const location = useLocation();
   const [moveTitleBar, setMoveTitleBar] = useState(false);
   useEffect(() => {
@@ -76,12 +78,19 @@ export function LoggedOutHeader() {
                     borderRight: "7px solid transparent",
                     borderBottom: "7px solid black",
                     opacity: 1,
-                    left: "15%",
+                    left: "11%",
                     marginLeft: " -10px",
                   },
                   location.pathname === "/tax-prep-tool" && {
-                    left: "65%",
+                    left: "50%",
                   },
+                  user && {
+                    left: "10%",
+                  },
+                  user &&
+                    location.pathname === "/tax-prep-tool" && {
+                      left: "45%",
+                    },
                   location.pathname !== "/" &&
                     location.pathname !== "/tax-prep-tool" && {
                       opacity: 0,
@@ -139,6 +148,62 @@ export function LoggedOutHeader() {
                   TAX PREP TOOL
                 </Typography>
               </Link>
+              {user ? (
+                <Link style={{ textDecoration: "none" }} to="/app">
+                  <Typography
+                    variant="body2"
+                    sx={[
+                      {
+                        color: "white",
+                        px: 2,
+                        py: 1,
+                        "&:hover": { bgcolor: "#999889" },
+                        borderRadius: "3px",
+                        border: "1px solid #ff00de",
+                        animation: "moving-border 3s infinite",
+                        "@keyframes moving-border": {
+                          "0%": {
+                            borderColor: "#ff00de",
+                          },
+                          "50%": {
+                            borderColor: "#00ffea",
+                          },
+                          "100%": {
+                            borderColor: "#ff00de",
+                          },
+                        },
+                      },
+                      moveTitleBar && {
+                        color: "black",
+                        "&:hover": { bgcolor: "#d9d9d9" },
+                      },
+                    ]}
+                  >
+                    GO TO APP
+                  </Typography>
+                </Link>
+              ) : (
+                <Link style={{ textDecoration: "none" }} to="/signin">
+                  <Typography
+                    variant="body2"
+                    sx={[
+                      {
+                        color: "white",
+                        px: 2,
+                        py: 1,
+                        "&:hover": { bgcolor: "#999889" },
+                        borderRadius: "3px",
+                      },
+                      moveTitleBar && {
+                        color: "black",
+                        "&:hover": { bgcolor: "#d9d9d9" },
+                      },
+                    ]}
+                  >
+                    LOG IN
+                  </Typography>
+                </Link>
+              )}
             </Box>
           </Box>
           <Box sx={{ flex: 1 }} />
