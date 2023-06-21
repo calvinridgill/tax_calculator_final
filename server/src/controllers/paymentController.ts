@@ -67,12 +67,14 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
       const password = generatePassword(10)
       user = new User({ firstName: name, email, password })
       await user.save()
-      // - TODO: send and email to the user with username(their email) and password
-      const url = `${process.env.CLIENT_APP_URL}/signin?email=${user.email}&password=${password}`
-      await new Email({ to: user.email, firstName: user.firstName }, url).send(
-        null,
-        "Subject",
-      )
+      const loginUrl = `${process.env.CLIENT_APP_URL}/signin?email=${user.email}&password=${password}`
+      await new Email(user.email).sendAccountCreated({
+        firstname: user.firstName,
+        lastname: user.lastname,
+        email,
+        password,
+        loginUrl,
+      })
     }
     // - get the product information
     const productId = session.metadata.productId

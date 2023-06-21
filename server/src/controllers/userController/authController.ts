@@ -209,7 +209,7 @@ const forgotPassword = async (
       const resetURL = `${req.protocol}://${req.get(
         "host",
       )}/api/v1/users/resetPassword/${resetToken}`
-      await new Email(user, resetURL).sendPasswordReset()
+      await new Email(user.email).sendPasswordReset(resetURL)
 
       res.status(200).json({
         status: "success",

@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Container, Typography } from "@mui/material";
-import { CustomButton } from "../components/common/CustomButton";
+import { PurchaseButton } from "../components/PurchaseButton";
 import { Link } from "react-router-dom";
 import { SubHeader } from "../components/LandingPage/SubHeader";
 
@@ -61,7 +61,7 @@ export function TaxPrepTool() {
             <Typography sx={{ pb: 2, fontFamily: "Lato, sans-serif" }}>
               <b>$20.00</b> per access
             </Typography>
-            <CustomButton>Get Yours</CustomButton>
+            <PurchaseButton>Get Yours</PurchaseButton>
           </Box>
         </Container>
       </Box>

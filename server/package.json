@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node build/server.js",
-    "dev": "concurrently  \"tsc --watch\"  \"nodemon build/server.js\"",
+    "dev": "npm run cp_non_ts && concurrently  \"tsc --watch\"  \"nodemon build/server.js\"",
     "dev-simple": "ts-node src/server.ts",
-    "build": "tsc"
+    "build": "npm run cp_non_ts && tsc",
+    "cp_non_ts": "cp -r src/emailTemplates/*.mjml build/emailTemplates"
   },
   "author": "",
   "license": "ISC",
@@ -19,8 +20,10 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "googleapis": "^118.0.0",
+    "handlebars": "^4.7.7",
     "html-to-text": "^9.0.5",
     "jsonwebtoken": "^9.0.0",
+    "mjml": "^4.14.1",
     "mongoose": "^7.0.3",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",

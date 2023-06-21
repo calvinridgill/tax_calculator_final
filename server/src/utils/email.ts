@@ -1,17 +1,14 @@
 import nodemailer from "nodemailer"
 import { htmlToText } from "html-to-text"
+import { getAccountCreatedHtml } from "../emailTemplates/index"
 
 export class Email {
   private to: string
-  private firstName: string
-  private url: string
   private from: string
 
-  constructor(user: { to: string; firstName: string }, url: string) {
-    this.to = user.to
-    this.firstName = user.firstName
-    this.url = url
-    this.from = `Biruk Berhanu <${process.env.EMAIL_FROM}>`
+  constructor(email: string) {
+    this.to = email
+    this.from = `${process.env.CALVIN_NAME} <${process.env.EMAIL_FROM}>`
   }
 
   newTransport() {
@@ -49,16 +46,11 @@ export class Email {
   }
 
   // Send the actual email
-  async send(template, subject) {
-    // 1) Render HTML based on a pug template
-    const html = `First Name${this.firstName} \n url: ${this.url} \n subject: ${subject}`
-    //TODO: prepare email template
-
-    // 2) Define email options
+  async send(html, subject) {
     const mailOptions = {
       from: this.from,
       to: this.to,
-      subject,
+      subject: subject,
       html,
       text: htmlToText(html),
     }
@@ -71,11 +63,24 @@ export class Email {
   async sendWelcome() {
     await this.send("welcome", "Welcome to the Tourney Family!")
   }
-
-  async sendPasswordReset() {
+  async sendPasswordReset(resetURL) {
     await this.send(
       "passwordReset",
       "Your password reset token (valid for only 10 minutes)",
     )
+  }
+
+  /**
+   * @param {Object} data
+   * @property {string} data.firstname
+   * @property {string} data.lastname
+   * @property {string} data.email
+   * @property {string} data.password
+   * @property {string} data.loginUrl
+   */
+  async sendAccountCreated(data) {
+    const subject = "EZ Tax calculator Account Created"
+    const html = getAccountCreatedHtml(data)
+    await this.send(html, subject)
   }
 }
