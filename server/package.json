@@ -7,7 +7,7 @@
     "start": "node build/server.js",
     "dev": "npm run cp_non_ts && concurrently  \"tsc --watch\"  \"nodemon build/server.js\"",
     "dev-simple": "ts-node src/server.ts",
-    "build": "npm run cp_non_ts && tsc",
+    "build": "tsc && npm run cp_non_ts",
     "cp_non_ts": "cp -r src/emailTemplates/*.mjml build/emailTemplates"
   },
   "author": "",
