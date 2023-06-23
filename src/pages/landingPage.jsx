@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Box, Snackbar, Alert } from "@mui/material";
-import { getAllProducts } from "../api/product";
 import { Hero } from "../components/LandingPage/Hero";
 import { Promo } from "../components/LandingPage/Promo";
 import { About } from "../components/LandingPage/About";
@@ -38,15 +37,4 @@ export function LandingPage() {
       </Snackbar>
     </Box>
   );
-}
-
-export async function loader() {
-  try {
-    const products = await getAllProducts();
-    return { products };
-  } catch (error) {
-    //TODO: handle error
-    console.log(error);
-    throw error;
-  }
 }

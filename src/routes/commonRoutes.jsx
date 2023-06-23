@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet, Route } from "react-router-dom";
 import { AppBar } from "../components/AppBar";
-import { LandingPage, loader as landingPageLoader } from "../pages/landingPage";
+import { LandingPage } from "../pages/landingPage";
 import { TaxPrepTool } from "../pages/TaxPrepTool";
 import { action as purchaseProductAction } from "../components/PurchaseButton";
 import { CheckoutMessage } from "../pages/CheckoutMessage";
@@ -26,7 +26,7 @@ export const commonRoutes = (
         </Box>
       }
     >
-      <Route path="/" element={<LandingPage />} loader={landingPageLoader} />
+      <Route path="/" element={<LandingPage />} />
       <Route
         path="/about/:title"
         element={<AboutDetail />}
