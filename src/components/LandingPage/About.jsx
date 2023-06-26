@@ -59,6 +59,10 @@ export function About() {
                     color: "black",
                     borderColor: "black",
                     fontWeight: "normal",
+                    "&:hover": {
+                      borderColor: "black",
+                      boxShadow: 1,
+                    },
                   }}
                 >
                   Load More...

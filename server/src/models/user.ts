@@ -41,6 +41,7 @@ const userSchema = new mongoose.Schema<IUser, IUserModel, IUserMethods>(
       lowercase: true,
       validate: [validator.isEmail, "Please provide a valid email"],
     },
+    phone: String,
     image: {
       type: String,
       default: "default.jpg",

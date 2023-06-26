@@ -24,6 +24,9 @@ export function Promo() {
               },
               borderRadius: 1,
               width: 1,
+              "&:hover": {
+                boxShadow: 3,
+              },
             }}
           >
             <Box sx={{ width: "35%", paddingLeft: 8 }}>

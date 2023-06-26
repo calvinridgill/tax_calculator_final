@@ -58,14 +58,14 @@ export async function handleStripeCheckOutFulfillment(req, res, next) {
 async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
   try {
     // - get the user information
-    const { email, name } = session.customer_details
+    const { email, name, phone } = session.customer_details
     // - check if the user exists in the database
     let user = await User.findOne({ email })
 
     if (!user) {
       // - create a new user in the database
       const password = generatePassword(10)
-      user = new User({ firstName: name, email, password })
+      user = new User({ firstName: name, email, password, phone })
       await user.save()
       const loginUrl = `${process.env.CLIENT_APP_URL}/signin?email=${user.email}&password=${password}`
       await new Email(user.email).sendAccountCreated({

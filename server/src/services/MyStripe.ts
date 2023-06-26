@@ -39,6 +39,9 @@ export class MyStripe {
           },
         },
       ],
+      phone_number_collection: {
+        enabled: true,
+      },
       success_url: this.successURL,
       cancel_url: this.cancelURL,
       currency: "usd",
