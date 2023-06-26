@@ -26,8 +26,8 @@ export class Email {
       !(
         process.env.EMAIL_PORT &&
         process.env.EMAIL_HOST &&
-        process.env.EMAIL_USERNAME &&
-        process.env.EMAIL_PASSWORD
+        process.env.SENDGRID_USERNAME &&
+        process.env.SENDGRID_PASSWORD
       )
     )
       throw new Error(
@@ -39,8 +39,8 @@ export class Email {
       port: Number(process.env.EMAIL_PORT),
       secure: false,
       auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD,
+        user: process.env.SENDGRID_USERNAME,
+        pass: process.env.SENDGRID_PASSWORD,
       },
     })
   }
@@ -81,6 +81,12 @@ export class Email {
   async sendAccountCreated(data) {
     const subject = "EZ Tax calculator Account Created"
     const html = getAccountCreatedHtml(data)
+    await this.send(html, subject)
+  }
+
+  async test() {
+    const subject = "Testing email"
+    const html = "<h1>Testing email</h1>"
     await this.send(html, subject)
   }
 }
