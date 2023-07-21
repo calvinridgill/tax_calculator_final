@@ -4,40 +4,17 @@ import { getAccountCreatedHtml } from "../emailTemplates/index"
 
 export class Email {
   private to: string
-  private from: string
 
   constructor(email: string) {
     this.to = email
-    this.from = `${process.env.CALVIN_NAME} <${process.env.EMAIL_FROM}>`
   }
 
   newTransport() {
-    if (process.env.NODE_ENV === "production") {
-      // Sendgrid
-      return nodemailer.createTransport({
-        service: "SendGrid",
-        auth: {
-          user: process.env.SENDGRID_USERNAME,
-          pass: process.env.SENDGRID_PASSWORD,
-        },
-      })
-    }
-    if (
-      !(
-        process.env.EMAIL_PORT &&
-        process.env.EMAIL_HOST &&
-        process.env.SENDGRID_USERNAME &&
-        process.env.SENDGRID_PASSWORD
-      )
-    )
-      throw new Error(
-        "Email host, Email port, username and password is required",
-      )
+    if (!(process.env.SENDGRID_USERNAME && process.env.SENDGRID_PASSWORD))
+      throw new Error("SendGrid username and password is required")
 
     return nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT),
-      secure: false,
+      service: "SendGrid",
       auth: {
         user: process.env.SENDGRID_USERNAME,
         pass: process.env.SENDGRID_PASSWORD,
@@ -47,8 +24,9 @@ export class Email {
 
   // Send the actual email
   async send(html, subject) {
+    const from = `${process.env.CALVIN_NAME} <${process.env.EMAIL_FROM}>`
     const mailOptions = {
-      from: this.from,
+      from,
       to: this.to,
       subject: subject,
       html,

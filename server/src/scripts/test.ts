@@ -3,8 +3,13 @@ config({ path: "../../.env" })
 import { Email } from "../utils/email"
 ;(async () => {
   try {
-    const email = new Email("meetbirukberhanu@gmail.com")
-    await email.test()
+    await new Email("meetbirukberhanu@gmail.com").sendAccountCreated({
+      firstname: "user.firstName",
+      lastname: "user.lastname",
+      email: "email@gmail.com",
+      password: "password",
+      loginUrl: "loginUlr",
+    })
   } catch (error) {
     console.log("error ----> ", error)
   }
