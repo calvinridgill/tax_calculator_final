@@ -10,6 +10,7 @@
     "lint": "eslint --ext .js,.jsx --ignore-path ./.gitignore src",
     "lint_server": "eslint -c ./server/.eslintrc.json --ext .ts --ignore-path ./server/.gitignore server",
     "format_check": "prettier --check --ignore-path ./.gitignore .",
+    "format": "prettier --write --ignore-path ./.gitignore .",
     "validate": "npm run lint && npm run lint_server && npm run format_check && npm run build",
     "prepare": "husky install"
   },
@@ -32,6 +33,7 @@
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react-swc": "^3.0.0",
     "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.9.0",
     "eslint-plugin-react": "^7.32.2",
     "husky": "^8.0.3",
     "prettier": "2.8.4",
