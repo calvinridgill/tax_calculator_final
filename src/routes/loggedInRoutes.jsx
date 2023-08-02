@@ -4,6 +4,8 @@ import { PageNotFound } from "../components/PageNotFound";
 import { AppBar } from "../components/AppBar";
 import { Box } from "@mui/material";
 import { TaxCalculator } from "../pages/TaxCalculator";
+import { Dashboard } from "../pages/Dashboard";
+import { RestrictedTo } from "./routeUtils";
 
 export const loggedInRoutes = (
   <Route
@@ -15,6 +17,14 @@ export const loggedInRoutes = (
     }
   >
     <Route path="/app" element={<TaxCalculator />} />
+    <Route
+      path="/dashboard"
+      element={
+        <RestrictedTo role={["admin"]}>
+          <Dashboard />
+        </RestrictedTo>
+      }
+    />
     <Route path="/*" element={<PageNotFound />} />
   </Route>
 );

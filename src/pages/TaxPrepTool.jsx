@@ -12,7 +12,7 @@ export function TaxPrepTool() {
         <Container maxWidth="xs">
           <Box
             sx={{
-              pt: 5,
+              py: 5,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",

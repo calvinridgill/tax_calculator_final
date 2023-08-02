@@ -9,7 +9,7 @@ import {
   Box,
   Container,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { AccountCircle } from "@mui/icons-material";
 import { useAuth } from "../context/AuthProvider";
@@ -17,6 +17,7 @@ import { useAuth } from "../context/AuthProvider";
 export function LoggedInAppBar() {
   const auth = useAuth();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const navigate = useNavigate();
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -77,6 +78,15 @@ export function LoggedInAppBar() {
                 onClose={handleClose}
               >
                 <MenuItem onClick={handleLogout}>Log out</MenuItem>
+                {auth.user.role === "admin" && (
+                  <MenuItem
+                    onClick={() => {
+                      navigate("/dashboard");
+                    }}
+                  >
+                    Dashboard
+                  </MenuItem>
+                )}
               </Menu>
             </div>
           </Toolbar>
