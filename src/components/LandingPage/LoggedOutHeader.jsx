@@ -61,7 +61,7 @@ export function LoggedOutHeader() {
         >
           <Box
             sx={[
-              { ml: { xs: 13, sm: 20 } },
+              { ml: { xs: 5, sm: 20 } },
               moveTitleBar && {
                 position: "relative",
                 display: "flex",
@@ -103,7 +103,7 @@ export function LoggedOutHeader() {
               sx={{
                 flex: 4,
                 display: "flex",
-                gap: 3,
+                gap: { xs: 1, sm: 3 },
                 justifyContent: "center",
                 py: 1,
               }}
