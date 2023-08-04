@@ -4,24 +4,36 @@ import { Box } from "@mui/material";
 import { PageNotFound } from "../components/PageNotFound";
 import { AppBar } from "../components/AppBar";
 import { Signin, action as signInAction } from "../pages/Signin";
+import { LoggedOutHeader } from "../components/LandingPage/LoggedOutHeader";
 import Testing from "../pages/Testing";
 
 export const loggedOutRoutes = (
-  <Route
-    element={
-      <Box>
-        <AppBar />
-        <Outlet />
-      </Box>
-    }
-  >
-    <Route path="/signin" element={<Signin />} action={signInAction} />
-    <Route path="/offering" element={<div>This is the offering page</div>} />
+  <Route>
     <Route
-      path="/forgot-password"
-      element={<div>This is the forgot password</div>}
+      element={
+        <Box>
+          <AppBar />
+          <Outlet />
+        </Box>
+      }
+    >
+      <Route path="/offering" element={<div>This is the offering page</div>} />
+      <Route
+        path="/forgot-password"
+        element={<div>This is the forgot password</div>}
+      />
+      <Route path="/testing" element={<Testing />} />
+      <Route path="/*" element={<PageNotFound />} />
+    </Route>
+    <Route
+      path="/signin"
+      element={
+        <>
+          <LoggedOutHeader />
+          <Signin />
+        </>
+      }
+      action={signInAction}
     />
-    <Route path="/testing" element={<Testing />} />
-    <Route path="/*" element={<PageNotFound />} />
   </Route>
 );

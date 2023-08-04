@@ -10,7 +10,8 @@ export function LoggedOutHeader() {
   useEffect(() => {
     if (
       location.pathname === "/tax-prep-tool" ||
-      location.pathname.startsWith("/about/")
+      location.pathname.startsWith("/about/") ||
+      location.pathname.startsWith("/signin")
     )
       return setMoveTitleBar(true);
     function handleScroll() {
@@ -22,6 +23,11 @@ export function LoggedOutHeader() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [location.pathname]);
+
+  function isTabSelected(path) {
+    return moveTitleBar && location.pathname === path;
+  }
+
   return (
     <Box sx={{ position: "relative", zIndex: 2 }}>
       <Box
@@ -66,36 +72,6 @@ export function LoggedOutHeader() {
                 position: "relative",
                 display: "flex",
                 alignItems: "center",
-
-                "&::after": [
-                  {
-                    content: '""',
-                    position: "absolute",
-                    bottom: 0,
-                    width: 0,
-                    height: 0,
-                    borderLeft: "7px solid transparent",
-                    borderRight: "7px solid transparent",
-                    borderBottom: "7px solid black",
-                    opacity: 1,
-                    left: "11%",
-                    marginLeft: " -10px",
-                  },
-                  location.pathname === "/tax-prep-tool" && {
-                    left: "50%",
-                  },
-                  user && {
-                    left: "10%",
-                  },
-                  user &&
-                    location.pathname === "/tax-prep-tool" && {
-                      left: "45%",
-                    },
-                  location.pathname !== "/" &&
-                    location.pathname !== "/tax-prep-tool" && {
-                      opacity: 0,
-                    },
-                ],
               },
             ]}
           >
@@ -109,44 +85,50 @@ export function LoggedOutHeader() {
               }}
             >
               <Link style={{ textDecoration: "none" }} to="/">
-                <Typography
-                  variant="body2"
-                  sx={[
-                    {
-                      color: "white",
-                      px: 2,
-                      py: 1,
-                      "&:hover": { bgcolor: "#999889" },
-                      borderRadius: "3px",
-                    },
-                    moveTitleBar && {
-                      color: "black",
-                      "&:hover": { bgcolor: "#d9d9d9" },
-                    },
-                  ]}
-                >
-                  HOME
-                </Typography>
+                <Box sx={{ position: "relative" }}>
+                  <Typography
+                    variant="body2"
+                    sx={[
+                      {
+                        color: "white",
+                        px: 2,
+                        py: 1,
+                        "&:hover": { bgcolor: "#999889" },
+                        borderRadius: "3px",
+                      },
+                      moveTitleBar && {
+                        color: "black",
+                        "&:hover": { bgcolor: "#d9d9d9" },
+                      },
+                      isTabSelected("/") && tabIndicatorStyle,
+                    ]}
+                  >
+                    HOME
+                  </Typography>
+                </Box>
               </Link>
               <Link style={{ textDecoration: "none" }} to="/tax-prep-tool">
-                <Typography
-                  variant="body2"
-                  sx={[
-                    {
-                      color: "white",
-                      px: 2,
-                      py: 1,
-                      "&:hover": { bgcolor: "#999889" },
-                      borderRadius: "3px",
-                    },
-                    moveTitleBar && {
-                      color: "black",
-                      "&:hover": { bgcolor: "#d9d9d9" },
-                    },
-                  ]}
-                >
-                  TAX PREP TOOL
-                </Typography>
+                <Box sx={{ position: "relative" }}>
+                  <Typography
+                    variant="body2"
+                    sx={[
+                      {
+                        color: "white",
+                        px: 2,
+                        py: 1,
+                        "&:hover": { bgcolor: "#999889" },
+                        borderRadius: "3px",
+                      },
+                      moveTitleBar && {
+                        color: "black",
+                        "&:hover": { bgcolor: "#d9d9d9" },
+                      },
+                      isTabSelected("/tax-prep-tool") && tabIndicatorStyle,
+                    ]}
+                  >
+                    TAX PREP TOOL
+                  </Typography>
+                </Box>
               </Link>
               {user ? (
                 <Link style={{ textDecoration: "none" }} to="/app">
@@ -184,24 +166,27 @@ export function LoggedOutHeader() {
                 </Link>
               ) : (
                 <Link style={{ textDecoration: "none" }} to="/signin">
-                  <Typography
-                    variant="body2"
-                    sx={[
-                      {
-                        color: "white",
-                        px: 2,
-                        py: 1,
-                        "&:hover": { bgcolor: "#999889" },
-                        borderRadius: "3px",
-                      },
-                      moveTitleBar && {
-                        color: "black",
-                        "&:hover": { bgcolor: "#d9d9d9" },
-                      },
-                    ]}
-                  >
-                    LOG IN
-                  </Typography>
+                  <Box sx={{ position: "relative" }}>
+                    <Typography
+                      variant="body2"
+                      sx={[
+                        {
+                          color: "white",
+                          px: 2,
+                          py: 1,
+                          "&:hover": { bgcolor: "#999889" },
+                          borderRadius: "3px",
+                        },
+                        moveTitleBar && {
+                          color: "black",
+                          "&:hover": { bgcolor: "#d9d9d9" },
+                        },
+                        isTabSelected("/signin") && tabIndicatorStyle,
+                      ]}
+                    >
+                      LOG IN
+                    </Typography>
+                  </Box>
                 </Link>
               )}
             </Box>
@@ -212,3 +197,19 @@ export function LoggedOutHeader() {
     </Box>
   );
 }
+
+const tabIndicatorStyle = {
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    bottom: 0,
+    width: 0,
+    height: 0,
+    borderLeft: "7px solid transparent",
+    borderRight: "7px solid transparent",
+    borderBottom: "7px solid black",
+    opacity: 1,
+    left: "40%",
+    mb: "-8px",
+  },
+};

@@ -59,7 +59,8 @@ export function Signin() {
             xs: "column-reverse",
             md: "row",
           },
-          minHeight: "100vh",
+          minHeight: "calc(100vh - 50px)",
+          mt: { xs: 6 },
         }}
       >
         <Box
