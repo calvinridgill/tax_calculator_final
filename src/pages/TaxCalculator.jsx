@@ -1,10 +1,12 @@
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import React from "react";
 import { useAuth } from "../context/AuthProvider";
 import { axios } from "../utils/axios";
+import { SpreadSheetSkeleton } from "../components/SpreadSheetSkeleton";
 
 export const TaxCalculator = () => {
   const [spreadSheetUrl, setSpreadSheetUrl] = React.useState(null);
+  const [googleSheetLoading, setGoogleSheetLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
   const auth = useAuth();
   React.useEffect(() => {
@@ -34,19 +36,7 @@ export const TaxCalculator = () => {
       </Box>
     );
 
-  if (!spreadSheetUrl)
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "90vh",
-        }}
-      >
-        <CircularProgress size={50} />
-      </Box>
-    );
+  if (!spreadSheetUrl && !googleSheetLoading) return <SpreadSheetSkeleton />;
   return (
     <>
       <Box sx={{ position: "relative" }}>
@@ -56,7 +46,14 @@ export const TaxCalculator = () => {
             height: "93vh",
           }}
         >
-          <iframe src={spreadSheetUrl} width="100%" height="100%" />
+          <iframe
+            onLoad={() => {
+              setGoogleSheetLoading(false);
+            }}
+            src={spreadSheetUrl}
+            width="100%"
+            height="100%"
+          />
         </Box>
       </Box>
     </>

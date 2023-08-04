@@ -5,7 +5,7 @@ import { Skeleton, Box } from "@mui/material";
 import "react-datasheet-grid/dist/style.css";
 import "../styles/react-datasheet-grid.css";
 
-function App() {
+export function SpreadSheetSkeleton() {
   const [data, setData] = useState(Array(40).fill({}));
 
   const columns = Array(10).fill({
@@ -23,5 +23,3 @@ function App() {
     </Box>
   );
 }
-
-export default App;
