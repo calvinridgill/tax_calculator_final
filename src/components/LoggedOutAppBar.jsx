@@ -10,7 +10,7 @@ export function LoggedOutAppBar() {
   return (
     <>
       <AppBar position="relative" color="transparent" enableColorOnDark>
-        <Container>
+        <Container maxWidth="xl">
           <Toolbar sx={{ gap: { xs: 1, md: 2 }, p: 0 }}>
             <Box
               component="img"

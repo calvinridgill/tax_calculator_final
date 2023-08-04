@@ -32,7 +32,7 @@ export function LoggedInAppBar() {
   return (
     <>
       <AppBar position="relative" enableColorOnDark>
-        <Container>
+        <Container maxWidth="xl">
           <Toolbar sx={{ p: 0 }}>
             <Box
               component="img"
