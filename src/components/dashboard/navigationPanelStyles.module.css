@@ -1,0 +1,15 @@
+.active {
+  background: rgb(175, 166, 166);
+  border-radius: 2px 0 0 2px;
+}
+
+.pending {
+}
+
+.navLink {
+  color: rgba(0, 0, 0, 0.87);
+  padding: 0.5rem;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
