@@ -167,6 +167,7 @@ export function ContactUs() {
                       label="Your phone number"
                       placeholder="eg +1 212 736 310"
                       type="number"
+                      required
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
@@ -195,6 +196,7 @@ export function ContactUs() {
                 <TextField
                   name="message"
                   fullWidth
+                  required
                   variant="filled"
                   multiline
                   minRows={3}

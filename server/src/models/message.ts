@@ -1,18 +1,32 @@
 import mongoose from "mongoose"
 
-const messageSchema = new mongoose.Schema(
+interface IMessage {
+  firstname: string
+  lastname: string
+  phone: string
+  message: string
+}
+
+const messageSchema = new mongoose.Schema<IMessage>(
   {
-    conversationId: {
+    firstname: {
       type: String,
+      required: true,
     },
-    sender: {
+    lastname: {
       type: String,
+      required: true,
     },
-    text: {
+    phone: {
       type: String,
+      required: true,
+    },
+    message: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true },
 )
 
-export const Message = mongoose.model("Message", messageSchema)
+export const Message = mongoose.model<IMessage>("Message", messageSchema)
