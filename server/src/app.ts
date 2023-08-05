@@ -8,6 +8,7 @@ import { productRouter } from "./routes/productRoutes"
 import { userRouter } from "./routes/userRoutes"
 import { orderRouter } from "./routes/orderRoutes"
 import morgan from "morgan"
+import { messageRouter } from "./routes/messageRoutes"
 
 const app = express()
 app.use(morgan("tiny"))
@@ -30,6 +31,7 @@ appRoutes.use("/payment", paymentRouter)
 appRoutes.use("/product", productRouter)
 appRoutes.use("/user", userRouter)
 appRoutes.use("/order", orderRouter)
+appRoutes.use("/message", messageRouter)
 
 app.use("/api/v1", express.json(), appRoutes)
 

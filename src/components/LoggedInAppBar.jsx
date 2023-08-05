@@ -77,7 +77,6 @@ export function LoggedInAppBar() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleLogout}>Log out</MenuItem>
                 {auth.user.role === "admin" && (
                   <MenuItem
                     onClick={() => {
@@ -87,6 +86,7 @@ export function LoggedInAppBar() {
                     Dashboard
                   </MenuItem>
                 )}
+                <MenuItem onClick={handleLogout}>Log out</MenuItem>
               </Menu>
             </div>
           </Toolbar>
