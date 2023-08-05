@@ -1,18 +1,19 @@
 import express from "express"
 import authController from "../controllers/userController/authController"
-import messageController from "../controllers/messageController"
+import handleFactory from "../controllers/handleFactory"
+import { Message } from "../models/message"
 
 export const messageRouter = express.Router()
 
 messageRouter.use(authController.protect)
 messageRouter.use(authController.restrictTo("admin"))
 
-messageRouter.get("/", messageController.getAllMessages)
+messageRouter.get("/", handleFactory.getAll(Message))
 
-messageRouter.get("/:id", messageController.getAMessage)
+messageRouter.get("/:id", handleFactory.getOne(Message))
 
-messageRouter.post("/", messageController.createMessage)
+messageRouter.post("/", handleFactory.createOne(Message))
 
-messageRouter.patch("/:id", messageController.updateMessage)
+messageRouter.patch("/:id", handleFactory.updateOne(Message))
 
-messageRouter.delete("/:id", messageController.deleteMessage)
+messageRouter.delete("/:id", handleFactory.deleteOne(Message))
