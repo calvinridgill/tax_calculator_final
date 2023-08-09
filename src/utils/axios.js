@@ -14,7 +14,7 @@ const axioss = pureAxios.create({
 axioss.defaults.headers;
 
 const getAxios = () => {
-  const sleepTime = 1000;
+  const sleepTime = 0;
   if (import.meta.env.DEV) {
     return {
       ...axioss,

@@ -52,7 +52,7 @@ export function DashboardLayout({ NavigationComponent, children }) {
           >
             <MenuIcon fill="secondary" />
           </IconButton>
-          <Box sx={{ position: "relative" }}>
+          <Box sx={{ position: "relative", alignSelf: "stretch" }}>
             <ClickAwayListener
               onClickAway={() => {
                 setShowNavigationPanel((p) => (p ? !p : p));
@@ -62,7 +62,7 @@ export function DashboardLayout({ NavigationComponent, children }) {
                 sx={{
                   position: "absolute",
                   top: 0,
-                  bgcolor: "whitesmoke",
+                  bgcolor: "#f4f4f4",
                   minHeight: "90vh",
                   minWidth: 275,
                   opacity: showNavigationPanel ? 1 : 0,
@@ -70,6 +70,7 @@ export function DashboardLayout({ NavigationComponent, children }) {
                   transition: "opacity 0.5s ease-in-out, left 0.5s ease-in-out",
                   borderRadius: "2px",
                   p: 2,
+                  zIndex: 10,
                 }}
               >
                 {NavigationComponent}

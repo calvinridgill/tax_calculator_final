@@ -4,12 +4,12 @@ import { NavLink } from "react-router-dom";
 import styles from "./navigationPanelStyles.module.css";
 import clsx from "clsx";
 
-export function NavigationPanel() {
+export function DashboardNavigationPanel() {
   return (
     <Box
       sx={{
         height: 1,
-        borderRight: "1px solid whitesmoke",
+        borderRight: { xs: "unset", md: "1px solid #c4c4c4" },
         py: 2,
         display: "flex",
         gap: 1,

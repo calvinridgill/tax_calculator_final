@@ -1,5 +1,5 @@
 .active {
-  background: rgb(175, 166, 166);
+  background: #dfdfdf;
   border-radius: 2px 0 0 2px;
 }
 
@@ -11,5 +11,4 @@
   padding: 0.5rem;
   text-decoration: none;
   font-size: 1.1rem;
-  font-weight: 500;
 }

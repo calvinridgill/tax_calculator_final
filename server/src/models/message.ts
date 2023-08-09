@@ -5,6 +5,7 @@ interface IMessage {
   lastname: string
   phone: string
   message: string
+  read: boolean
 }
 
 const messageSchema = new mongoose.Schema<IMessage>(
@@ -24,6 +25,10 @@ const messageSchema = new mongoose.Schema<IMessage>(
     message: {
       type: String,
       required: true,
+    },
+    read: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true },

@@ -6,8 +6,11 @@ import { Box } from "@mui/material";
 import { TaxCalculator } from "../pages/TaxCalculator";
 import { RestrictedTo } from "./routeUtils";
 import { DashboardLayout } from "../components/dashboard/DashboardLayout";
-import { NavigationPanel } from "../components/dashboard/NavigationPanel";
-import { MessageDashboard } from "../components/dashboard/MessageDashboard";
+import { DashboardNavigationPanel } from "../components/dashboard/DashboardNavigationPanel";
+import {
+  MessageDashboard,
+  loader as messageLoader,
+} from "../components/dashboard/MessageDashboard";
 
 export const loggedInRoutes = (
   <Route
@@ -23,14 +26,18 @@ export const loggedInRoutes = (
       path="/dashboard"
       element={
         <RestrictedTo role={["admin"]}>
-          <DashboardLayout NavigationComponent={<NavigationPanel />}>
+          <DashboardLayout NavigationComponent={<DashboardNavigationPanel />}>
             <Outlet />
           </DashboardLayout>
         </RestrictedTo>
       }
     >
       <Route index element={<Navigate to={"/dashboard/message"} />} />
-      <Route path="message" element={<MessageDashboard />} />
+      <Route
+        path="message"
+        element={<MessageDashboard />}
+        loader={messageLoader}
+      />
       <Route path="user" element={<div>This is the user content</div>} />
     </Route>
     <Route path="/*" element={<PageNotFound />} />

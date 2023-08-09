@@ -23,6 +23,26 @@ LinkBehavior.propTypes = {
 };
 
 let customMuiTheme = createTheme({
+  palette: {
+    mode: "light",
+    text: {
+      primary: "#28323C",
+      secondary: "#646E78",
+      disabled: "#C8D2DC",
+      light: "#646E78",
+      lighter: "#A0AAB4",
+      lightest: "#C8D2DC",
+      themostlight: "#F6F6F6",
+    },
+    background: {
+      default: "#f5f5f6",
+      paper: "#ffffff",
+      lighter: "#C8D2DC",
+      lightest: "#EAEEF0",
+      themostlight: "#F6F6F6",
+      darkBanner: "#282a33",
+    },
+  },
   typography: {
     body1: {
       "@media (max-width:600px)": {
