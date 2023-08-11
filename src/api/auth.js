@@ -14,3 +14,8 @@ export const getMe = async () => {
   const res = (await axios.get("/user/me")).data;
   return res;
 };
+
+export const createAccount = async (data) => {
+  const res = (await axios.post("/user/signup", data)).data;
+  return res;
+};

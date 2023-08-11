@@ -6,6 +6,11 @@ import { AppBar } from "../components/AppBar";
 import { Signin, action as signInAction } from "../pages/Signin";
 import { LoggedOutHeader } from "../components/LandingPage/LoggedOutHeader";
 import Testing from "../pages/Testing";
+import {
+  HelpCalvin,
+  loader as helpCalvinLoader,
+  action as helpCalvinAction,
+} from "../pages/HelpCalvin";
 
 export const loggedOutRoutes = (
   <Route>
@@ -34,6 +39,12 @@ export const loggedOutRoutes = (
         </>
       }
       action={signInAction}
+    />
+    <Route
+      path="/itismecalvin"
+      loader={helpCalvinLoader}
+      action={helpCalvinAction}
+      element={<HelpCalvin />}
     />
   </Route>
 );

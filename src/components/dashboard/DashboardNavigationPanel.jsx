@@ -27,7 +27,7 @@ export function DashboardNavigationPanel() {
       >
         Message
       </NavLink>
-      <NavLink
+      {/* <NavLink
         to="user"
         className={({ isActive, isPending }) =>
           clsx(
@@ -37,6 +37,17 @@ export function DashboardNavigationPanel() {
         }
       >
         User
+      </NavLink> */}
+      <NavLink
+        to="product"
+        className={({ isActive, isPending }) =>
+          clsx(
+            styles.navLink,
+            isActive ? styles.active : isPending ? styles.pending : ""
+          )
+        }
+      >
+        Product
       </NavLink>
     </Box>
   );

@@ -26,6 +26,7 @@ export function AuthProvider({ children }) {
       setUser(user);
     } catch (error) {
       alert.showError("Error fetching user data");
+      LocalStorage.removeItem("token");
       setUser(null);
     }
   };

@@ -11,6 +11,7 @@ import {
   MessageDashboard,
   loader as messageLoader,
 } from "../components/dashboard/MessageDashboard";
+import { ProductDashboard } from "../components/dashboard/ProductDashboard";
 
 export const loggedInRoutes = (
   <Route
@@ -39,6 +40,7 @@ export const loggedInRoutes = (
         loader={messageLoader}
       />
       <Route path="user" element={<div>This is the user content</div>} />
+      <Route path="product" element={<ProductDashboard />} />
     </Route>
     <Route path="/*" element={<PageNotFound />} />
   </Route>
