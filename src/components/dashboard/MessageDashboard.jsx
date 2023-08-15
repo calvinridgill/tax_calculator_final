@@ -8,7 +8,7 @@ import { getAllMessage } from "../../api/message";
 export function MessageDashboard() {
   const [selectedTab, setSelectedTab] = React.useState("unread");
   const messages = useLoaderData();
-  console.log("idid", "messages", messages);
+
   return (
     <Box sx={{ pt: 3 }}>
       <Tabs

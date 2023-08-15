@@ -11,7 +11,20 @@ import {
   MessageDashboard,
   loader as messageLoader,
 } from "../components/dashboard/MessageDashboard";
-import { ProductDashboard } from "../components/dashboard/ProductDashboard";
+import {
+  ProductDashboard,
+  loader as productLoader,
+} from "../components/dashboard/ProductDashboard";
+
+import {
+  action as editProductAction,
+  deleteProductAction,
+} from "../components/dashboard/EditProductDialog";
+
+import {
+  CreateProduct,
+  action as createProductAction,
+} from "../components/dashboard/CreateProduct";
 
 export const loggedInRoutes = (
   <Route
@@ -40,7 +53,24 @@ export const loggedInRoutes = (
         loader={messageLoader}
       />
       <Route path="user" element={<div>This is the user content</div>} />
-      <Route path="product" element={<ProductDashboard />} />
+      <Route
+        path="product"
+        element={
+          <Box>
+            <ProductDashboard />
+            <Outlet />
+          </Box>
+        }
+        loader={productLoader}
+        action={editProductAction}
+      >
+        <Route path="destroy" action={deleteProductAction} />
+      </Route>
+      <Route
+        path="product/create"
+        element={<CreateProduct />}
+        action={createProductAction}
+      />
     </Route>
     <Route path="/*" element={<PageNotFound />} />
   </Route>
