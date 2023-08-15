@@ -15,6 +15,8 @@ app.use(morgan("tiny"))
 // TODO: handle cors properly
 app.use(cors())
 
+app.use(express.static("public"))
+
 app.get("/", (req, res) => {
   res.send("Hello World!")
 })
@@ -33,7 +35,9 @@ appRoutes.use("/user", userRouter)
 appRoutes.use("/order", orderRouter)
 appRoutes.use("/message", messageRouter)
 
-app.use("/api/v1", express.json(), appRoutes)
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use("/api/v1", appRoutes)
 
 // this handler must be at the end of all express middleware
 // global error handler
