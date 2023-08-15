@@ -11,9 +11,10 @@ import {
   loader as helpCalvinLoader,
   action as helpCalvinAction,
 } from "../pages/HelpCalvin";
+import { ErrorPage } from "../components/ErrorPage";
 
 export const loggedOutRoutes = (
-  <Route>
+  <Route errorElement={<ErrorPage />}>
     <Route
       element={
         <Box>

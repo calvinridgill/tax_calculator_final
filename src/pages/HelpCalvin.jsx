@@ -30,6 +30,13 @@ export function HelpCalvin() {
   const navigate = useNavigate();
 
   React.useEffect(() => {
+    console.log("products", "products");
+    return () => {
+      console.log("products", "unmounting a component");
+    };
+  }, []);
+
+  React.useEffect(() => {
     if (actionData?.error) {
       alert.showError(actionData.error);
     }
@@ -92,7 +99,7 @@ export function HelpCalvin() {
           </Paper>
         </Form>
         <Typography variant="body2" sx={{ py: 2 }}>
-          This page will be removed once you create an account
+          This page will be removed once you create an account and a product
         </Typography>
       </Container>
     </Box>
