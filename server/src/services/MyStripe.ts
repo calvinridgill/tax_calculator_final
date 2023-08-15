@@ -30,7 +30,7 @@ export class MyStripe {
           quantity,
           price_data: {
             currency: "usd",
-            unit_amount: 2000,
+            unit_amount: product.price * 100,
             product_data: {
               name: product.name,
               description: product.description,
