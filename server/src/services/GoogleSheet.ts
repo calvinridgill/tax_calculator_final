@@ -1,4 +1,4 @@
-import { google, sheets_v4 } from "googleapis"
+import { google, sheets_v4, drive_v3 } from "googleapis"
 
 export class GoogleSheet {
   private static client
@@ -43,7 +43,10 @@ export class GoogleSheet {
       },
     })
 
-    const drive = google.drive({ version: "v3", auth: GoogleSheet.client })
+    const drive: drive_v3.Drive = google.drive({
+      version: "v3",
+      auth: GoogleSheet.client,
+    })
     await drive.permissions.create({
       fileId: spreadsheet.data.spreadsheetId,
       requestBody: {
@@ -56,6 +59,7 @@ export class GoogleSheet {
   }
 
   public copyTaxCalculatorContent = async (
+    newUserEmail: string,
     originalSpreadSheetId?: string,
     newSpreadSheetId?: string,
   ): Promise<string> => {
@@ -104,7 +108,26 @@ export class GoogleSheet {
         ],
       },
     })
-
+    // Assign permission to another Gmail user to view the copied sheet
+    await this.addViewerPermission(newSpreadSheetId, newUserEmail)
     return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`
+  }
+  private async addViewerPermission(
+    spreadsheetId: string,
+    emailAddress: string,
+  ) {
+    const drive: drive_v3.Drive = google.drive({
+      version: "v3",
+      auth: GoogleSheet.client,
+    })
+
+    await drive.permissions.create({
+      fileId: spreadsheetId,
+      requestBody: {
+        role: "writer", // Can be 'reader', 'writer', or 'owner'
+        type: "user",
+        emailAddress: emailAddress,
+      },
+    })
   }
 }

@@ -15,6 +15,7 @@ interface IUser {
   passwordResetToken?: string
   passwordResetExpires?: Date
   active?: boolean
+  generatedPassword?: string
 }
 interface IUserMethods {
   correctPassword: (
@@ -52,6 +53,12 @@ const userSchema = new mongoose.Schema<IUser, IUserModel, IUserMethods>(
       default: "user",
     },
     password: {
+      type: String,
+      required: [true, "Please provide a password"],
+      minlength: 6,
+      select: false,
+    },
+    generatedPassword: {
       type: String,
       required: [true, "Please provide a password"],
       minlength: 6,

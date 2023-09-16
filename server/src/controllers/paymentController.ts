@@ -65,7 +65,13 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
     if (!user) {
       // - create a new user in the database
       const password = generatePassword(10)
-      user = new User({ firstName: name, email, password, phone })
+      user = new User({
+        firstName: name,
+        email,
+        password,
+        phone,
+        generatedPassword: password,
+      })
       await user.save()
       const loginUrl = `${process.env.CLIENT_APP_URL}/signin?email=${user.email}&password=${password}`
       await new Email(user.email).sendAccountCreated({
@@ -82,7 +88,9 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
     // - create a new order in the database
 
     const googleSheet = await GoogleSheet.createInstance()
-    const spreadSheetUrl = await googleSheet.copyTaxCalculatorContent()
+    const spreadSheetUrl = await googleSheet.copyTaxCalculatorContent(
+      user.email,
+    )
 
     const newOrder = new Order({
       total: session.amount_total,
