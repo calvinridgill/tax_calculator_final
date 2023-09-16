@@ -42,19 +42,6 @@ export class GoogleSheet {
         },
       },
     })
-
-    const drive: drive_v3.Drive = google.drive({
-      version: "v3",
-      auth: GoogleSheet.client,
-    })
-    await drive.permissions.create({
-      fileId: spreadsheet.data.spreadsheetId,
-      requestBody: {
-        role: "writer",
-        type: "user",
-        emailAddress: process.env.CALVIN_EMAIL,
-      },
-    })
     return spreadsheet.data.spreadsheetId
   }
 
@@ -109,10 +96,10 @@ export class GoogleSheet {
       },
     })
     // Assign permission to another Gmail user to view the copied sheet
-    await this.addViewerPermission(newSpreadSheetId, newUserEmail)
+    await this.addWriterPermission(newSpreadSheetId, newUserEmail)
     return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`
   }
-  private async addViewerPermission(
+  private async addWriterPermission(
     spreadsheetId: string,
     emailAddress: string,
   ) {
@@ -123,6 +110,7 @@ export class GoogleSheet {
 
     await drive.permissions.create({
       fileId: spreadsheetId,
+      sendNotificationEmail: false,
       requestBody: {
         role: "writer", // Can be 'reader', 'writer', or 'owner'
         type: "user",

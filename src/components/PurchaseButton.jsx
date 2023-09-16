@@ -18,7 +18,7 @@ export function PurchaseButton({ children, ...others }) {
     if (fetcher.state === "submitting") {
       setSnackbarState({
         open: true,
-        message: "Processing purchasing...",
+        message: "Processing your order..",
         severity: "info",
       });
     } else if (fetcher.data instanceof Error) {
