@@ -26,3 +26,4 @@ dist-ssr
 #for eslint and prettier
 /server/build
 todo.js
+.env
