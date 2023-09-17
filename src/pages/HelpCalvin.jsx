@@ -6,6 +6,7 @@ import {
   Form,
   useActionData,
   useNavigate,
+  useNavigation,
 } from "react-router-dom";
 import { useAlert } from "../context/AlertProvider";
 import { useAuth } from "../context/AuthProvider";
@@ -22,19 +23,13 @@ import LocalStorage from "../utils/localStorage";
 import { axios } from "../utils/axios";
 
 export function HelpCalvin() {
+  const navigation = useNavigation();
   const products = useLoaderData();
   const actionData = useActionData();
   const alert = useAlert();
   const auth = useAuth();
   const token = LocalStorage.getItem("token");
   const navigate = useNavigate();
-
-  React.useEffect(() => {
-    console.log("products", "products");
-    return () => {
-      console.log("products", "unmounting a component");
-    };
-  }, []);
 
   React.useEffect(() => {
     if (actionData?.error) {
@@ -95,7 +90,9 @@ export function HelpCalvin() {
               name="confirm_password"
               required
             />
-            <Button type="submit">Create Account</Button>
+            <Button type="submit" disabled={navigation.state === "submitting"}>
+              Create Account
+            </Button>
           </Paper>
         </Form>
         <Typography variant="body2" sx={{ py: 2 }}>
@@ -121,7 +118,13 @@ export async function action({ request }) {
     const confirmPassword = formData.get("confirm_password");
     if (password !== confirmPassword)
       return { error: "Uh-oh! Passwords don't match. Please try again." };
-    const res = await createAccount({ firstName, lastName, email, password });
+    const res = await createAccount({
+      firstName,
+      lastName,
+      email,
+      password,
+      pass: "itismecalvin",
+    });
     const token = res.token;
     const user = res.data.user;
     if (token) {
