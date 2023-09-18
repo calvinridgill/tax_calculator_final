@@ -3,6 +3,7 @@ import React from "react";
 import { useAuth } from "../context/AuthProvider";
 import { axios } from "../utils/axios";
 import { SpreadSheetSkeleton } from "../components/SpreadSheetSkeleton";
+import { Navigate } from "react-router-dom";
 
 export const TaxCalculator = () => {
   const [spreadSheetUrl, setSpreadSheetUrl] = React.useState(null);
@@ -26,6 +27,8 @@ export const TaxCalculator = () => {
       setError(error);
     }
   }, [auth.user._id]);
+
+  if (auth.user.role === "admin") return <Navigate to="/dashboard/product" />;
 
   if (error)
     return (
