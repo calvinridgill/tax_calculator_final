@@ -34,8 +34,8 @@
           </mj-text>
           <mj-text> Thank you for choosing our service! </mj-text>
           <mj-text>
-            Best regards,<br />
-            Company name
+            Best regards,<br /><br />
+            {{companyName}}
           </mj-text>
         </mj-column>
       </mj-section>

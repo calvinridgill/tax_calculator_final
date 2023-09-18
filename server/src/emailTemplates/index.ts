@@ -23,5 +23,8 @@ try {
 export function getAccountCreatedHtml(data) {
   const accountCreatedHtml = mjml2html(accountCreatedMjml).html
   const accountCreatedTemplate = Handlebars.compile(accountCreatedHtml)
-  return accountCreatedTemplate(data)
+  return accountCreatedTemplate({
+    ...data,
+    companyName: process.env.COMPANY_NAME,
+  })
 }
