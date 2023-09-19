@@ -53,6 +53,7 @@ export const loggedInRoutes = (
         loader={messageLoader}
       />
       <Route path="user" element={<div>This is the user content</div>} />
+      <Route path="config" element={<div>This is the config content</div>} />
       <Route
         path="product"
         element={

@@ -1,11 +1,15 @@
 import React from "react";
-import { useRouteError } from "react-router-dom";
+import PropTypes from "prop-types";
+import { useRouteError, useAsyncError } from "react-router-dom";
 import { Container, Typography, Button } from "@mui/material";
 
-export function ErrorPage() {
-  const error = useRouteError();
-  const errorMessage = error.response?.data.message || error.message;
-  console.log("idid", error);
+export function ErrorPage({ sxStyle }) {
+  let error = useRouteError();
+  if (!error) error = useAsyncError();
+  let errorMessage = error?.response?.data.message; // error from axios
+  console.log("error", error);
+  if (!errorMessage) errorMessage = error.message;
+  if (error?.statusText === "Not Found") errorMessage = "Page not found";
 
   return (
     <Container
@@ -15,6 +19,7 @@ export function ErrorPage() {
         alignItems: "center",
         justifyContent: "center",
         height: "100vh",
+        ...sxStyle,
       }}
     >
       <Typography variant="h1" sx={{ color: "error.main" }}>
@@ -37,3 +42,7 @@ export function ErrorPage() {
     </Container>
   );
 }
+
+ErrorPage.propTypes = {
+  sxStyle: PropTypes.object,
+};

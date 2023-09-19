@@ -49,6 +49,17 @@ export function DashboardNavigationPanel() {
       >
         Message
       </NavLink>
+      <NavLink
+        to="config"
+        className={({ isActive, isPending }) =>
+          clsx(
+            styles.navLink,
+            isActive ? styles.active : isPending ? styles.pending : ""
+          )
+        }
+      >
+        Config
+      </NavLink>
     </Box>
   );
 }
