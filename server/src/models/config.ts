@@ -11,6 +11,7 @@ interface IConfig {
   COMPANY_NAME?: string
   STRIPE_API_KEY: string
   STRIPE_END_POINT_SECRET: string
+  NODE_ENV: string
 }
 
 type IConfigModel = Model<IConfig>
@@ -62,6 +63,7 @@ const configSchema = new mongoose.Schema<IConfig, IConfigModel>({
     type: String,
     required: [true, "Please provide a STRIPE_END_POINT_SECRET"],
   },
+  NODE_ENV: String,
 })
 
 configSchema.post("findOneAndUpdate", async function (doc) {

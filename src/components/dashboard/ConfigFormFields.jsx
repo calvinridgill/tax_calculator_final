@@ -8,11 +8,11 @@ export const configFields = [
   "COMPANY_NAME",
   "STRIPE_API_KEY",
   "STRIPE_END_POINT_SECRET",
-  "SENDGRID_PASSWORD",
+  "EMAIL_FROM",
   "SENDGRID_USERNAME",
+  "SENDGRID_PASSWORD",
   "SERVER_URL",
   "CLIENT_APP_URL",
-  "EMAIL_FROM",
 ];
 
 export function ConfigFormFields({ defaultValues, readOnly = false }) {
