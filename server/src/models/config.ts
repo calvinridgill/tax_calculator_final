@@ -1,8 +1,6 @@
 import mongoose, { Model } from "mongoose"
 
 interface IConfig {
-  DB_URL: string
-  NODE_ENV: string
   EMAIL_FROM: string
   CLIENT_APP_URL: string
   SERVER_URL: string
@@ -18,14 +16,6 @@ interface IConfig {
 type IConfigModel = Model<IConfig>
 
 const configSchema = new mongoose.Schema<IConfig, IConfigModel>({
-  DB_URL: {
-    type: String,
-    required: [true, "Please provide a DB_URL"],
-  },
-  NODE_ENV: {
-    type: String,
-    required: [true, "Please provide a NODE_ENV"],
-  },
   EMAIL_FROM: {
     type: String,
     required: [

@@ -19,7 +19,6 @@ const ConfigCreatePage = () => {
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           {[
-            "DB_URL",
             "NODE_ENV",
             "EMAIL_FROM",
             "CLIENT_APP_URL",

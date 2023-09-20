@@ -13,7 +13,6 @@ export const configFields = [
   "SERVER_URL",
   "CLIENT_APP_URL",
   "EMAIL_FROM",
-  "DB_URL",
 ];
 
 export function ConfigFormFields({ defaultValues, readOnly = false }) {
