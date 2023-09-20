@@ -9,6 +9,7 @@ export const configFields = [
   "STRIPE_API_KEY",
   "STRIPE_END_POINT_SECRET",
   "EMAIL_FROM",
+  "SERVICE_ACCOUNT_EMAIL",
   "SENDGRID_USERNAME",
   "SENDGRID_PASSWORD",
   "SERVER_URL",
@@ -22,6 +23,7 @@ export function ConfigFormFields({ defaultValues, readOnly = false }) {
         <Grid item xs={12} sm={6} md={4} key={field}>
           <TextField
             fullWidth
+            required
             id={field}
             name={field}
             label={field.replace(/_/g, " ")}

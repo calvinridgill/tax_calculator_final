@@ -11,6 +11,7 @@ interface IConfig {
   COMPANY_NAME?: string
   STRIPE_API_KEY: string
   STRIPE_END_POINT_SECRET: string
+  SERVICE_ACCOUNT_EMAIL?: string
   NODE_ENV: string
 }
 
@@ -63,6 +64,7 @@ const configSchema = new mongoose.Schema<IConfig, IConfigModel>({
     type: String,
     required: [true, "Please provide a STRIPE_END_POINT_SECRET"],
   },
+  SERVICE_ACCOUNT_EMAIL: String,
   NODE_ENV: String,
 })
 
