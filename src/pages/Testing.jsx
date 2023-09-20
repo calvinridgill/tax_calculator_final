@@ -1,27 +1,66 @@
-import React, { useState } from "react";
-import { DataSheetGrid } from "react-datasheet-grid";
-import { Skeleton, Box } from "@mui/material";
-// Import the style only once in your app!
-import "react-datasheet-grid/dist/style.css";
-import "../styles/react-datasheet-grid.css";
+import React from "react";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
 
-function App() {
-  const [data, setData] = useState(Array(40).fill({}));
-
-  const columns = Array(10).fill({
-    component: () => (
-      <Box sx={{ px: 1, width: 1, display: "flex", justifyContent: "center" }}>
-        <Skeleton width="90%" height="30px" />
-      </Box>
-    ),
-    title: "",
-  });
+const ConfigCreatePage = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // TODO: Add your logic for submitting the form to the server
+  };
 
   return (
-    <Box sx={{ height: "100vh", overflow: "hidden" }}>
-      <DataSheetGrid value={data} onChange={setData} columns={columns} />
-    </Box>
+    <Container maxWidth="md">
+      <Typography variant="h4" sx={{ marginBottom: 2 }}>
+        Admin Dashboard Config Create Page
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          {[
+            "DB_URL",
+            "NODE_ENV",
+            "JWT_SECRET",
+            "JWT_EXPIRES_IN",
+            "JWT_COOKIE_EXPIRES_IN",
+            "EMAIL_FROM",
+            "CLIENT_APP_URL",
+            "SERVER_URL",
+            "ORIGINAL_SPREADSHEET_ID",
+            "CALVIN_NAME",
+            "SENDGRID_PASSWORD",
+            "SENDGRID_USERNAME",
+            "COMPANY_NAME",
+            "STRIPE_API_KEY",
+            "STRIPE_END_POINT_SECRET",
+          ].map((field) => (
+            <Grid item xs={12} sm={6} md={4} key={field}>
+              <TextField
+                fullWidth
+                required
+                id={field}
+                name={field}
+                label={field}
+                variant="outlined"
+                sx={{ width: "100%" }}
+              />
+            </Grid>
+          ))}
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              sx={{ width: "100%" }}
+            >
+              Submit
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    </Container>
   );
-}
+};
 
-export default App;
+export default ConfigCreatePage;

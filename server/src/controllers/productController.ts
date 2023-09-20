@@ -5,6 +5,7 @@ import sharp from "sharp"
 import fs from "fs/promises"
 import * as fsNonProm from "fs"
 import path from "path"
+import { currentEnvConfig } from "../models/config"
 
 export const getAllProducts = async (
   req: Request,
@@ -160,12 +161,12 @@ export const resizePhoto = async (
 }
 
 function getFullImageUrl(url: string) {
-  return `${process.env.SERVER_URL}/imgs/product/${url}`
+  return `${currentEnvConfig.SERVER_URL}/imgs/product/${url}`
 }
 
 function getImageAbsoluteLocation(fullImageUrl: string) {
   const imgLocationInPublic = fullImageUrl.replace(
-    `${process.env.SERVER_URL}`,
+    `${currentEnvConfig.SERVER_URL}`,
     "public/",
   )
   return path.resolve(imgLocationInPublic)

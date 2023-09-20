@@ -10,6 +10,7 @@ import { Footer } from "../components/LandingPage/Footer";
 import { Box } from "@mui/material";
 import { AboutDetail, loader as aboutDetailLoader } from "../pages/AboutDetail";
 import { action as contactUsAction } from "../components/ContactUs";
+import Testing from "../pages/Testing";
 
 export const commonRoutes = (
   <Route>
@@ -46,5 +47,6 @@ export const commonRoutes = (
       <Route path="/checkout" element={<CheckoutMessage />} />
     </Route>
     <Route path="/ask_help" action={contactUsAction} />
+    <Route path="/testing" element={<Testing />} />
   </Route>
 );

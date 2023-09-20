@@ -1,15 +1,16 @@
 import { google, sheets_v4, drive_v3 } from "googleapis"
+import { currentEnvConfig } from "../models/config"
 
 export class GoogleSheet {
   private static client
   private googleSheets: sheets_v4.Sheets
-  public static originalSpreadSheetId = process.env.ORIGINAL_SPREADSHEET_ID
-
+  private originalSpreadSheetId: string
   private constructor() {
     this.googleSheets = google.sheets({
       version: "v4",
       auth: GoogleSheet.client,
     })
+    this.originalSpreadSheetId = currentEnvConfig.ORIGINAL_SPREADSHEET_ID
   }
 
   private static async initializeClient() {
@@ -52,16 +53,13 @@ export class GoogleSheet {
   ): Promise<string> => {
     // prepare spreadsheet ids
     if (
-      GoogleSheet.originalSpreadSheetId === undefined &&
+      this.originalSpreadSheetId === undefined &&
       originalSpreadSheetId === undefined
     )
       throw new Error("originalSpreadSheetId is undefined")
 
-    if (
-      originalSpreadSheetId === undefined &&
-      GoogleSheet.originalSpreadSheetId
-    )
-      originalSpreadSheetId = GoogleSheet.originalSpreadSheetId
+    if (originalSpreadSheetId === undefined && this.originalSpreadSheetId)
+      originalSpreadSheetId = this.originalSpreadSheetId
 
     if (newSpreadSheetId === undefined)
       newSpreadSheetId = await this.createGoogleSheet()

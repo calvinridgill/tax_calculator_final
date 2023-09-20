@@ -39,6 +39,6 @@ const CustomCircularProgress = () => (
 SuspenseAwait.propTypes = {
   resolve: PropTypes.any.isRequired,
   errorElement: PropTypes.element,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.func,
   fallbackElement: PropTypes.element,
 };

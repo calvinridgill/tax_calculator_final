@@ -205,5 +205,6 @@ export const action = async ({ request }) => {
     if (error?.response?.data?.message) {
       return { error: error.response.data.message };
     }
+    throw error;
   }
 };

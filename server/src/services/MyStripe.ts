@@ -1,14 +1,15 @@
 import Stripe from "stripe"
 import { Product } from "../models/product"
+import { currentEnvConfig } from "../models/config"
 import { Types } from "mongoose"
 
 export class MyStripe {
   private stripe: Stripe
-  private successURL = `${process.env.CLIENT_APP_URL}/checkout?success=true`
-  private cancelURL = `${process.env.CLIENT_APP_URL}/checkout?success=false`
+  private successURL = `${currentEnvConfig.CLIENT_APP_URL}/checkout?success=true`
+  private cancelURL = `${currentEnvConfig.CLIENT_APP_URL}/checkout?success=false`
 
   constructor(apiKey?: string, successURL?: string, cancelURL?: string) {
-    if (!apiKey) apiKey = process.env.STRIPE_API_KEY
+    if (!apiKey) apiKey = currentEnvConfig.STRIPE_API_KEY
     this.stripe = new Stripe(apiKey, { apiVersion: "2022-11-15" })
     if (successURL) this.successURL = successURL
     if (cancelURL) this.cancelURL = cancelURL

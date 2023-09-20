@@ -3,7 +3,7 @@ config({ path: "../../.env" })
 import { Email } from "../utils/email"
 ;(async () => {
   try {
-    await new Email("meetbirukberhanu@gmail.com").sendAccountCreated({
+    await new Email("imbiruk@gmail.com").sendAccountCreated({
       firstname: "user.firstName",
       lastname: "user.lastname",
       email: "email@gmail.com",

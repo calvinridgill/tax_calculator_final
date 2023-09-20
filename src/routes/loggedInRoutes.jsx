@@ -15,6 +15,10 @@ import {
   ProductDashboard,
   loader as productLoader,
 } from "../components/dashboard/ProductDashboard";
+import {
+  ConfigDashboard,
+  loader as configLoader,
+} from "../components/dashboard/ConfigDashboard";
 
 import {
   action as editProductAction,
@@ -25,6 +29,14 @@ import {
   CreateProduct,
   action as createProductAction,
 } from "../components/dashboard/CreateProduct";
+import {
+  CreateConfig,
+  action as createConfigAction,
+} from "../components/dashboard/CreateConfig";
+import {
+  EditConfig,
+  action as editConfigAction,
+} from "../components/dashboard/EditConfig";
 
 export const loggedInRoutes = (
   <Route
@@ -53,7 +65,22 @@ export const loggedInRoutes = (
         loader={messageLoader}
       />
       <Route path="user" element={<div>This is the user content</div>} />
-      <Route path="config" element={<div>This is the config content</div>} />
+      <Route
+        path="config"
+        element={<ConfigDashboard />}
+        loader={configLoader}
+      />
+      <Route
+        path="config/create"
+        element={<CreateConfig />}
+        action={createConfigAction}
+      />
+      <Route
+        path="config/edit"
+        element={<EditConfig />}
+        action={editConfigAction}
+        loader={configLoader}
+      />
       <Route
         path="product"
         element={

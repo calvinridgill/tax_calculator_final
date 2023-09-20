@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer"
 import { htmlToText } from "html-to-text"
 import { getAccountCreatedHtml } from "../emailTemplates/index"
-
+import { currentEnvConfig } from "../models/config"
 export class Email {
   private to: string
 
@@ -10,21 +10,25 @@ export class Email {
   }
 
   newTransport() {
-    if (!(process.env.SENDGRID_USERNAME && process.env.SENDGRID_PASSWORD))
+    if (
+      !(
+        currentEnvConfig.SENDGRID_USERNAME && currentEnvConfig.SENDGRID_PASSWORD
+      )
+    )
       throw new Error("SendGrid username and password is required")
 
     return nodemailer.createTransport({
       service: "SendGrid",
       auth: {
-        user: process.env.SENDGRID_USERNAME,
-        pass: process.env.SENDGRID_PASSWORD,
+        user: currentEnvConfig.SENDGRID_USERNAME,
+        pass: currentEnvConfig.SENDGRID_PASSWORD,
       },
     })
   }
 
   // Send the actual email
   async send(html, subject) {
-    const from = `${process.env.CALVIN_NAME} <${process.env.EMAIL_FROM}>`
+    const from = `${currentEnvConfig.CALVIN_NAME} <${currentEnvConfig.EMAIL_FROM}>`
     const mailOptions = {
       from,
       to: this.to,

@@ -5,6 +5,7 @@ import { Order } from "../models/order"
 import { generatePassword } from "../utils"
 import { Email } from "../utils/email"
 import { GoogleSheet } from "../services/GoogleSheet"
+import { currentEnvConfig } from "../models/config"
 
 export async function createCheckoutSession(req, res, next) {
   try {
@@ -24,7 +25,7 @@ export async function handleStripeCheckOutFulfillment(req, res, next) {
     const myStripe = new MyStripe()
     const payload = req.body
     // Verify events came from Stripe
-    const endpointSecret = process.env.STRIPE_END_POINT_SECRET
+    const endpointSecret = currentEnvConfig.STRIPE_END_POINT_SECRET
     const sig = req.headers["stripe-signature"]
     let event
 
@@ -73,7 +74,7 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
         generatedPassword: password,
       })
       await user.save()
-      const loginUrl = `${process.env.CLIENT_APP_URL}/signin?email=${user.email}&password=${password}`
+      const loginUrl = `${currentEnvConfig.CLIENT_APP_URL}/signin?email=${user.email}&password=${password}`
       await new Email(user.email).sendAccountCreated({
         firstname: user.firstName,
         lastname: user.lastname,

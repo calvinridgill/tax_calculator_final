@@ -1,6 +1,7 @@
 import fs from "fs"
 import mjml2html from "mjml"
 import Handlebars from "handlebars"
+import { currentEnvConfig } from "../models/config"
 
 let accountCreatedMjml = ""
 try {
@@ -25,6 +26,6 @@ export function getAccountCreatedHtml(data) {
   const accountCreatedTemplate = Handlebars.compile(accountCreatedHtml)
   return accountCreatedTemplate({
     ...data,
-    companyName: process.env.COMPANY_NAME,
+    companyName: currentEnvConfig.COMPANY_NAME,
   })
 }
