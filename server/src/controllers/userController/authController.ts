@@ -11,8 +11,8 @@ export interface RequestWithUser extends Request {
 }
 
 const signToken = (id) => {
-  return jwt.sign({ id }, currentEnvConfig.JWT_SECRET, {
-    expiresIn: currentEnvConfig.JWT_EXPIRES_IN,
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
   })
 }
 
@@ -22,7 +22,7 @@ const createSendToken = (user, statusCode, req, res) => {
   res.cookie("jwt", token, {
     expires: new Date(
       Date.now() +
-        Number(currentEnvConfig.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000,
+        Number(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000,
     ),
     httpOnly: true,
     secure: req.secure || req.headers["x-forwarded-proto"] === "https",
@@ -117,7 +117,7 @@ const protect = async (
     }
 
     // 2) Verification token
-    const decoded = jwt.verify(token, currentEnvConfig.JWT_SECRET) as JwtPayload
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload
 
     // 3) Check if user still exists
     const currentUser = await User.findById(decoded.id)
@@ -156,7 +156,7 @@ const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
       // 1) verify token
       const decoded = jwt.verify(
         req.cookies.jwt,
-        currentEnvConfig.JWT_SECRET,
+        process.env.JWT_SECRET,
       ) as JwtPayload
 
       // 2) Check if user still exists

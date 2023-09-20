@@ -21,9 +21,6 @@ const ConfigCreatePage = () => {
           {[
             "DB_URL",
             "NODE_ENV",
-            "JWT_SECRET",
-            "JWT_EXPIRES_IN",
-            "JWT_COOKIE_EXPIRES_IN",
             "EMAIL_FROM",
             "CLIENT_APP_URL",
             "SERVER_URL",

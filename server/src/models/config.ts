@@ -3,9 +3,6 @@ import mongoose, { Model } from "mongoose"
 interface IConfig {
   DB_URL: string
   NODE_ENV: string
-  JWT_SECRET: string
-  JWT_EXPIRES_IN: string
-  JWT_COOKIE_EXPIRES_IN: string
   EMAIL_FROM: string
   CLIENT_APP_URL: string
   SERVER_URL: string
@@ -28,17 +25,6 @@ const configSchema = new mongoose.Schema<IConfig, IConfigModel>({
   NODE_ENV: {
     type: String,
     required: [true, "Please provide a NODE_ENV"],
-  },
-  JWT_SECRET: {
-    type: String,
-  },
-  JWT_EXPIRES_IN: {
-    type: String,
-    default: "90d",
-  },
-  JWT_COOKIE_EXPIRES_IN: {
-    type: String,
-    default: "90",
   },
   EMAIL_FROM: {
     type: String,
@@ -101,9 +87,8 @@ export let currentEnvConfig: IConfig
 export async function loadConfig() {
   try {
     const environment = process.env.NODE_ENV || "production"
-    currentEnvConfig = (
-      await Config.findOne({ NODE_ENV: environment })
-    ).toObject()
+    const res = await Config.findOne({ NODE_ENV: environment })
+    if (res) currentEnvConfig = res.toObject()
   } catch (error) {
     console.log("error in loading config ", error)
   }

@@ -14,9 +14,6 @@ export const configFields = [
   "CLIENT_APP_URL",
   "EMAIL_FROM",
   "DB_URL",
-  "JWT_SECRET",
-  "JWT_EXPIRES_IN",
-  "JWT_COOKIE_EXPIRES_IN",
 ];
 
 export function ConfigFormFields({ defaultValues, readOnly = false }) {

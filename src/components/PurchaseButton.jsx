@@ -24,7 +24,7 @@ export function PurchaseButton({ children, ...others }) {
     } else if (fetcher.data instanceof Error) {
       setSnackbarState({
         open: true,
-        message: "Error while processing your purchase",
+        message: "Error while processing your order",
         severity: "error",
       });
     }
