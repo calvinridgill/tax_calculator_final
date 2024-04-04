@@ -2,6 +2,7 @@ import nodemailer from "nodemailer"
 import { htmlToText } from "html-to-text"
 import { getAccountCreatedHtml } from "../emailTemplates/index"
 import { currentEnvConfig } from "../models/config"
+
 export class Email {
   private to: string
 
@@ -62,6 +63,7 @@ export class Email {
    */
   async sendAccountCreated(data) {
     const subject = "EZ Tax calculator Account Created"
+    console.log(data)
     const html = getAccountCreatedHtml(data)
     await this.send(html, subject)
   }

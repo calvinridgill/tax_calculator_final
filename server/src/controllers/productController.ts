@@ -31,21 +31,75 @@ export const createProduct = async (
   next: NextFunction,
 ) => {
   try {
-    const { name, description, price } = req.body
-    const image = req.file?.filename
+    const { name, description, income, cell_phone,gas,auto_repairs_maintenance,commissions_fees,auto_insurance,legal_professional_services,office_expense,other_expenses,supplies,auto_lease_note_payment,extraIncome,tax } = req.body
+    // const image = req.file?.filename
 
-    if (!name || !description || !price || !image) {
+    if (!name || !description || !income ) {
       return res.status(400).json({
         status: "failed",
-        message: "name, description, price, and image required",
+        message: "name, description, income required",
       })
     }
+
+    const totalExpenses = parseInt(cell_phone) +
+    parseInt(gas) +
+    parseInt(auto_repairs_maintenance) +
+    parseInt(commissions_fees) +
+    parseInt(auto_insurance)+
+    parseInt(legal_professional_services) +
+    parseInt(office_expense) +
+    parseInt(other_expenses) +
+    parseInt(supplies) +
+    parseInt(auto_lease_note_payment)
+
+    console.log("totalExpenses",totalExpenses)
+    
+
+    const netIncome = income - totalExpenses
+
+    const Self_Employment_Income = netIncome
+    const Self_Employment_Social_Security_Tax = 4541.6
+    const Income_Tax_On_Self_Employment = 1200.28
+    const Less_Tax_Witheld_W_2_Box_4 = 6000
+    const W_2_Wages_Add_All_Box_2_on_W_2 = extraIncome
+    const Total_Income = parseInt(W_2_Wages_Add_All_Box_2_on_W_2) + Self_Employment_Income
+    const Tax_on_W_2_Wages = tax
+    const Total_Tax_Owed = parseInt(Tax_on_W_2_Wages) + Self_Employment_Social_Security_Tax
+    const Total_Taxes_Owed_Refund = Total_Tax_Owed - Less_Tax_Witheld_W_2_Box_4
+
+    const Total_Tax_on_Self_Employement_Income_and_Social_Security_Tax = Self_Employment_Social_Security_Tax + Income_Tax_On_Self_Employment 
+    const dataIncome = netIncome - Total_Tax_on_Self_Employement_Income_and_Social_Security_Tax
+    console.log("dataIncome",dataIncome)
 
     const product = await Product.create({
       name,
       description,
-      price,
-      images: [getFullImageUrl(image)],
+      income,
+      cell_phone,
+      gas,
+      auto_repairs_maintenance,
+      commissions_fees,
+      auto_insurance,
+      legal_professional_services,
+      office_expense,
+      other_expenses,
+      supplies,
+      auto_lease_note_payment,
+      totalExpenses,
+      netIncome,
+      Self_Employment_Social_Security_Tax,
+      Income_Tax_On_Self_Employment,
+      Total_Tax_on_Self_Employement_Income_and_Social_Security_Tax,
+      dataIncome,
+      extraIncome,
+      tax,
+      Self_Employment_Income,
+      W_2_Wages_Add_All_Box_2_on_W_2,
+      Total_Income,
+      Tax_on_W_2_Wages,
+      Total_Tax_Owed,
+      Less_Tax_Witheld_W_2_Box_4,
+      Total_Taxes_Owed_Refund
     })
     res.status(201).json({
       status: "success",
@@ -67,7 +121,7 @@ export const updateProduct = async (
     const productId = req.params.id
     if (req.file) {
       const product = await Product.findById(productId)
-      const productImages = product?.images
+      const productImages = null
       if (productImages)
         Promise.all(
           productImages.map((image) => {
@@ -103,7 +157,7 @@ export const deleteProduct = async (
   try {
     const game = await Product.findById(req.params.id)
     // delete the game image
-    const productImages = game?.images
+    const productImages = null
     if (productImages)
       Promise.all(
         productImages.map((image) => {

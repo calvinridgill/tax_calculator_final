@@ -7,7 +7,7 @@ import { Email } from "../utils/email"
   try {
     await openMongooseConnection()
     await loadConfig()
-    await new Email("ramzhamz4@gmail.com").sendAccountCreated({
+    await new Email("p@gmail.com").sendAccountCreated({
       firstname: "user.firstName",
       lastname: "user.lastname",
       email: "email@gmail.com",

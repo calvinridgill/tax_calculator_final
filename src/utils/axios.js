@@ -5,6 +5,7 @@ import { sleep } from ".";
 const token = localStorage.getItem("token");
 
 const axioss = pureAxios.create({
+  // baseURL: "http://localhost:9090/api/v1/",
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
     Authorization: token ? `Bearer ${token}` : "",

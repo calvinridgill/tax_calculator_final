@@ -25,8 +25,8 @@
             <strong>Email:</strong> {{email}}<br />
             <strong>Password:</strong> {{password}}
           </mj-text>
-          <mj-text> OR</mj-text>
-          <mj-text>Use this login url: {{loginUrl}}</mj-text>
+          <mj-text> <strong>OR</strong></mj-text>
+          <mj-text>Use this login URL: {{loginUrl}}</mj-text>
           <mj-text>
             Please keep your login credentials confidential and do not share
             them with anyone. If you have any questions or need further

@@ -63,7 +63,7 @@ export class GoogleSheet {
 
     if (newSpreadSheetId === undefined)
       newSpreadSheetId = await this.createGoogleSheet()
-    const response = await this.googleSheets.spreadsheets.sheets.copyTo({
+      const response = await this.googleSheets.spreadsheets.sheets.copyTo({
       spreadsheetId: originalSpreadSheetId,
       sheetId: 0, // Assuming the first sheet contains the tax calculator content
       requestBody: {

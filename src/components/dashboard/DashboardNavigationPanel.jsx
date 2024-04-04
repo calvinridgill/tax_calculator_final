@@ -58,7 +58,7 @@ export function DashboardNavigationPanel() {
           )
         }
       >
-        Config
+        Config  
       </NavLink>
     </Box>
   );

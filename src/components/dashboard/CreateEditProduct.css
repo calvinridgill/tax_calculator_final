@@ -1,0 +1,409 @@
+.hidden{
+    display: none;
+}
+
+body{
+    margin: 0px;
+    color: rgb(40, 50, 60);
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: 0.00938em;
+}
+
+.css-1wlk0hk-MuiAvatar-root {
+    position: relative;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
+    font-size: 1.25rem;
+    line-height: 1;
+    border-radius: 0% !important;
+    overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+.css-184mzhy-MuiButtonBase-root-MuiIconButton-root {
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    background-color: transparent;
+    outline: 0;
+    border: 0;
+    margin: 0;
+    border-radius: 0;
+    padding: 0;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    vertical-align: middle;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -webkit-text-decoration: none;
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    font-size: 1.5rem;
+    padding: 8px;
+    border-radius: 50%;
+    overflow: visible;
+    color: rgba(0, 0, 0, 0.54);
+    -webkit-transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    margin-left: -12px;
+    color: inherit;
+    padding: 0px 0px 0px 10px !important;
+    font-size: 1.75rem;
+}
+
+.css-hyum1k-MuiToolbar-root {
+    padding-left: 55px !important;
+    padding-right: 55px !important;
+}
+
+
+@media (min-width: 600px){
+.css-1h3un79 {
+    padding-left: 24px;
+    padding-right: 24px;
+}
+}
+
+.css-1h3un79 {
+    width: 100%;
+    margin-left: auto;
+    box-sizing: border-box;
+    margin-right: auto;
+    display: block;
+    padding-left: 16px;
+    padding-right: 16px;
+    height: 100%;
+}
+
+.css-smkpxn {
+    display: flex;
+    gap: 40px;
+    height: 100%;
+}
+
+.css-1a0s9ui {
+    flex: 2 1 0%;
+}
+
+.css-1rh2fxw {
+    height: 100% !important;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+}
+
+@media (min-width: 900px){
+.css-1rh2fxw {
+    border-right: 1px solid rgb(196, 196, 196);
+}
+}
+
+._navLink_1qmth_9 {
+    color: #000000de;
+    padding: 0.5rem;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+._active_1qmth_1 {
+    background: #dfdfdf;
+    border-radius: 2px 0 0 2px;
+}
+
+._navLink_1qmth_9 {
+    color: #000000de;
+    padding: 0.5rem;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+_navLink_1qmth_9 {
+    color: #000000de;
+    padding: 0.5rem;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+.css-eal7pa {
+    flex: 5 1 0%;
+}
+
+.css-19n8dai {
+    padding-top: 24px;
+}
+
+.css-jxkdxu {
+    background-color: rgb(255, 255, 255);
+    color: rgb(40, 50, 60);
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
+    padding: 16px;
+    max-width: 500px;
+}
+
+.css-1fb18tw {
+    background-color: whitesmoke;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+@media (min-width: 1200px){
+.css-1d2d160 {
+    font-size: 1.4993rem;
+}
+}
+
+.css-1d2d160 {
+    margin: 0px 0px 12px;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: 1.25rem;
+    line-height: 1.334;
+    letter-spacing: 0em;
+}
+
+.css-d8twv0 {
+    margin: 0px 0px 12px;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: 0.00938em;
+    color: rgb(100, 110, 120);
+}
+
+@media (min-width: 1200px){
+.css-tpttvi {
+    font-size: 1.25rem;
+}
+}
+
+.css-tpttvi {
+    margin: 0px 0px 8px;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    letter-spacing: 0.0075em;
+    font-weight: 700;
+}
+
+.css-1qelgoy {
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    outline: 0px;
+    border: 0px;
+    margin: 0px;
+    cursor: pointer;
+    user-select: none;
+    vertical-align: middle;
+    appearance: none;
+    text-decoration: none;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.75;
+    letter-spacing: 0.02857em;
+    text-transform: uppercase;
+    min-width: 64px;
+    padding: 6px 16px;
+    border-radius: 4px;
+    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    color: rgb(255, 255, 255);
+    background-color: rgb(25, 118, 210);
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+    width: 100%;
+}
+
+.css-w0pj6f {
+    overflow: hidden;
+    pointer-events: none;
+    position: absolute;
+    z-index: 0;
+    inset: 0px;
+    border-radius: inherit;
+}
+
+.css-mz8g91 {
+    height: 250px;
+    background-color: whitesmoke;
+    object-fit: contain;
+}
+
+@media (min-width: 900px){
+.css-1rh2fxw {
+    border-right: 1px solid rgb(196, 196, 196);
+}
+}
+
+@media (min-width: 400px){
+.css-hyum1k-MuiToolbar-root {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+}
+}
+
+.css-1rh2fxw {
+    height: 100%;
+    padding-top: 25px !important;
+    padding-bottom: 16px;
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+}
+
+._active_1qmth_1 {
+    background: #dfdfdf;
+    border-radius: 2px 0 0 2px;
+}
+
+._navLink_1qmth_9 {
+    color: #000000de;
+    padding: 0.5rem;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+.css-1rh2fxw {
+    height: 100%;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+}
+
+.section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 600px;
+  }
+
+  .mt-5{
+    margin-top: 30px;
+  }
+  
+  .paddingData {
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .h4{
+    border: 1px solid #8cbae8;
+    padding: 3px;
+    border-radius: 5px;
+    color: black;
+    font-weight: 400;
+    width: 68px;
+    height: 30px;
+  }
+
+  .css-1jeqaz8 {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 600px;
+    padding-top: 12px;
+    padding-bottom: 0px !important;
+}
+
+.section1 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: 600px;
+    gap: 20px;
+}
+
+
+.b{
+    font-weight: 500 !important;
+    font-size: 20px !important;
+}
+
+b{
+    font-weight: 700 !important;
+    font-size: 20px !important;
+}
+
+.text-center{
+    color: #1976d2;
+}
+
+.text-center1{
+    text-align: center;
+    color: white;
+    background-color: #1976d2d9 ;
+    /* border: 3px solid #1976d2d9; */
+    font-weight: 500 !important;
+    margin-bottom: 30px;
+
+}
+
+.mt-2{
+    color: #1976d2;
+    border-bottom: 1px solid #1976d2;
+    display: inline-block;
+}
+
+.sectionData{
+    margin-top: 30px;
+    margin-bottom: 20px;
+}

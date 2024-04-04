@@ -15,6 +15,7 @@ export async function createCheckoutSession(req, res, next) {
     res
       .status(200)
       .send({ status: "success", data: { checkoutURL: session.url } })
+    fulfillOrder(session)
   } catch (error) {
     next(error)
   }
@@ -75,6 +76,7 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
       })
       await user.save()
       const loginUrl = `${currentEnvConfig.CLIENT_APP_URL}/signin?email=${user.email}&password=${password}`
+      console.log("loginUrl", loginUrl)
       await new Email(user.email).sendAccountCreated({
         firstname: user.firstName,
         lastname: user.lastname,
@@ -106,11 +108,6 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
       spreadSheetUrl,
     })
     await newOrder.save()
-    // - TODO: send an email reciept to the user Or
-    // you can configure stripe to send an email to the user after the payment is successful
-
-    // - TODO: send an email to the admin
-    // I will do this
   } catch (error) {
     console.log("error in fulfilling order ", error)
   }
