@@ -5,13 +5,12 @@ import { Types } from "mongoose"
 
 export class MyStripe {
   private stripe: Stripe
-  private successURL = `http://localhost:5173/checkout?success=true`
-  private cancelURL = `http://localhost:5173/checkout?success=false`
+  private successURL = `${currentEnvConfig.CLIENT_APP_URL}/checkout?success=true`
+  private cancelURL = `${currentEnvConfig.CLIENT_APP_URL}/checkout?success=false`
 
   constructor(apiKey?: string, successURL?: string, cancelURL?: string) {
     if (!apiKey)
-      apiKey =
-        "sk_test_51MQ8WUHMi9UyUCTAJRccVllYWq0TLh6pZhu1aYc33AEZPWIYV8gDz56TYnDeKwswm4lVvQdlpfMg4KLzpuuzcyMV00gUY8bkDC"
+      apiKey = currentEnvConfig.STRIPE_API_KEY
     this.stripe = new Stripe(apiKey, { apiVersion: "2022-11-15" })
     if (successURL) this.successURL = successURL
     if (cancelURL) this.cancelURL = cancelURL
