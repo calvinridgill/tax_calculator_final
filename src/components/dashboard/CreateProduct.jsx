@@ -47,8 +47,6 @@ export async function action({ request }) {
     const extraIncome = formData.get("extraIncome");
     const tax = formData.get("tax");
    
-
-
     await createProduct({ name, description, income, cell_phone, gas, auto_repairs_maintenance, commissions_fees, auto_insurance, legal_professional_services , office_expense, other_expenses,supplies, auto_lease_note_payment,extraIncome,tax});
     return redirect("/dashboard/product");
   } catch (error) {

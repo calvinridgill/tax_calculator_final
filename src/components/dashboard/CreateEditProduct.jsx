@@ -71,7 +71,6 @@ export function CreateEditProduct({ defaultValues, disabled = false }) {
     } else {
       tax = 15015;
     }
-
     setTax(tax);
   };
 
