@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "tax-calculator-calvin",
+  "private_key_id": "1de2865ce6ced1fd4dbbf6e71dd2a1067cc6b340",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDiozKsGV36/4Sq\nRWBCHWbpQ/YH/0xAb0onKy8zdWP0eFLFjeHgLuLsvMYPCIrNpQpuOHwd4qC/iCxe\nmkQmeHFG//QPdwu8buMgXMsKAjMiYAa57a6a2qYDXMVOEeXSEm9U5UC8SbVQCFBY\nZy4d7ldpE3872/czvU5knP/fXLrZe9EtuVUacq6ONidd5v1+jgpVudpbfb9pmUx0\n8KJMWMk0Mc4iwNO4YqF5QWeJDjwTIu4PZYs8OpVm9uEeE3shdfGDPx7wZZrChtKx\n+rq+J5WAPwjcOMydllqp9iDoW8nt4RA/EcrEpnpg1rI/RsuVh5OJl+nmWr9xb6xy\n/N59PE03AgMBAAECggEAJOfOaJf45daWE+QYOKvxBis69TJtiFCXEqnFleuXy0eM\nsv7XuVnpOgPDfM83SyWE/U3VaEhvRME3+G/GiT0ztQwZAiuwjY7BDZQOvCJ/kSlx\n7vT1aeIRBpskxgHEGuFFn911HTQjglTYQI0MxXL6aPHz1huLtbEuAtROFmFTS/a/\nE9XHI6xR7DXr6AxooKJcCeUyiFxkdGsTrB2G9W3/oNMvt7wnLqowk2dz6UN/qwXj\nE2mRnh0a+uHy0ImxY9LMpoRZlY1fRwiReGdKkrCfCGDKV94tYA7Sq9oo37Zc2SPK\nO3FNMWvb7Ua2oMn14QDrjuqLz15cK6nb8DEZzwabAQKBgQD/fZF/cQAhMZiYyK1M\nIrFERzlFcjji9CFbCAOuXkMFboQnc1BpFGJVs0gig4fbjCvCNFOKPU4SCz0f/fCZ\nF0cPeGbr3mgDy8aiY/QFk6jtIfuMccVjnuvOFgWC/o1OH/va8t6FIRK6w9oVnX+v\n25wKe1vD7zTofBjy3io+wtHKOQKBgQDjFuZS8MC2/gKwBd2QCdkD8IkcdDu55Y0+\nA7vAbcYx9A000O3yogyYl7lhyj2fgde+oZRgw3bZhgSm94lQQJVZLuYDn9Usixik\n9YpITxJh6luZwuf2R0wRHpIWMTaT/wHptLQGPs1iIPQTDHZZQaAB9YZZiquDDDj9\nRjaO1myS7wKBgQC7gIskbWj782sbTcOpKZjRFDha2B4ZqbNFHJefA3zKYrZIQZ/U\nzmnwnVemRMOTA8clisN4o89E/MyKSxKlN+kl2GYoWpwZlRadHR/8a8bA6Xy0MNb9\naqeCIrU+0tQfbuemYzGdoI0fVhcaX/FSvahCJRBOtqIssM6ahyOX1eCjOQKBgAP1\n50h1CHdokLVvNMEJWu6VqF6FrHD+jusQ95pQj89ZOU29gxjjOKMEqmgJNe/tPM0H\nVmYlopICo1wiHxP2PGSUy9AuXnJrbp+Z5LKEJobspnJVEuSZs7rstJGMhC4qmWbx\nDt65A639cyRN6FaALYE7Pf+byof7k5bfPZ5aIQSjAoGBAMW/N4IoOuimsHIY6W0+\niadiVZ2tiH6UozaCoxmq8RJunfx1lBEPp9JtQnuxJ7M3XASB+2XfVhkWMITSkmdi\nHRagCU1S8xCq9FvpcpyifI3M4BNndCj0LJl/2Rt/Wcb9EP/HPavcKnXED0LiTnlS\nppGS+VsiveDrpaW3YA9a5Zqa\n-----END PRIVATE KEY-----\n",
+  "client_email": "tax-calculator-calvin@tax-calculator-calvin.iam.gserviceaccount.com",
+  "client_id": "105441031103360193942",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/tax-calculator-calvin%40tax-calculator-calvin.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
