@@ -34,7 +34,7 @@ export class GoogleSheet {
   }
 
   public createGoogleSheet = async (
-    title = "Tax Calculator Calvin",
+    title = "Tax Calculator",
   ): Promise<string> => {
     const spreadsheet = await this.googleSheets.spreadsheets.create({
       requestBody: {
@@ -85,7 +85,7 @@ export class GoogleSheet {
             updateSheetProperties: {
               properties: {
                 sheetId: newSheetId,
-                title: "Tax Calculator Calvin",
+                title: "Tax Calculator",
               },
               fields: "title",
             },
