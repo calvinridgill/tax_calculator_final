@@ -1,17 +1,16 @@
-import { google, sheets_v4, drive_v3 } from "googleapis";
-import { currentEnvConfig } from "../models/config";
+import { google, sheets_v4, drive_v3 } from "googleapis"
+import { currentEnvConfig } from "../models/config"
 
 export class GoogleSheet {
-  private static client;
-  private googleSheets: sheets_v4.Sheets;
-  private originalSpreadSheetId: string;
-
+  private static client
+  private googleSheets: sheets_v4.Sheets
+  private originalSpreadSheetId: string
   private constructor() {
     this.googleSheets = google.sheets({
       version: "v4",
       auth: GoogleSheet.client,
-    });
-    this.originalSpreadSheetId = currentEnvConfig.ORIGINAL_SPREADSHEET_ID;
+    })
+    this.originalSpreadSheetId = currentEnvConfig.ORIGINAL_SPREADSHEET_ID
   }
 
   private static async initializeClient() {
@@ -23,142 +22,98 @@ export class GoogleSheet {
           "https://www.googleapis.com/auth/drive.file",
           "https://www.googleapis.com/auth/spreadsheets",
         ],
-      });
-      this.client = await auth.getClient();
+      })
+      this.client = await auth.getClient()
     }
   }
 
   static async createInstance() {
-    await GoogleSheet.initializeClient();
-    const instance = new GoogleSheet();
-    return instance;
+    await GoogleSheet.initializeClient()
+    const instance = new GoogleSheet()
+    return instance
   }
 
   public createGoogleSheet = async (
-    title = "Tax Calculator"
+    title = "Tax Calculator",
   ): Promise<string> => {
-    try {
-      const spreadsheet = await this.googleSheets.spreadsheets.create({
-        requestBody: {
-          properties: {
-            title,
-          },
+    const spreadsheet = await this.googleSheets.spreadsheets.create({
+      requestBody: {
+        properties: {
+          title,
         },
-      });
-      return spreadsheet.data.spreadsheetId;
-    } catch (error) {
-      console.error("Error in createGoogleSheet:", error);
-      throw error;
-    }
-  };
+      },
+    })
+    return spreadsheet.data.spreadsheetId
+  }
 
   public copyTaxCalculatorContent = async (
     newUserEmail: string,
     originalSpreadSheetId?: string,
-    newSpreadSheetId?: string
+    newSpreadSheetId?: string,
   ): Promise<string> => {
-    try {
-      // prepare spreadsheet ids
-      if (
-        this.originalSpreadSheetId === undefined &&
-        originalSpreadSheetId === undefined
-      )
-        throw new Error("originalSpreadSheetId is undefined");
+    // prepare spreadsheet ids
+    if (
+      this.originalSpreadSheetId === undefined &&
+      originalSpreadSheetId === undefined
+    )
+      throw new Error("originalSpreadSheetId is undefined")
 
-      if (originalSpreadSheetId === undefined && this.originalSpreadSheetId)
-        originalSpreadSheetId = this.originalSpreadSheetId;
+    if (originalSpreadSheetId === undefined && this.originalSpreadSheetId)
+      originalSpreadSheetId = this.originalSpreadSheetId
 
-      if (newSpreadSheetId === undefined)
-        newSpreadSheetId = await this.createGoogleSheet();
+    if (newSpreadSheetId === undefined)
+      newSpreadSheetId = await this.createGoogleSheet()
       const response = await this.googleSheets.spreadsheets.sheets.copyTo({
-        spreadsheetId: originalSpreadSheetId,
-        sheetId: 0, // Assuming the first sheet contains the tax calculator content
-        requestBody: {
-          destinationSpreadsheetId: newSpreadSheetId,
-        },
-      });
-      const newSheetId = response.data.sheetId;
-      await this.googleSheets.spreadsheets.batchUpdate({
-        spreadsheetId: newSpreadSheetId,
-        requestBody: {
-          requests: [
-            {
-              deleteSheet: {
-                sheetId: 0,
-              },
+      spreadsheetId: originalSpreadSheetId,
+      sheetId: 0, // Assuming the first sheet contains the tax calculator content
+      requestBody: {
+        destinationSpreadsheetId: newSpreadSheetId,
+      },
+    })
+    const newSheetId = response.data.sheetId
+    // delete the default sheet
+    await this.googleSheets.spreadsheets.batchUpdate({
+      spreadsheetId: newSpreadSheetId,
+      requestBody: {
+        requests: [
+          {
+            deleteSheet: {
+              sheetId: 0,
             },
-            {
-              updateSheetProperties: {
-                properties: {
-                  sheetId: newSheetId,
-                  title: "Tax Calculator",
-                },
-                fields: "title",
+          },
+          {
+            updateSheetProperties: {
+              properties: {
+                sheetId: newSheetId,
+                title: "Tax Calculator",
               },
+              fields: "title",
             },
-          ],
-        },
-      });
-      await this.addWriterPermission(newSpreadSheetId, newUserEmail);
-
-      // Example custom data
-      const customData = [
-        ["Name", "Age", "City"],
-        ["John", "30", "New York"],
-        ["Alice", "25", "Los Angeles"],
-      ];
-
-      await this.sendCustomData(customData, newSpreadSheetId, "Sheet1");
-
-      return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
-    } catch (error) {
-      console.error("Error in copyTaxCalculatorContent:", error);
-      throw error;
-    }
-  };
-
+          },
+        ],
+      },
+    })
+    // Assign permission to another Gmail user to view the copied sheet
+    await this.addWriterPermission(newSpreadSheetId, newUserEmail)
+    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`
+  }
   private async addWriterPermission(
     spreadsheetId: string,
-    emailAddress: string
+    emailAddress: string,
   ) {
-    try {
-      const drive: drive_v3.Drive = google.drive({
-        version: "v3",
-        auth: GoogleSheet.client,
-      });
+    const drive: drive_v3.Drive = google.drive({
+      version: "v3",
+      auth: GoogleSheet.client,
+    })
 
-      await drive.permissions.create({
-        fileId: spreadsheetId,
-        sendNotificationEmail: false,
-        requestBody: {
-          role: "writer",
-          type: "user",
-          emailAddress: emailAddress,
-        },
-      });
-    } catch (error) {
-      console.error("Error in addWriterPermission:", error);
-      throw error;
-    }
-  }
-
-  public async sendCustomData(
-    data: any[][],
-    spreadsheetId: string,
-    sheetName: string
-  ): Promise<void> {
-    try {
-      await this.googleSheets.spreadsheets.values.update({
-        spreadsheetId: spreadsheetId,
-        range: sheetName,
-        valueInputOption: "USER_ENTERED",
-        requestBody: {
-          values: data,
-        },
-      });
-    } catch (error) {
-      console.error("Error in sendCustomData:", error);
-      throw error;
-    }
+    await drive.permissions.create({
+      fileId: spreadsheetId,
+      sendNotificationEmail: false,
+      requestBody: {
+        role: "writer", // Can be 'reader', 'writer', or 'owner'
+        type: "user",
+        emailAddress: emailAddress,
+      },
+    })
   }
 }
