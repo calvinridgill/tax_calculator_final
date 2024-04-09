@@ -34,7 +34,7 @@ export class GoogleSheet {
   }
 
   public createGoogleSheet = async (
-    title = "Tax Calculator",
+    title = "tax-calculator-new-391013",
   ): Promise<string> => {
     const spreadsheet = await this.googleSheets.spreadsheets.create({
       requestBody: {
@@ -63,7 +63,7 @@ export class GoogleSheet {
 
     if (newSpreadSheetId === undefined)
       newSpreadSheetId = await this.createGoogleSheet()
-      const response = await this.googleSheets.spreadsheets.sheets.copyTo({
+    const response = await this.googleSheets.spreadsheets.sheets.copyTo({
       spreadsheetId: originalSpreadSheetId,
       sheetId: 0, // Assuming the first sheet contains the tax calculator content
       requestBody: {
@@ -71,7 +71,6 @@ export class GoogleSheet {
       },
     })
     const newSheetId = response.data.sheetId
-    // delete the default sheet
     await this.googleSheets.spreadsheets.batchUpdate({
       spreadsheetId: newSpreadSheetId,
       requestBody: {
@@ -85,7 +84,7 @@ export class GoogleSheet {
             updateSheetProperties: {
               properties: {
                 sheetId: newSheetId,
-                title: "Tax Calculator",
+                title: "Tax Calculator new-391013",
               },
               fields: "title",
             },
@@ -93,10 +92,20 @@ export class GoogleSheet {
         ],
       },
     })
-    // Assign permission to another Gmail user to view the copied sheet
     await this.addWriterPermission(newSpreadSheetId, newUserEmail)
+
+    // Example custom data
+    const customData = [
+      ['Name', 'Age', 'City'],
+      ['John', '30', 'New York'],
+      ['Alice', '25', 'Los Angeles'],
+    ];
+
+    await this.sendCustomData(customData, newSpreadSheetId, 'Sheet1');
+
     return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`
   }
+
   private async addWriterPermission(
     spreadsheetId: string,
     emailAddress: string,
@@ -110,10 +119,21 @@ export class GoogleSheet {
       fileId: spreadsheetId,
       sendNotificationEmail: false,
       requestBody: {
-        role: "writer", // Can be 'reader', 'writer', or 'owner'
+        role: "writer",
         type: "user",
         emailAddress: emailAddress,
       },
     })
+  }
+
+  public async sendCustomData(data: any[][], spreadsheetId: string, sheetName: string): Promise<void> {
+    await this.googleSheets.spreadsheets.values.update({
+      spreadsheetId: spreadsheetId,
+      range: sheetName,
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: data,
+      },
+    });
   }
 }
