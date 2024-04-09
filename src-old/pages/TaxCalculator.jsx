@@ -34,7 +34,7 @@ export const TaxCalculator = () => {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
         <Typography variant="h4" component="h1">
-          Something went wrong
+          Something went wrong!!!
         </Typography>
       </Box>
     );

@@ -29,7 +29,7 @@ export function ErrorPage({ sxStyle }) {
         We apologize for the inconvenience. Please try again later.
       </Typography>
       <Typography variant="body2" sx={{ marginTop: 2 }}>
-        {errorMessage || "Something went wrong"}
+        {errorMessage || "Something went wrong..."}
       </Typography>
       <Button
         variant="contained"
