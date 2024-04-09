@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Card, CardContent, Typography } from "@mui/material";
 import Confetti from "react-confetti";
-console.log("hello");
 export function ThankYouCard({ confetti = true }) {
   const [showConfetti, setShowConfetti] = useState(confetti);
 
