@@ -22,7 +22,7 @@ export const TaxCalculator = () => {
         } else setError("No order found");
       });
     } catch (error) {
-      console.log("idid", "error--->", error);
+      console.log("id", "error--->", error);
       setSpreadSheetUrl(null);
       setError(error);
     }
@@ -42,6 +42,7 @@ export const TaxCalculator = () => {
   if (!spreadSheetUrl && !googleSheetLoading) return <SpreadSheetSkeleton />;
   return (
     <>
+      console.log("spreadSheetUrl", spreadSheetUrl);
       <Box sx={{ position: "relative" }}>
         <Box
           sx={{
@@ -54,8 +55,8 @@ export const TaxCalculator = () => {
               setGoogleSheetLoading(false);
             }}
             src={spreadSheetUrl}
-            width="100%"
-            height="100%"
+            width="80%"
+            height="80%"
           />
         </Box>
       </Box>
