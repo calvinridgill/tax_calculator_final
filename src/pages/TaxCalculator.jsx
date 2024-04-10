@@ -11,22 +11,29 @@ export const TaxCalculator = () => {
   const [error, setError] = React.useState(null);
   const auth = useAuth();
   React.useEffect(() => {
-    // get the user order
+  const fetchOrder = async () => {
     try {
-      axios.get(`/order/user/${auth.user._id}`).then(({ data }) => {
-        if (data.data.orders.length !== 0) {
-          const url = data.data.orders[0].spreadSheetUrl;
-          const parts = url.split("#");
-          const newUrl = parts[0] + "?rm=minimal#" + parts[1];
-          setSpreadSheetUrl(newUrl);
-        } else setError("No order found");
-      });
+      const response = await axios.get(`/order/user/${auth.user._id}`);
+      const { data } = response.data;
+      if (data.orders.length !== 0) {
+        const url = data.orders[0].spreadSheetUrl;
+        const parts = url.split("#");
+        const newUrl = parts[0] + "?rm=minimal#" + parts[1];
+        setSpreadSheetUrl(newUrl);
+      } else {
+        setError("No order found");
+      }
     } catch (error) {
-      console.log("idid", "error--->", error);
-      setSpreadSheetUrl(null);
-      setError(error);
+      console.log("Error fetching order:", error);
+      setError("Error fetching order");
     }
-  }, [auth.user._id]);
+  };
+
+  if (auth.user._id) {
+    fetchOrder();
+  }
+
+}, [auth.user._id]);
 
   if (auth.user.role === "admin") return <Navigate to="/dashboard/product" />;
 
