@@ -39,6 +39,7 @@ export class GoogleSheet {
   ): Promise<string> => {
     if (!this.originalSpreadSheetId) throw new Error("originalSpreadSheetId is undefined");
 
+    // Copy the sheet
     const response = await this.googleSheets.spreadsheets.sheets.copyTo({
       spreadsheetId: this.originalSpreadSheetId,
       sheetId: 0,
@@ -47,15 +48,17 @@ export class GoogleSheet {
       },
     });
     const newSheetId = response.data.sheetId;
+
+    // Add custom data to the copied sheet
     const customData = [
       ["Name", "Age", "Location"],
       ["John", 30, "New York"],
       ["Alice", 25, "Los Angeles"],
       ["Bob", 35, "Chicago"],
     ];
-
     await this.addCustomDataToSheet(this.originalSpreadSheetId, newSheetId, customData);
 
+    // Add writer permission to the new sheet
     await this.addWriterPermission(this.originalSpreadSheetId, newUserEmail);
 
     return `https://docs.google.com/spreadsheets/d/${this.originalSpreadSheetId}/edit#gid=${newSheetId}`;
