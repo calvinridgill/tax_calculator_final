@@ -1,24 +1,18 @@
 import { Box, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { axios } from "../utils/axios";
 import { SpreadSheetSkeleton } from "../components/SpreadSheetSkeleton";
 import { Navigate } from "react-router-dom";
 
 export const TaxCalculator = () => {
-  const [spreadSheetUrl, setSpreadSheetUrl] = React.useState(null);
-  const [googleSheetLoading, setGoogleSheetLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
+  const [spreadSheetUrl, setSpreadSheetUrl] = useState(null);
+  const [googleSheetLoading, setGoogleSheetLoading] = useState(true);
+  const [error, setError] = useState(null);
   const auth = useAuth();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchOrder = async () => {
-      if (!auth.user || !auth.user._id) {
-        return; // No user or user ID, do nothing
-      }
-
-      setGoogleSheetLoading(true); // Start loading indicator
-
       try {
         const response = await axios.get(`/order/user/${auth.user._id}`);
         const { data } = response.data;
@@ -32,21 +26,22 @@ export const TaxCalculator = () => {
             setError("No spreadsheet URL found");
           }
         } else {
-          setError("No orders found for your account");
+          setError("No orders found for the user");
         }
       } catch (error) {
-        console.error("Error fetching order:", error);
-        setError("Error fetching orders. Please try again later.");
+        console.log("Error fetching order:", error);
+        setError("Error fetching order");
       } finally {
-        setGoogleSheetLoading(false); // Stop loading indicator
+        setGoogleSheetLoading(false); // Ensure loading indicator is turned off
       }
     };
 
-    fetchOrder(); // Call fetchOrder directly without checking auth.user._id in the dependency array
-
+    if (auth.user && auth.user._id) {
+      fetchOrder();
+    }
   }, [auth.user]);
 
-  if (auth.user?.role === "admin") return <Navigate to="/dashboard/product" />;
+  if (auth.user.role === "admin") return <Navigate to="/dashboard/product" />;
 
   if (error) {
     return (
