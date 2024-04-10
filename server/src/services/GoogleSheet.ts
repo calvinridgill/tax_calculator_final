@@ -34,70 +34,19 @@ export class GoogleSheet {
     return instance;
   }
 
-  public createGoogleSheet = async (
-    title = "Tax Calculator"
-  ): Promise<string> => {
-    const spreadsheet = await this.googleSheets.spreadsheets.create({
-      requestBody: {
-        properties: {
-          title,
-        },
-      },
-    });
-    return spreadsheet.data.spreadsheetId;
-  };
-
   public copyTaxCalculatorContent = async (
-    newUserEmail: string,
-    originalSpreadSheetId?: string,
-    newSpreadSheetId?: string
+    newUserEmail: string
   ): Promise<string> => {
-    // prepare spreadsheet ids
-    if (
-      this.originalSpreadSheetId === undefined &&
-      originalSpreadSheetId === undefined
-    )
-      throw new Error("originalSpreadSheetId is undefined");
+    if (!this.originalSpreadSheetId) throw new Error("originalSpreadSheetId is undefined");
 
-    if (originalSpreadSheetId === undefined && this.originalSpreadSheetId)
-      originalSpreadSheetId = this.originalSpreadSheetId;
-
-    if (newSpreadSheetId === undefined)
-      newSpreadSheetId = await this.createGoogleSheet();
     const response = await this.googleSheets.spreadsheets.sheets.copyTo({
-      spreadsheetId: originalSpreadSheetId,
-      sheetId: 0, // Assuming the first sheet contains the tax calculator content
+      spreadsheetId: this.originalSpreadSheetId,
+      sheetId: 0,
       requestBody: {
-        destinationSpreadsheetId: newSpreadSheetId,
+        destinationSpreadsheetId: this.originalSpreadSheetId,
       },
     });
     const newSheetId = response.data.sheetId;
-    // delete the default sheet
-    await this.googleSheets.spreadsheets.batchUpdate({
-      spreadsheetId: newSpreadSheetId,
-      requestBody: {
-        requests: [
-          {
-            deleteSheet: {
-              sheetId: 0,
-            },
-          },
-          {
-            updateSheetProperties: {
-              properties: {
-                sheetId: newSheetId,
-                title: "Tax Calculator",
-              },
-              fields: "title",
-            },
-          },
-        ],
-      },
-    });
-    // Assign permission to another Gmail user to view the copied sheet
-    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
-
-    // Add custom sample data to the newly created sheet
     const customData = [
       ["Name", "Age", "Location"],
       ["John", 30, "New York"],
@@ -105,9 +54,11 @@ export class GoogleSheet {
       ["Bob", 35, "Chicago"],
     ];
 
-    await this.addCustomDataToSheet(newSpreadSheetId, "Sheet1", customData);
+    await this.addCustomDataToSheet(this.originalSpreadSheetId, newSheetId, customData);
 
-    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
+    await this.addWriterPermission(this.originalSpreadSheetId, newUserEmail);
+
+    return `https://docs.google.com/spreadsheets/d/${this.originalSpreadSheetId}/edit#gid=${newSheetId}`;
   };
 
   private async addWriterPermission(
@@ -132,12 +83,12 @@ export class GoogleSheet {
 
   private async addCustomDataToSheet(
     spreadsheetId: string,
-    sheetName: string,
+    sheetId: number,
     data: any[][]
   ) {
     await this.googleSheets.spreadsheets.values.update({
       spreadsheetId: spreadsheetId,
-      range: `${sheetName}!A1`, // Starting cell for the data
+      range: `${sheetId}!A1`,
       valueInputOption: "RAW",
       requestBody: {
         values: data,
