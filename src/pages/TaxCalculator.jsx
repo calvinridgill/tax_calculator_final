@@ -22,7 +22,7 @@ export const TaxCalculator = () => {
         } else setError("No order found");
       });
     } catch (error) {
-      console.log("id", "error--->", error);
+      console.log("idid", "error--->", error);
       setSpreadSheetUrl(null);
       setError(error);
     }
@@ -55,7 +55,7 @@ export const TaxCalculator = () => {
             }}
             src={spreadSheetUrl}
             width="100%"
-            height="95%"
+            height="100%"
           />
         </Box>
       </Box>
