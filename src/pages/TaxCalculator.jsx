@@ -12,22 +12,26 @@ export const TaxCalculator = () => {
   const auth = useAuth();
   React.useEffect(() => {
   const fetchOrder = async () => {
-    try {
-      const response = await axios.get(`/order/user/${auth.user._id}`);
-      const { data } = response.data;
-      if (data.orders.length !== 0) {
-        const url = data.orders[0].spreadSheetUrl;
+  try {
+    const response = await axios.get(`/order/user/${auth.user._id}`);
+    const { data } = response.data;
+    if (data.orders.length !== 0) {
+      const url = data.orders[0].spreadSheetUrl;
+      if (url) {
         const parts = url.split("#");
         const newUrl = parts[0] + "?rm=minimal#" + parts[1];
         setSpreadSheetUrl(newUrl);
       } else {
-        setError("No order found");
+        setError("No spreadsheet URL found");
       }
-    } catch (error) {
-      console.log("Error fetching order:", error);
-      setError("Error fetching order");
+    } else {
+      setError("No orders found");
     }
-  };
+  } catch (error) {
+    console.log("Error fetching order:", error);
+    setError("Error fetching order");
+  }
+};
 
   if (auth.user._id) {
     fetchOrder();
@@ -61,8 +65,8 @@ export const TaxCalculator = () => {
               setGoogleSheetLoading(false);
             }}
             src={spreadSheetUrl}
-            width="100%"
-            height="100%"
+            width="80%"
+            height="80%"
           />
         </Box>
       </Box>
