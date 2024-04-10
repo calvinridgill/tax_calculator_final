@@ -1,17 +1,16 @@
-import { google, sheets_v4, drive_v3 } from "googleapis";
-import { currentEnvConfig } from "../models/config";
+import { google, sheets_v4, drive_v3 } from "googleapis"
+import { currentEnvConfig } from "../models/config"
 
 export class GoogleSheet {
-  private static client;
-  private googleSheets: sheets_v4.Sheets;
-  private originalSpreadSheetId: string;
-
+  private static client
+  private googleSheets: sheets_v4.Sheets
+  private originalSpreadSheetId: string
   private constructor() {
     this.googleSheets = google.sheets({
       version: "v4",
       auth: GoogleSheet.client,
-    });
-    this.originalSpreadSheetId = currentEnvConfig.ORIGINAL_SPREADSHEET_ID;
+    })
+    this.originalSpreadSheetId = currentEnvConfig.ORIGINAL_SPREADSHEET_ID
   }
 
   private static async initializeClient() {
@@ -23,19 +22,19 @@ export class GoogleSheet {
           "https://www.googleapis.com/auth/drive.file",
           "https://www.googleapis.com/auth/spreadsheets",
         ],
-      });
-      this.client = await auth.getClient();
+      })
+      this.client = await auth.getClient()
     }
   }
 
   static async createInstance() {
-    await GoogleSheet.initializeClient();
-    const instance = new GoogleSheet();
-    return instance;
+    await GoogleSheet.initializeClient()
+    const instance = new GoogleSheet()
+    return instance
   }
 
   public createGoogleSheet = async (
-    title = "Tax Calculator"
+    title = "Tax Calculator",
   ): Promise<string> => {
     const spreadsheet = await this.googleSheets.spreadsheets.create({
       requestBody: {
@@ -43,40 +42,36 @@ export class GoogleSheet {
           title,
         },
       },
-    });
-    return spreadsheet.data.spreadsheetId;
-  };
+    })
+    return spreadsheet.data.spreadsheetId
+  }
 
   public copyTaxCalculatorContent = async (
     newUserEmail: string,
     originalSpreadSheetId?: string,
-    newSpreadSheetId?: string
+    newSpreadSheetId?: string,
   ): Promise<string> => {
+    // prepare spreadsheet ids
     if (
-      originalSpreadSheetId === undefined &&
-      this.originalSpreadSheetId === undefined
-    ) {
-      throw new Error("originalSpreadSheetId is undefined");
-    }
+      this.originalSpreadSheetId === undefined &&
+      originalSpreadSheetId === undefined
+    )
+      throw new Error("originalSpreadSheetId is undefined")
 
-    if (originalSpreadSheetId === undefined) {
-      originalSpreadSheetId = this.originalSpreadSheetId;
-    }
+    if (originalSpreadSheetId === undefined && this.originalSpreadSheetId)
+      originalSpreadSheetId = this.originalSpreadSheetId
 
-    if (newSpreadSheetId === undefined) {
-      newSpreadSheetId = await this.createGoogleSheet();
-    }
-
-    const response = await this.googleSheets.spreadsheets.sheets.copyTo({
+    if (newSpreadSheetId === undefined)
+      newSpreadSheetId = await this.createGoogleSheet()
+      const response = await this.googleSheets.spreadsheets.sheets.copyTo({
       spreadsheetId: originalSpreadSheetId,
-      sheetId: 0,
+      sheetId: 0, // Assuming the first sheet contains the tax calculator content
       requestBody: {
         destinationSpreadsheetId: newSpreadSheetId,
       },
-    });
-
-    const newSheetId = response.data.sheetId;
-
+    })
+    const newSheetId = response.data.sheetId
+    // delete the default sheet
     await this.googleSheets.spreadsheets.batchUpdate({
       spreadsheetId: newSpreadSheetId,
       requestBody: {
@@ -97,30 +92,19 @@ export class GoogleSheet {
           },
         ],
       },
-    });
-
-    // Add custom data to the newly created sheet
-    const customData = [
-      ["Name", "Age", "Location"],
-      ["John", 30, "New York"],
-      ["Alice", 25, "Los Angeles"],
-      ["Bob", 35, "Chicago"],
-    ];
-
-    await this.addCustomDataToSheet(newSpreadSheetId, "Sheet1", customData);
-
-    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
-    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
-  };
-
+    })
+    // Assign permission to another Gmail user to view the copied sheet
+    await this.addWriterPermission(newSpreadSheetId, newUserEmail)
+    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`
+  }
   private async addWriterPermission(
     spreadsheetId: string,
-    emailAddress: string
+    emailAddress: string,
   ) {
     const drive: drive_v3.Drive = google.drive({
       version: "v3",
       auth: GoogleSheet.client,
-    });
+    })
 
     await drive.permissions.create({
       fileId: spreadsheetId,
@@ -130,21 +114,6 @@ export class GoogleSheet {
         type: "user",
         emailAddress: emailAddress,
       },
-    });
-  }
-
-  private async addCustomDataToSheet(
-    spreadsheetId: string,
-    sheetName: string,
-    data: any[][]
-  ) {
-    await this.googleSheets.spreadsheets.values.update({
-      spreadsheetId: spreadsheetId,
-      range: `${sheetName}!A1`, // Starting cell for the data
-      valueInputOption: "RAW",
-      requestBody: {
-        values: data,
-      },
-    });
+    })
   }
 }
