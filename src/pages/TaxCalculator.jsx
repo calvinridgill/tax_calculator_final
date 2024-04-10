@@ -10,34 +10,37 @@ export const TaxCalculator = () => {
   const [googleSheetLoading, setGoogleSheetLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
   const auth = useAuth();
+  
   React.useEffect(() => {
   const fetchOrder = async () => {
-  try {
-    const response = await axios.get(`/order/user/${auth.user._id}`);
-    const { data } = response.data;
-    if (data.orders.length !== 0) {
-      const url = data.orders[0].spreadSheetUrl;
-      if (url) {
-        const parts = url.split("#");
-        const newUrl = parts[0] + "?rm=minimal#" + parts[1];
-        setSpreadSheetUrl(newUrl);
+    try {
+      const response = await axios.get(`/order/user/${auth.user._id}`);
+      const { data } = response.data;
+      if (data.orders.length !== 0) {
+        const url = data.orders[0].spreadSheetUrl;
+        if (url) {
+          const parts = url.split("#");
+          if (parts.length > 1) {
+            const newUrl = parts[0] + "?rm=minimal#" + parts[1];
+            setSpreadSheetUrl(newUrl);
+          } else {
+            setError("Invalid spreadsheet URL format");
+          }
+        } else {
+          setError("No spreadsheet URL found");
+        }
       } else {
-        setError("No spreadsheet URL found");
+        setError("No orders found");
       }
-    } else {
-      setError("No orders found");
+    } catch (error) {
+      console.log("Error fetching order:", error);
+      setError("Error fetching order");
     }
-  } catch (error) {
-    console.log("Error fetching order:", error);
-    setError("Error fetching order");
-  }
-};
-
-  if (auth.user._id) {
+  };
+  if (auth.user && auth.user._id) {
     fetchOrder();
   }
-
-}, [auth.user._id]);
+}, [auth.user]);
 
   if (auth.user.role === "admin") return <Navigate to="/dashboard/product" />;
 
