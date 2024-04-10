@@ -47,56 +47,56 @@ export class GoogleSheet {
   }
 
   public copyTaxCalculatorContent = async (
-    newUserEmail: string,
-    originalSpreadSheetId?: string,
-    newSpreadSheetId?: string,
-  ): Promise<string> => {
-    // prepare spreadsheet ids
-    if (
-      this.originalSpreadSheetId === undefined &&
-      originalSpreadSheetId === undefined
-    )
-      throw new Error("originalSpreadSheetId is undefined")
-
-    if (originalSpreadSheetId === undefined && this.originalSpreadSheetId)
-      originalSpreadSheetId = this.originalSpreadSheetId
-
-    if (newSpreadSheetId === undefined)
-      newSpreadSheetId = await this.createGoogleSheet()
-      const response = await this.googleSheets.spreadsheets.sheets.copyTo({
-      spreadsheetId: originalSpreadSheetId,
-      sheetId: 0, // Assuming the first sheet contains the tax calculator content
-      requestBody: {
-        destinationSpreadsheetId: newSpreadSheetId,
-      },
-    })
-    const newSheetId = response.data.sheetId
-    // delete the default sheet
-    await this.googleSheets.spreadsheets.batchUpdate({
-      spreadsheetId: newSpreadSheetId,
-      requestBody: {
-        requests: [
-          {
-            deleteSheet: {
-              sheetId: 0,
-            },
-          },
-          {
-            updateSheetProperties: {
-              properties: {
-                sheetId: newSheetId,
-                title: "Tax Calculator",
-              },
-              fields: "title",
-            },
-          },
-        ],
-      },
-    })
-    // Assign permission to another Gmail user to view the copied sheet
-    await this.addWriterPermission(newSpreadSheetId, newUserEmail)
-    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`
+  newUserEmail: string,
+  originalSpreadSheetId?: string,
+  newSpreadSheetId?: string,
+): Promise<string> => {
+  if (originalSpreadSheetId === undefined && this.originalSpreadSheetId === undefined) {
+    throw new Error("originalSpreadSheetId is undefined");
   }
+
+  if (originalSpreadSheetId === undefined) {
+    originalSpreadSheetId = this.originalSpreadSheetId;
+  }
+
+  if (newSpreadSheetId === undefined) {
+    newSpreadSheetId = await this.createGoogleSheet();
+  }
+
+  const response = await this.googleSheets.spreadsheets.sheets.copyTo({
+    spreadsheetId: originalSpreadSheetId,
+    sheetId: 0,
+    requestBody: {
+      destinationSpreadsheetId: newSpreadSheetId,
+    },
+  });
+
+  const newSheetId = response.data.sheetId;
+
+  await this.googleSheets.spreadsheets.batchUpdate({
+    spreadsheetId: newSpreadSheetId,
+    requestBody: {
+      requests: [
+        {
+          deleteSheet: {
+            sheetId: 0,
+          },
+        },
+        {
+          updateSheetProperties: {
+            properties: {
+              sheetId: newSheetId,
+              title: "Tax Calculator",
+            },
+            fields: "title",
+          },
+        },
+      ],
+    },
+  });
+  await this.addWriterPermission(newSpreadSheetId, newUserEmail);
+  return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
+}
   private async addWriterPermission(
     spreadsheetId: string,
     emailAddress: string,
