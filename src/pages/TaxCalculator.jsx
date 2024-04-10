@@ -13,6 +13,12 @@ export const TaxCalculator = () => {
 
   React.useEffect(() => {
     const fetchOrder = async () => {
+      if (!auth.user || !auth.user._id) {
+        return; // No user or user ID, do nothing
+      }
+
+      setGoogleSheetLoading(true); // Start loading indicator
+
       try {
         const response = await axios.get(`/order/user/${auth.user._id}`);
         const { data } = response.data;
@@ -26,22 +32,21 @@ export const TaxCalculator = () => {
             setError("No spreadsheet URL found");
           }
         } else {
-          setError("No orders found for the user");
+          setError("No orders found for your account");
         }
       } catch (error) {
-        console.log("Error fetching order:", error);
-        setError("Error fetching order");
+        console.error("Error fetching order:", error);
+        setError("Error fetching orders. Please try again later.");
       } finally {
-        setGoogleSheetLoading(false); // Ensure loading indicator is turned off
+        setGoogleSheetLoading(false); // Stop loading indicator
       }
     };
 
-    if (auth.user && auth.user._id) {
-      fetchOrder();
-    }
+    fetchOrder(); // Call fetchOrder directly without checking auth.user._id in the dependency array
+
   }, [auth.user]);
 
-  if (auth.user.role === "admin") return <Navigate to="/dashboard/product" />;
+  if (auth.user?.role === "admin") return <Navigate to="/dashboard/product" />;
 
   if (error) {
     return (
