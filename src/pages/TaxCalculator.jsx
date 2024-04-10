@@ -12,47 +12,49 @@ export const TaxCalculator = () => {
   const auth = useAuth();
 
   React.useEffect(() => {
-  const fetchOrder = async () => {
-    try {
-      const response = await axios.get(`/order/user/${auth.user._id}`);
-      const { data } = response.data;
-      if (data.orders.length !== 0) {
-        const url = data.orders[0].spreadSheetUrl;
-        if (url) {
-          const parts = url.split("#");
-          if (parts.length > 1) {
+    const fetchOrder = async () => {
+      try {
+        const response = await axios.get(`/order/user/${auth.user._id}`);
+        const { data } = response.data;
+        if (data.orders.length !== 0) {
+          const url = data.orders[0].spreadSheetUrl;
+          if (url) {
+            const parts = url.split("#");
             const newUrl = parts[0] + "?rm=minimal#" + parts[1];
             setSpreadSheetUrl(newUrl);
           } else {
-            setError("Invalid spreadsheet URL format");
+            setError("No spreadsheet URL found");
           }
         } else {
-          setError("No spreadsheet URL found");
+          setError("No orders found for the user");
         }
-      } else {
-        setError("No orders found for the user");
+      } catch (error) {
+        console.log("Error fetching order:", error);
+        setError("Error fetching order");
+      } finally {
+        setGoogleSheetLoading(false); // Ensure loading indicator is turned off
       }
-    } catch (error) {
-      console.log("Error fetching order:", error);
-      setError("Error fetching order");
+    };
+
+    if (auth.user && auth.user._id) {
+      fetchOrder();
     }
-  };
-  if (auth.user && auth.user._id) {
-    fetchOrder();
-  }
-}, [auth.user]);
+  }, [auth.user]);
 
   if (auth.user.role === "admin") return <Navigate to="/dashboard/product" />;
-  if (error)
+
+  if (error) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
         <Typography variant="h4" component="h1">
-          Something went wrong!!!!!
+          {error}
         </Typography>
       </Box>
     );
+  }
 
   if (!spreadSheetUrl && !googleSheetLoading) return <SpreadSheetSkeleton />;
+
   return (
     <>
       <Box sx={{ position: "relative" }}>
