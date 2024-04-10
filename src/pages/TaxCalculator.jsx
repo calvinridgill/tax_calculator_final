@@ -10,7 +10,7 @@ export const TaxCalculator = () => {
   const [googleSheetLoading, setGoogleSheetLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
   const auth = useAuth();
-  
+
   React.useEffect(() => {
   const fetchOrder = async () => {
     try {
@@ -30,7 +30,7 @@ export const TaxCalculator = () => {
           setError("No spreadsheet URL found");
         }
       } else {
-        setError("No orders found");
+        setError("No orders found for the user");
       }
     } catch (error) {
       console.log("Error fetching order:", error);
@@ -43,7 +43,6 @@ export const TaxCalculator = () => {
 }, [auth.user]);
 
   if (auth.user.role === "admin") return <Navigate to="/dashboard/product" />;
-
   if (error)
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
