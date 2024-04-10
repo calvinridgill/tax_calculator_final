@@ -42,7 +42,6 @@ export const TaxCalculator = () => {
   if (!spreadSheetUrl && !googleSheetLoading) return <SpreadSheetSkeleton />;
   return (
     <>
-      console.log("spreadSheetUrl", spreadSheetUrl);
       <Box sx={{ position: "relative" }}>
         <Box
           sx={{
@@ -55,8 +54,8 @@ export const TaxCalculator = () => {
               setGoogleSheetLoading(false);
             }}
             src={spreadSheetUrl}
-            width="80%"
-            height="80%"
+            width="90%"
+            height="90%"
           />
         </Box>
       </Box>
