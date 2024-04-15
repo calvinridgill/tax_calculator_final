@@ -110,17 +110,19 @@ export class GoogleSheet {
       ["", "", ""],
       ["New Field", "New Value", ""], // Add additional fields as needed
     ];
-    const googleSheetInstance = await GoogleSheet.createInstance();
+
     try {
       // Send the custom data to the spreadsheet
-      await googleSheetInstance.sendCustomData(customData, newSpreadSheetId);
+      await this.sendCustomData(customData, newSpreadSheetId);
       console.log("Custom data sent successfully!");
+
+      // Add writer permission for the new user
+      await this.addWriterPermission(newSpreadSheetId, newUserEmail);
     } catch (error) {
       console.error("Failed to send custom data:", error);
+      throw error;
     }
-    // Add writer permission for the new user
-    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
-    
+
     // Return the URL of the new sheet
     return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
   }
