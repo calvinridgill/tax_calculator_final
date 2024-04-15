@@ -48,112 +48,72 @@ export class GoogleSheet {
   }
 
   // Method to copy content from an existing sheet and create a new one
-  public async copyTaxCalculatorContent(
-    newUserEmail: string,
-    originalSpreadSheetId?: string,
-    newSpreadSheetId?: string
-  ): Promise<string> {
-    // Check if originalSpreadSheetId is provided, if not use the default one
-    if (!originalSpreadSheetId && !this.originalSpreadSheetId)
-      throw new Error("originalSpreadSheetId is not defined");
+  // Method to copy content from an existing sheet and create a new one
+// Method to copy content from an existing sheet and create a new one
+public async copyTaxCalculatorContent(
+  newUserEmail: string,
+  originalSpreadSheetId?: string,
+  newSpreadSheetId?: string
+): Promise<string> {
+  // Check if originalSpreadSheetId is provided, if not use the default one
+  if (!originalSpreadSheetId && !this.originalSpreadSheetId)
+    throw new Error("originalSpreadSheetId is not defined");
 
-    originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
+  originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
 
-    // If newSpreadSheetId is not provided, create a new sheet
-    newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
+  // If newSpreadSheetId is not provided, create a new sheet
+  newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
 
-    // Copy content from the original sheet to the new sheet
-    const response = await this.googleSheets.spreadsheets.sheets.copyTo({
-      spreadsheetId: originalSpreadSheetId,
-      sheetId: 0,
-      requestBody: {
-        destinationSpreadsheetId: newSpreadSheetId,
-      },
-    });
+  // Copy content from the original sheet to the new sheet
+  const response = await this.googleSheets.spreadsheets.sheets.copyTo({
+    spreadsheetId: originalSpreadSheetId,
+    sheetId: 0,
+    requestBody: {
+      destinationSpreadsheetId: newSpreadSheetId,
+    },
+  });
 
-    // Get the new sheet id
-    const newSheetId = response.data.sheetId;
-    const customData = [
-      ["Income New", "", ""],
-      ["Gross Income New", 9000, ""],
-      ["", "", ""],
-      ["Expense New", "", ""],
-      ["Car New", 600, ""],
-      ["Gas New", 500, ""],
-      ["Insurance New", 3000, ""],
-      ["", "", ""],
-      ["Net income New", 1000, ""],
-      ["", "", ""],
-      ["New Field New", "New Value New", ""], // Add additional fields as needed
-    ];
-    // Delete the default sheet and set title to "Tax Calculator" for the new sheet
-    await this.googleSheets.spreadsheets.batchUpdate({
-      spreadsheetId: newSpreadSheetId,
-      requestBody: {
-        requests: [
-          {
-            deleteSheet: {
-              sheetId: 0,
-            },
-          },
-          {
-            updateSheetProperties: {
-              properties: {
-                sheetId: newSheetId,
-                title: "Tax Calculator",
-              },
-              fields: "title",
-            },
-          },
-          {
-            updateCells: {
-              range: {
-                sheetId: newSheetId,
-                startRowIndex: 0,
-                endRowIndex: customData.length, // Adjust if needed
-                startColumnIndex: 0,
-                endColumnIndex: customData[0].length, // Assuming all rows have the same number of columns
-              },
-              fields: "userEnteredValue",
-              rows: customData.map(row => ({
-                values: row.map(value => ({ userEnteredValue: { stringValue: value.toString() } }))
-              })),
-            },
-          },
-        ],
-      },
-    });
+  // Get the new sheet id
+  const newSheetId = response.data.sheetId;
 
-    
-    // Add writer permission for the new user
-    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
-    // Return the URL of the new sheet
-    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
-  }
+  // Clear the existing data from the new sheet
+  await this.googleSheets.spreadsheets.values.clear({
+    spreadsheetId: newSpreadSheetId,
+    range: "Sheet1!A1:Z",
+  });
 
-  // Method to send custom data to a sheet
-  public async sendCustomData(
-    data: any[][], // Custom data to send, represented as a 2D array
-    spreadsheetId: string // ID of the spreadsheet to update
-  ): Promise<void> {
-    const range = "Sheet1!A1";
-    const valueInputOption = "USER_ENTERED";
-    const requestBody = {
-      values: data,
-    };
+  const customData = [
+    ["Income New", "", ""],
+    ["Gross Income New", 9000, ""],
+    ["", "", ""],
+    ["Expense New", "", ""],
+    ["Car New", 600, ""],
+    ["Gas New", 500, ""],
+    ["Insurance New", 3000, ""],
+    ["", "", ""],
+    ["Net income New", 1000, ""],
+    ["", "", ""],
+    ["New Field New", "New Value New", ""], // Add additional fields as needed
+  ];
 
-    try {
-      await this.googleSheets.spreadsheets.values.update({
-        spreadsheetId: spreadsheetId,
-        range: range,
-        valueInputOption: valueInputOption,
-        requestBody: requestBody,
-      });
-    } catch (error) {
-      console.error("Error sending custom data to spreadsheet:", error);
-      throw error;
-    }
-  }
+  // Add the new data to the new sheet
+  await this.googleSheets.spreadsheets.values.update({
+    spreadsheetId: newSpreadSheetId,
+    range: "Sheet1!A1",
+    valueInputOption: "USER_ENTERED",
+    requestBody: {
+      values: customData,
+    },
+  });
+
+  // Add writer permission for the new user
+  await this.addWriterPermission(newSpreadSheetId, newUserEmail);
+
+  // Return the URL of the new sheet
+  return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
+}
+
+
 
   // Method to add writer permission to a sheet
   private async addWriterPermission(
