@@ -74,17 +74,17 @@ export class GoogleSheet {
     // Get the new sheet id
     const newSheetId = response.data.sheetId;
     const customData = [
-      ["Income", "", ""],
-      ["Gross Income", 29000, ""],
+      ["Income New", "", ""],
+      ["Gross Income New", 9000, ""],
       ["", "", ""],
-      ["Expense", "", ""],
-      ["Car", 2000, ""],
-      ["Gas", 4000, ""],
-      ["Insurance", 2000, ""],
+      ["Expense New", "", ""],
+      ["Car New", 600, ""],
+      ["Gas New", 500, ""],
+      ["Insurance New", 3000, ""],
       ["", "", ""],
-      ["Net income", 21000, ""],
+      ["Net income New", 1000, ""],
       ["", "", ""],
-      ["New Field", "New Value", ""], // Add additional fields as needed
+      ["New Field New", "New Value New", ""], // Add additional fields as needed
     ];
     // Delete the default sheet and set title to "Tax Calculator" for the new sheet
     await this.googleSheets.spreadsheets.batchUpdate({
