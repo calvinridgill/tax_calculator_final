@@ -9,7 +9,6 @@ import "./CreateEditProduct.css";
 
 export function ProductDashboard() {
   const { products } = useLoaderData();
-  // const alert = useAlert();
 
   const [openEditProductDialog, setOpenProductDialog] = useState(false);
 

@@ -11,7 +11,6 @@ export const TaxCalculator = () => {
   const [error, setError] = React.useState(null);
   const auth = useAuth();
   React.useEffect(() => {
-    // get the user order
     try {
       axios.get(`/order/user/${auth.user._id}`).then(({ data }) => {
         if (data.data.orders.length !== 0) {
@@ -22,7 +21,6 @@ export const TaxCalculator = () => {
         } else setError("No order found");
       });
     } catch (error) {
-      console.log("idid", "error--->", error);
       setSpreadSheetUrl(null);
       setError(error);
     }
@@ -54,8 +52,8 @@ export const TaxCalculator = () => {
               setGoogleSheetLoading(false);
             }}
             src={spreadSheetUrl}
-            width="100%"
-            height="100%"
+            width="98%"
+            height="95%"
           />
         </Box>
       </Box>

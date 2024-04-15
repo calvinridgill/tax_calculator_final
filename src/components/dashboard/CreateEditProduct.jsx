@@ -4,9 +4,7 @@ import { Box, TextField, Typography, Button } from "@mui/material";
 import "./CreateEditProduct.css";
 
 export function CreateEditProduct({ defaultValues, disabled = false }) {
-  // const [productImage, setProductImage] = useState(
-  //   defaultValues?.images[0] || "/images/image-loading-error.jpg"
-  // );
+ 
   const [cellPhone, setCellPhone] = useState(0);
   const [gas, setGas] = useState(0);
   const [autoRepairs, setAutoRepairs] = useState(0);
@@ -22,13 +20,9 @@ export function CreateEditProduct({ defaultValues, disabled = false }) {
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [netIncome, setNetIncome] = useState(0);
   const [grossIncome, setGrossIncome] = useState(0);
-
-  console.log("extraIncome", extraIncome);
-
+  
   const handleChange = (e) => {
     const salary = parseInt(e.target.value);
-
-    console.log("salary", salary);
 
     let tax = 0;
 
@@ -89,7 +83,6 @@ export function CreateEditProduct({ defaultValues, disabled = false }) {
     );
   };
 
-  // Function to handle button click
   const handleButtonClick = () => {
     const total = calculateTotalExpenses();
     setTotalExpenses(total);
@@ -277,7 +270,6 @@ export function CreateEditProduct({ defaultValues, disabled = false }) {
 }
 
 CreateEditProduct.propTypes = {
-  // defaultValues props listing name, description,price, and image
   defaultValues: PropTypes.shape({
     name: PropTypes.string,
     description: PropTypes.string,
