@@ -47,9 +47,6 @@ export class GoogleSheet {
     return spreadsheet.data.spreadsheetId;
   }
 
-  // Method to copy content from an existing sheet and create a new one
-  // Method to copy content from an existing sheet and create a new one
-// Method to copy content from an existing sheet and create a new one
 public async copyTaxCalculatorContent(
   newUserEmail: string,
   originalSpreadSheetId?: string,
@@ -83,17 +80,23 @@ public async copyTaxCalculatorContent(
   });
 
   const customData = [
-    ["Income New", "", ""],
-    ["Gross Income New", 9000, ""],
-    ["", "", ""],
-    ["Expense New", "", ""],
-    ["Car New", 600, ""],
-    ["Gas New", 500, ""],
-    ["Insurance New", 3000, ""],
-    ["", "", ""],
-    ["Net income New", 1000, ""],
-    ["", "", ""],
-    ["New Field New", "New Value New", ""], // Add additional fields as needed
+    ["Income", ""],
+    ["Gross Income", 9000],
+    ["", ""],
+    ["Expense", ""],
+    ["Gas", 50],
+    ["Supplies", 10],
+    ["Cell Phone", 5],
+    ["Auto insurance", 10],
+    ["Office expense", 5],
+    ["All other expenses", 15],
+    ["Commissions and fees", 5],
+    ["Auto lease or note payment", 2],
+    ["Auto Repairs and maintenance", 4],
+    ["Legal and professional services", 5],
+                  
+    ["", ""],
+    ["Net income", 1000],
   ];
 
   // Add the new data to the new sheet
@@ -112,8 +115,6 @@ public async copyTaxCalculatorContent(
   // Return the URL of the new sheet
   return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
 }
-
-
 
   // Method to add writer permission to a sheet
   private async addWriterPermission(
