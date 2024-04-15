@@ -14,6 +14,7 @@ export class GoogleSheet {
     this.originalSpreadSheetId = currentEnvConfig.ORIGINAL_SPREADSHEET_ID;
   }
 
+  // Method to initialize the Google Sheets client
   private static async initializeClient() {
     if (!this.client) {
       const auth = new google.auth.GoogleAuth({
@@ -28,15 +29,14 @@ export class GoogleSheet {
     }
   }
 
+  // Method to create an instance of GoogleSheet class
   static async createInstance() {
     await GoogleSheet.initializeClient();
-    const instance = new GoogleSheet();
-    return instance;
+    return new GoogleSheet();
   }
 
-  public createGoogleSheet = async (
-    title = "Tax Calculator"
-  ): Promise<string> => {
+  // Method to create a new Google Sheet
+  public async createGoogleSheet(title = "Tax Calculator"): Promise<string> {
     const spreadsheet = await this.googleSheets.spreadsheets.create({
       requestBody: {
         properties: {
@@ -45,24 +45,24 @@ export class GoogleSheet {
       },
     });
     return spreadsheet.data.spreadsheetId;
-  };
+  }
 
-  public copyTaxCalculatorContent = async (
+  // Method to copy content from an existing sheet and create a new one
+  public async copyTaxCalculatorContent(
     newUserEmail: string,
     originalSpreadSheetId?: string,
     newSpreadSheetId?: string
-  ): Promise<string> => {
-    if (
-      this.originalSpreadSheetId === undefined &&
-      originalSpreadSheetId === undefined
-    )
-      throw new Error("originalSpreadSheetId is undefined");
+  ): Promise<string> {
+    // Check if originalSpreadSheetId is provided, if not use the default one
+    if (!originalSpreadSheetId && !this.originalSpreadSheetId)
+      throw new Error("originalSpreadSheetId is not defined");
 
-    if (originalSpreadSheetId === undefined && this.originalSpreadSheetId)
-      originalSpreadSheetId = this.originalSpreadSheetId;
+    originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
 
-    if (newSpreadSheetId === undefined)
-      newSpreadSheetId = await this.createGoogleSheet();
+    // If newSpreadSheetId is not provided, create a new sheet
+    newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
+
+    // Copy content from the original sheet to the new sheet
     const response = await this.googleSheets.spreadsheets.sheets.copyTo({
       spreadsheetId: originalSpreadSheetId,
       sheetId: 0,
@@ -70,7 +70,11 @@ export class GoogleSheet {
         destinationSpreadsheetId: newSpreadSheetId,
       },
     });
+
+    // Get the new sheet id
     const newSheetId = response.data.sheetId;
+
+    // Delete the default sheet and set title to "Tax Calculator" for the new sheet
     await this.googleSheets.spreadsheets.batchUpdate({
       spreadsheetId: newSpreadSheetId,
       requestBody: {
@@ -92,14 +96,31 @@ export class GoogleSheet {
         ],
       },
     });
-    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
-    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
-  };
 
-  public sendCustomData = async (
-    data: any[][], // Custom data to send, represented as a 2D array
+    // Add writer permission for the new user
+    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
+
+    // Return the URL of the new sheet
+    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
+  }
+
+  // Method to send custom data to a sheet
+  public async sendCustomData(
+    data: any[][] =  [
+      ["Income", "", ""],
+      ["Gross Income", 29000, ""],
+      ["", "", ""],
+      ["Expense", "", ""],
+      ["Car", 2000, ""],
+      ["Gas", 4000, ""],
+      ["Insurance", 2000, ""],
+      ["", "", ""],
+      ["Net income", 21000, ""],
+      ["", "", ""],
+      ["New Field", "New Value", ""], // Add additional fields as needed
+    ], // Custom data to send, represented as a 2D array
     spreadsheetId: string // ID of the spreadsheet to update
-  ): Promise<void> => {
+  ): Promise<void> {
     const range = "Sheet1!A1";
     const valueInputOption = "USER_ENTERED";
     const requestBody = {
@@ -117,8 +138,9 @@ export class GoogleSheet {
       console.error("Error sending custom data to spreadsheet:", error);
       throw error;
     }
-  };
+  }
 
+  // Method to add writer permission to a sheet
   private async addWriterPermission(
     spreadsheetId: string,
     emailAddress: string
