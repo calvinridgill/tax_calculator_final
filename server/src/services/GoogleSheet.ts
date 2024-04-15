@@ -100,13 +100,13 @@ export class GoogleSheet {
     // Add writer permission for the new user
     await this.addWriterPermission(newSpreadSheetId, newUserEmail);
 
-    // Return the URL of the new sheet
-    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
+    // Return the new spreadsheet id
+    return newSpreadSheetId;
   }
 
   // Method to send custom data to a sheet
   public async sendCustomData(
-    data: any[][] =  [
+    data: any[][] = [
       ["Income", "", ""],
       ["Gross Income", 29000, ""],
       ["", "", ""],
@@ -119,7 +119,7 @@ export class GoogleSheet {
       ["", "", ""],
       ["New Field", "New Value", ""], // Add additional fields as needed
     ], // Custom data to send, represented as a 2D array
-    spreadsheetId: string // ID of the spreadsheet to update
+    spreadsheetId: string
   ): Promise<void> {
     const range = "Sheet1!A1";
     const valueInputOption = "USER_ENTERED";
