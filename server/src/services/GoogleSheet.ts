@@ -97,16 +97,7 @@ export class GoogleSheet {
       },
     });
 
-    // Add writer permission for the new user
-    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
-
-    // Return the URL of the new sheet
-    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
-  }
-
-  // Method to send custom data to a sheet
-  public async sendCustomData(
-    data: any[][] =  [
+    const customData = [
       ["Income", "", ""],
       ["Gross Income", 29000, ""],
       ["", "", ""],
@@ -118,7 +109,17 @@ export class GoogleSheet {
       ["Net income", 21000, ""],
       ["", "", ""],
       ["New Field", "New Value", ""], // Add additional fields as needed
-    ], // Custom data to send, represented as a 2D array
+    ]
+    // Add writer permission for the new user
+    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
+    await this.sendCustomData(customData, newSpreadSheetId);
+    // Return the URL of the new sheet
+    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
+  }
+
+  // Method to send custom data to a sheet
+  public async sendCustomData(
+    data: any[][], // Custom data to send, represented as a 2D array
     spreadsheetId: string // ID of the spreadsheet to update
   ): Promise<void> {
     const range = "Sheet1!A1";
