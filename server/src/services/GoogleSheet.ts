@@ -81,7 +81,7 @@ export class GoogleSheet {
   });
 
   const products = await Product.find({});
-    const customData = [
+  const customData = [
     ["Product Name", products[0].name.toString()],
     ["Product Description", products[0].description.toString()],
     ["", ""],
@@ -123,56 +123,78 @@ export class GoogleSheet {
     },
   });
 
-// Add background color to specific cells in sheet1
-await this.googleSheets.spreadsheets.batchUpdate({
-  spreadsheetId: newSpreadSheetId,
-  requestBody: {
-    requests: [
-      {
-        repeatCell: {
-          range: {
-            sheetId: 0, // Sheet1's sheetId
-            startRowIndex: 3,
-            endRowIndex: 8, // Only the first row
-            startColumnIndex: 2,
-            endColumnIndex:4, // Only the first column
-          },
-          cell: {
-            userEnteredFormat: {
-              backgroundColor: {
-                red: 0.0,
-                green: 1.0,
-                blue: 0.0,
+  // Define the values and their corresponding cell addresses
+  const cellData = [
+    { cell: "E1", value: "Product Name" },
+    { cell: "E3", value: "Product Description" },
+    // Add other cells and values as needed
+  ];
+
+  // Prepare the data for batch updating
+  const batchUpdateData = cellData.map(({ cell, value }) => ({
+    range: `Sheet1!${cell}`, // Specify the sheet name and cell address
+    values: [[value]], // Wrap the value in an array
+  }));
+
+  // Batch update the values in the specified cells
+  await this.googleSheets.spreadsheets.values.batchUpdate({
+    spreadsheetId: newSpreadSheetId,
+    requestBody: {
+      valueInputOption: "USER_ENTERED", // Specify the value input option
+      data: batchUpdateData, // Specify the data to update
+    },
+  });
+
+  // Add background color to specific cells in sheet1
+  await this.googleSheets.spreadsheets.batchUpdate({
+    spreadsheetId: newSpreadSheetId,
+    requestBody: {
+      requests: [
+        {
+          repeatCell: {
+            range: {
+              sheetId: 0, // Sheet1's sheetId
+              startRowIndex: 3,
+              endRowIndex: 4, // Only the first row
+              startColumnIndex: 2,
+              endColumnIndex: 4, // Only the first column
+            },
+            cell: {
+              userEnteredFormat: {
+                backgroundColor: {
+                  red: 0.0,
+                  green: 1.0,
+                  blue: 0.0,
+                },
               },
             },
+            fields: "userEnteredFormat.backgroundColor",
           },
-          fields: "userEnteredFormat.backgroundColor",
         },
-      },
-      {
-        repeatCell: {
-          range: {
-            sheetId: 0, // Sheet1's sheetId
-            startRowIndex: 6,
-            endRowIndex: 11, // Fourth row for "Expense"
-            startColumnIndex: 2,
-            endColumnIndex: 4, // Only the first column
-          },
-          cell: {
-            userEnteredFormat: {
-              backgroundColor: {
-                red: 1.0,
-                green: 0.0,
-                blue: 0.0,
+        {
+          repeatCell: {
+            range: {
+              sheetId: 0, // Sheet1's sheetId
+              startRowIndex: 6,
+              endRowIndex: 7, // Fourth row for "Expense"
+              startColumnIndex: 2,
+              endColumnIndex: 4, // Only the first column
+            },
+            cell: {
+              userEnteredFormat: {
+                backgroundColor: {
+                  red: 1.0,
+                  green: 0.0,
+                  blue: 0.0,
+                },
               },
             },
+            fields: "userEnteredFormat.backgroundColor",
           },
-          fields: "userEnteredFormat.backgroundColor",
         },
-      },
-    ],
-  },
-});
+      ],
+    },
+  });
 
   // Add writer permission for the new user
   await this.addWriterPermission(newSpreadSheetId, newUserEmail);
