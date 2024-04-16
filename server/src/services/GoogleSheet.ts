@@ -82,10 +82,6 @@ export class GoogleSheet {
 
   const products = await Product.find({});
   const customData = [
-    ["Product Name", products[0].name.toString()],
-    ["Product Description", products[0].description.toString()],
-    ["", ""],
-    ["", ""],
     ["Income", ""],
     ["Gross Income", products[0].income.toString()],
     ["", ""],
@@ -123,29 +119,24 @@ export class GoogleSheet {
     },
   });
 
-  // Define the values and their corresponding cell addresses
   const cellData = [
-    { cell: "E1", value: "Product Name" },
-    { cell: "E3", value: "Product Description" },
-    // Add other cells and values as needed
+    { cell: "F1", value: products[0].name.toString() },
+    { cell: "F3", value: products[0].description.toString() },
   ];
 
-  // Prepare the data for batch updating
   const batchUpdateData = cellData.map(({ cell, value }) => ({
-    range: `Sheet1!${cell}`, // Specify the sheet name and cell address
-    values: [[value]], // Wrap the value in an array
+    range: `Sheet1!${cell}`,
+    values: [[value]],
   }));
 
-  // Batch update the values in the specified cells
   await this.googleSheets.spreadsheets.values.batchUpdate({
     spreadsheetId: newSpreadSheetId,
     requestBody: {
-      valueInputOption: "USER_ENTERED", // Specify the value input option
-      data: batchUpdateData, // Specify the data to update
+      valueInputOption: "USER_ENTERED",
+      data: batchUpdateData,
     },
   });
 
-  // Add background color to specific cells in sheet1
   await this.googleSheets.spreadsheets.batchUpdate({
     spreadsheetId: newSpreadSheetId,
     requestBody: {
