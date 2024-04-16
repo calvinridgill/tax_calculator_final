@@ -119,56 +119,56 @@ export class GoogleSheet {
     },
   });
 
-  // Add background color to specific cells
-  await this.googleSheets.spreadsheets.batchUpdate({
-    spreadsheetId: newSpreadSheetId,
-    requestBody: {
-      requests: [
-        {
-          repeatCell: {
-            range: {
-              sheetId: newSheetId,
-              startRowIndex: 0,
-              endRowIndex: 1, // Only the first row
-              startColumnIndex: 0,
-              endColumnIndex: 1, // Only the first column
-            },
-            cell: {
-              userEnteredFormat: {
-                backgroundColor: {
-                  red: 0.0,
-                  green: 1.0,
-                  blue: 0.0,
-                },
+// Add background color to specific cells in sheet1
+await this.googleSheets.spreadsheets.batchUpdate({
+  spreadsheetId: newSpreadSheetId,
+  requestBody: {
+    requests: [
+      {
+        repeatCell: {
+          range: {
+            sheetId: 0, // Sheet1's sheetId
+            startRowIndex: 0,
+            endRowIndex: 1, // Only the first row
+            startColumnIndex: 0,
+            endColumnIndex: 1, // Only the first column
+          },
+          cell: {
+            userEnteredFormat: {
+              backgroundColor: {
+                red: 0.0,
+                green: 1.0,
+                blue: 0.0,
               },
             },
-            fields: "userEnteredFormat.backgroundColor",
           },
+          fields: "userEnteredFormat.backgroundColor",
         },
-        {
-          repeatCell: {
-            range: {
-              sheetId: newSheetId,
-              startRowIndex: 3,
-              endRowIndex: 4, // Fourth row for "Expense"
-              startColumnIndex: 0,
-              endColumnIndex: 1, // Only the first column
-            },
-            cell: {
-              userEnteredFormat: {
-                backgroundColor: {
-                  red: 1.0,
-                  green: 0.0,
-                  blue: 0.0,
-                },
+      },
+      {
+        repeatCell: {
+          range: {
+            sheetId: 0, // Sheet1's sheetId
+            startRowIndex: 3,
+            endRowIndex: 4, // Fourth row for "Expense"
+            startColumnIndex: 0,
+            endColumnIndex: 1, // Only the first column
+          },
+          cell: {
+            userEnteredFormat: {
+              backgroundColor: {
+                red: 1.0,
+                green: 0.0,
+                blue: 0.0,
               },
             },
-            fields: "userEnteredFormat.backgroundColor",
           },
+          fields: "userEnteredFormat.backgroundColor",
         },
-      ],
-    },
-  });
+      },
+    ],
+  },
+});
 
   // Add writer permission for the new user
   await this.addWriterPermission(newSpreadSheetId, newUserEmail);
