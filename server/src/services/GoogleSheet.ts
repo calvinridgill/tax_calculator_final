@@ -127,6 +127,12 @@ export class GoogleSheet {
   const batchUpdateData = cellData.map(({ cell, value }) => ({
     range: `Sheet1!${cell}`,
     values: [[value]],
+    userEnteredFormat: {
+    // Set the font size for cell "F1"
+    textFormat: {
+      fontSize: 18, // Set the desired font size
+    },
+  },
   }));
 
   await this.googleSheets.spreadsheets.values.batchUpdate({
