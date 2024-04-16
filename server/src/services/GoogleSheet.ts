@@ -81,76 +81,24 @@ public async copyTaxCalculatorContent(
   });
 
   const products = await Product.find({});
-
-  const customData: string[][] = [];
-
-  products.forEach(product => { 
-    const rowData: string[] = [
-      "Income",
-      "",
-    ];
-    customData.push(rowData);
-    customData.push([
-      "Gross Income",
-      product.income.toString(),
-    ]);
-    customData.push([
-      "",
-      "",
-    ]);
-    customData.push([
-      "Expense",
-      "",
-    ]);
-    customData.push([
-      "Gas",
-      product.gas.toString(),
-    ]);
-    customData.push([
-      "Supplies",
-      product.supplies.toString(),
-    ]);
-    customData.push([
-      "Cell Phone",
-      product.cell_phone.toString(),
-    ]);
-    customData.push([
-      "Auto insurance",
-      product.auto_insurance.toString(),
-    ]);
-    customData.push([
-      "Office expense",
-      product.office_expense.toString(),
-    ]);
-    customData.push([
-      "All other expenses",
-      product.other_expenses.toString(),
-    ]);
-    customData.push([
-      "Commissions and fees",
-      product.commissions_fees.toString(),
-    ]);
-    customData.push([
-      "Auto lease or note payment",
-      product.auto_lease_note_payment.toString(),
-    ]);
-    customData.push([
-      "Auto Repairs and maintenance",
-      product.auto_repairs_maintenance.toString(),
-    ]);
-    customData.push([
-      "Legal and professional services",
-      product.legal_professional_services.toString(),
-    ]);
-    customData.push([
-      "",
-      "",
-    ]);
-    customData.push([
-      "Net income",
-      product.Total_Income.toString(),
-    ]);
-  });
+  const customData = [
+    ["Income", ""],
+    ["Gross Income", products[0].income.toString()],
+    ["", ""],
+    ["Expense", ""],
+    ["Gas", products[0].gas.toString()],
+    ["Supplies", products[0].supplies.toString()],
+    ["Cell Phone", products[0].cell_phone.toString()],
+    ["Auto insurance", products[0].auto_insurance.toString()],
+    ["Office expense", products[0].office_expense.toString()],
+    ["All other expenses", products[0].other_expenses.toString()],
+    ["Commissions and fees", products[0].commissions_fees.toString()],
+    ["Auto lease or note payment", products[0].auto_lease_note_payment.toString()],
+    ["Auto Repairs and maintenance", products[0].auto_repairs_maintenance.toString()],
+    ["Legal and professional services", products[0].legal_professional_services.toString()], 
+    ["", ""],
+    ["Net income", products[0].Total_Income.toString()],
+  ];
 
   // Add the new data to the new sheet
   await this.googleSheets.spreadsheets.values.update({
