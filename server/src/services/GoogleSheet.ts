@@ -81,7 +81,11 @@ export class GoogleSheet {
   });
 
   const products = await Product.find({});
-  const customData = [
+    const customData = [
+    ["Product Name", products[0].name.toString()],
+    ["Product Description", products[0].description.toString()],
+    ["", ""],
+    ["", ""],
     ["Income", ""],
     ["Gross Income", products[0].income.toString()],
     ["", ""],
@@ -129,7 +133,7 @@ await this.googleSheets.spreadsheets.batchUpdate({
           range: {
             sheetId: 0, // Sheet1's sheetId
             startRowIndex: 3,
-            endRowIndex: 4, // Only the first row
+            endRowIndex: 8, // Only the first row
             startColumnIndex: 2,
             endColumnIndex:4, // Only the first column
           },
@@ -150,7 +154,7 @@ await this.googleSheets.spreadsheets.batchUpdate({
           range: {
             sheetId: 0, // Sheet1's sheetId
             startRowIndex: 6,
-            endRowIndex: 7, // Fourth row for "Expense"
+            endRowIndex: 11, // Fourth row for "Expense"
             startColumnIndex: 2,
             endColumnIndex: 4, // Only the first column
           },
