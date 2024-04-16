@@ -64,8 +64,8 @@ export class GoogleSheet {
   if (newSpreadSheetId === undefined)
     newSpreadSheetId = await this.createGoogleSheet()
   
-  // Clear existing data from the new sheet
-  await this.clearSheetData(newSpreadSheetId)
+  // Clear existing data from the original sheet
+  await this.clearSheetData(originalSpreadSheetId)
 
   const response = await this.googleSheets.spreadsheets.sheets.copyTo({
     spreadsheetId: originalSpreadSheetId,
@@ -100,9 +100,9 @@ export class GoogleSheet {
   // Assign permission to another Gmail user to view the copied sheet
   await this.addWriterPermission(newSpreadSheetId, newUserEmail)
   return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`
-  }
-  
-  private async clearSheetData(spreadsheetId: string) {
+}
+
+private async clearSheetData(spreadsheetId: string) {
   await this.googleSheets.spreadsheets.values.clear({
     spreadsheetId: spreadsheetId,
     range: "A:Z", // Clear all data from columns A to Z
