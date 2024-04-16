@@ -52,8 +52,8 @@ export const TaxCalculator = () => {
               setGoogleSheetLoading(false);
             }}
             src={spreadSheetUrl}
-            width="96%"
-            height="96%"
+            width="95%"
+            height="95%"
           />
         </Box>
       </Box>

@@ -15,7 +15,6 @@ export class GoogleSheet {
     this.originalSpreadSheetId = currentEnvConfig.ORIGINAL_SPREADSHEET_ID;
   }
 
-  // Method to initialize the Google Sheets client
   private static async initializeClient() {
     if (!this.client) {
       const auth = new google.auth.GoogleAuth({
@@ -30,13 +29,11 @@ export class GoogleSheet {
     }
   }
 
-  // Method to create an instance of GoogleSheet class
   static async createInstance() {
     await GoogleSheet.initializeClient();
     return new GoogleSheet();
   }
 
-  // Method to create a new Google Sheet
   public async createGoogleSheet(title = "Tax Calculator"): Promise<string> {
     const spreadsheet = await this.googleSheets.spreadsheets.create({
       requestBody: {
@@ -53,16 +50,14 @@ export class GoogleSheet {
     originalSpreadSheetId?: string,
     newSpreadSheetId?: string
   ): Promise<string> {
-    // Check if originalSpreadSheetId is provided, if not use the default one
+
     if (!originalSpreadSheetId && !this.originalSpreadSheetId)
       throw new Error("originalSpreadSheetId is not defined");
 
     originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
 
-    // If newSpreadSheetId is not provided, create a new sheet
     newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
 
-    // Copy content from the original sheet to the new sheet
     const response = await this.googleSheets.spreadsheets.sheets.copyTo({
       spreadsheetId: originalSpreadSheetId,
       sheetId: 0,
@@ -71,10 +66,8 @@ export class GoogleSheet {
       },
     });
 
-    // Get the new sheet id
     const newSheetId = response.data.sheetId;
 
-    // Clear the existing data from the new sheet
     await this.googleSheets.spreadsheets.values.clear({
       spreadsheetId: newSpreadSheetId,
       range: "Sheet1!A1:Z",
@@ -109,7 +102,6 @@ export class GoogleSheet {
       ["Net income", products[0].Total_Income.toString()],
     ];
 
-    // Add the new data to the new sheet
     await this.googleSheets.spreadsheets.values.update({
       spreadsheetId: newSpreadSheetId,
       range: "Sheet1!C4",
@@ -144,11 +136,11 @@ export class GoogleSheet {
           {
             repeatCell: {
               range: {
-                sheetId: 0, // Tax Calculator's sheetId
+                sheetId: 0,
                 startRowIndex: 3,
-                endRowIndex: 4, // Only the first row
+                endRowIndex: 4,
                 startColumnIndex: 2,
-                endColumnIndex: 4, // Only the first column
+                endColumnIndex: 4,
               },
               cell: {
                 userEnteredFormat: {
@@ -165,11 +157,11 @@ export class GoogleSheet {
           {
             repeatCell: {
               range: {
-                sheetId: 0, // Tax Calculator's sheetId
+                sheetId: 0,
                 startRowIndex: 6,
-                endRowIndex: 7, // Fourth row for "Expense"
+                endRowIndex: 7,
                 startColumnIndex: 2,
-                endColumnIndex: 4, // Only the first column
+                endColumnIndex: 4,
               },
               cell: {
                 userEnteredFormat: {
@@ -187,7 +179,7 @@ export class GoogleSheet {
             updateSheetProperties: {
               properties: {
                 sheetId: 0,
-                title: "Tax Calculator", // Change sheet name to "Tax Calculator"
+                title: "Tax Calculator",
               },
               fields: "title",
             },
@@ -197,14 +189,14 @@ export class GoogleSheet {
               range: {
                 sheetId: 0,
                 startRowIndex: parseInt(cellData[0].cell.substring(1)) - 1,
-                endRowIndex: parseInt(cellData[0].cell.substring(1)), // Single row
-                startColumnIndex: cellData[0].cell.charCodeAt(0) - 65, // Convert column letter to index
-                endColumnIndex: cellData[0].cell.charCodeAt(0) - 64, // Single column
+                endRowIndex: parseInt(cellData[0].cell.substring(1)),
+                startColumnIndex: cellData[0].cell.charCodeAt(0) - 65,
+                endColumnIndex: cellData[0].cell.charCodeAt(0) - 64, 
               },
               cell: {
                 userEnteredFormat: {
                   textFormat: {
-                    fontSize: 18, // Set the font size
+                    fontSize: 18,
                   },
                 },
               },
@@ -215,14 +207,11 @@ export class GoogleSheet {
       },
     });
 
-    // Add writer permission for the new user
     await this.addWriterPermission(newSpreadSheetId, newUserEmail);
 
-    // Return the URL of the new sheet
     return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
   }
 
-  // Method to add writer permission to a sheet
   private async addWriterPermission(
     spreadsheetId: string,
     emailAddress: string
