@@ -129,7 +129,7 @@ await this.googleSheets.spreadsheets.batchUpdate({
           range: {
             sheetId: 0, // Sheet1's sheetId
             startRowIndex: 3,
-            endRowIndex: 1, // Only the first row
+            endRowIndex: 4, // Only the first row
             startColumnIndex: 2,
             endColumnIndex:3, // Only the first column
           },
@@ -149,10 +149,10 @@ await this.googleSheets.spreadsheets.batchUpdate({
         repeatCell: {
           range: {
             sheetId: 0, // Sheet1's sheetId
-            startRowIndex: 6,
+            startRowIndex: 3,
             endRowIndex: 4, // Fourth row for "Expense"
-            startColumnIndex: 2,
-            endColumnIndex: 3, // Only the first column
+            startColumnIndex: 0,
+            endColumnIndex: 2, // Only the first column
           },
           cell: {
             userEnteredFormat: {
