@@ -112,7 +112,7 @@ export class GoogleSheet {
   // Add the new data to the new sheet
   await this.googleSheets.spreadsheets.values.update({
     spreadsheetId: newSpreadSheetId,
-    range: "Sheet1!A1",
+    range: "Sheet1!C4",
     valueInputOption: "USER_ENTERED",
     requestBody: {
       values: customData,
