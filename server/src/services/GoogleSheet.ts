@@ -50,7 +50,8 @@ export class GoogleSheet {
 
   public async copyTaxCalculatorContent(
     newUserEmail: string,
-    originalSpreadSheetId?: string
+    originalSpreadSheetId?: string,
+    newSpreadSheetId?: string
   ): Promise<string> {
     // Check if originalSpreadSheetId is provided, if not use the default one
     if (!originalSpreadSheetId && !this.originalSpreadSheetId)
@@ -58,7 +59,27 @@ export class GoogleSheet {
 
     originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
 
-    // Get the product data
+    // If newSpreadSheetId is not provided, create a new sheet
+    newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
+
+    // Copy content from the original sheet to the new sheet
+    const response = await this.googleSheets.spreadsheets.sheets.copyTo({
+      spreadsheetId: originalSpreadSheetId,
+      sheetId: 0,
+      requestBody: {
+        destinationSpreadsheetId: newSpreadSheetId,
+      },
+    });
+
+    // Get the new sheet id
+    const newSheetId = response.data.sheetId;
+
+    // Clear the existing data from the new sheet
+    await this.googleSheets.spreadsheets.values.clear({
+      spreadsheetId: newSpreadSheetId,
+      range: "Sheet1!A1:Z",
+    });
+
     const products = await Product.find({});
     const customData = [
       ["Income", ""],
@@ -88,27 +109,117 @@ export class GoogleSheet {
       ["Net income", products[0].Total_Income.toString()],
     ];
 
-    // Clear existing data from the original sheet
-    await this.googleSheets.spreadsheets.values.clear({
-      spreadsheetId: originalSpreadSheetId,
-      range: "Sheet1!A1:Z",
-    });
-
-    // Update the sheet with custom data
+    // Add the new data to the new sheet
     await this.googleSheets.spreadsheets.values.update({
-      spreadsheetId: originalSpreadSheetId,
-      range: "Sheet1!A1",
+      spreadsheetId: newSpreadSheetId,
+      range: "Sheet1!C4",
       valueInputOption: "USER_ENTERED",
       requestBody: {
         values: customData,
       },
     });
 
-    // Add writer permission for the new user
-    await this.addWriterPermission(originalSpreadSheetId, newUserEmail);
+    const cellData = [
+      { cell: "F1", value: products[0].name.toString() },
+      { cell: "F3", value: products[0].description.toString() },
+    ];
 
-    // Return the URL of the original sheet
-    return `https://docs.google.com/spreadsheets/d/${originalSpreadSheetId}/edit`;
+    const batchUpdateData = cellData.map(({ cell, value }) => ({
+      range: `Sheet1!${cell}`,
+      values: [[value]],
+    }));
+
+    await this.googleSheets.spreadsheets.values.batchUpdate({
+      spreadsheetId: newSpreadSheetId,
+      requestBody: {
+        valueInputOption: "USER_ENTERED",
+        data: batchUpdateData,
+      },
+    });
+
+    await this.googleSheets.spreadsheets.batchUpdate({
+      spreadsheetId: newSpreadSheetId,
+      requestBody: {
+        requests: [
+          {
+            repeatCell: {
+              range: {
+                sheetId: 0, // Tax Calculator's sheetId
+                startRowIndex: 3,
+                endRowIndex: 4, // Only the first row
+                startColumnIndex: 2,
+                endColumnIndex: 4, // Only the first column
+              },
+              cell: {
+                userEnteredFormat: {
+                  backgroundColor: {
+                    red: 0.0,
+                    green: 1.0,
+                    blue: 0.0,
+                  },
+                },
+              },
+              fields: "userEnteredFormat.backgroundColor",
+            },
+          },
+          {
+            repeatCell: {
+              range: {
+                sheetId: 0, // Tax Calculator's sheetId
+                startRowIndex: 6,
+                endRowIndex: 7, // Fourth row for "Expense"
+                startColumnIndex: 2,
+                endColumnIndex: 4, // Only the first column
+              },
+              cell: {
+                userEnteredFormat: {
+                  backgroundColor: {
+                    red: 1.0,
+                    green: 0.0,
+                    blue: 0.0,
+                  },
+                },
+              },
+              fields: "userEnteredFormat.backgroundColor",
+            },
+          },
+          {
+            updateSheetProperties: {
+              properties: {
+                sheetId: 0,
+                title: "Tax Calculator", // Change sheet name to "Tax Calculator"
+              },
+              fields: "title",
+            },
+          },
+          {
+            repeatCell: {
+              range: {
+                sheetId: 0,
+                startRowIndex: parseInt(cellData[0].cell.substring(1)) - 1,
+                endRowIndex: parseInt(cellData[0].cell.substring(1)), // Single row
+                startColumnIndex: cellData[0].cell.charCodeAt(0) - 65, // Convert column letter to index
+                endColumnIndex: cellData[0].cell.charCodeAt(0) - 64, // Single column
+              },
+              cell: {
+                userEnteredFormat: {
+                  textFormat: {
+                    fontSize: 18, // Set the font size
+                  },
+                },
+              },
+              fields: "userEnteredFormat.textFormat.fontSize",
+            },
+          },
+        ],
+      },
+    });
+
+    // Add writer permission for the new user
+    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
+
+    // Return the URL of the new sheet
+    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
   }
 
   // Method to add writer permission to a sheet
