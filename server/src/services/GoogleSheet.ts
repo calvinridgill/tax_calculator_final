@@ -1,6 +1,6 @@
 import { google, sheets_v4, drive_v3 } from "googleapis";
 import { currentEnvConfig } from "../models/config";
-import { Product } from "../models/product"; // Import your Product model
+import { Product } from "../models/product";
 
 export class GoogleSheet {
   private static client;
@@ -76,10 +76,10 @@ public async copyTaxCalculatorContent(
   const products = await Product.find({});
 
   const customData = [
-    ["Product Name", "Income", "Expense"],
+    ["Product Name", "Income", "Gas", "Supplies", "Cell Phone", "Auto Insurance", "Office Expense", "Other Expense", "Commissions Fees", "Auto Lease Note Payment", "Auto Repairs Maintenance", "Legal Professional Services"],
   ];
 
-  products.forEach(product => {
+  products.forEach(product => { 
     const rowData: string[] = [
         product.name,
         product.income.toString(),
