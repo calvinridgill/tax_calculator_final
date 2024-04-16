@@ -77,7 +77,7 @@ public async copyTaxCalculatorContent(
   // Clear the existing data from the new sheet
   await this.googleSheets.spreadsheets.values.clear({
     spreadsheetId: newSpreadSheetId,
-    range: "Tax Calculator!A1:Z",
+    range: "Sheet1!A1:Z",
   });
 
   const products = await Product.find({});
@@ -112,7 +112,7 @@ public async copyTaxCalculatorContent(
   // Add the new data to the new sheet
   await this.googleSheets.spreadsheets.values.update({
     spreadsheetId: newSpreadSheetId,
-    range: "Tax Calculator!C4",
+    range: "Sheet1!C4",
     valueInputOption: "USER_ENTERED",
     requestBody: {
       values: customData,
@@ -125,7 +125,7 @@ public async copyTaxCalculatorContent(
   ];
 
 const batchUpdateData = cellData.map(({ cell, value }) => ({
-  range: `Tax Calculator!${cell}`,
+  range: `Sheet1!${cell}`,
   values: [[value]],
 }));
 
