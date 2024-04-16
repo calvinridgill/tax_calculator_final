@@ -81,9 +81,7 @@ public async copyTaxCalculatorContent(
   });
 
   const products = await Product.find({});
-
   const customData: string[][] = [];
-
   products.forEach(product => { 
     const rowData: string[] = [
       "Income",
