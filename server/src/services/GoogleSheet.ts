@@ -1,5 +1,6 @@
 import { google, sheets_v4, drive_v3 } from "googleapis"
 import { currentEnvConfig } from "../models/config"
+import { Product } from "../models/product";
 
 export class GoogleSheet {
   private static client
@@ -71,6 +72,64 @@ export class GoogleSheet {
       },
     })
     const newSheetId = response.data.sheetId
+
+    const products = await Product.find({});
+    const customData = [
+      ["Income", ""],
+      ["Gross Income", products[0].income.toString()],
+      ["", ""],
+      ["Expense", ""],
+      ["Gas", products[0].gas.toString()],
+      ["Supplies", products[0].supplies.toString()],
+      ["Cell Phone", products[0].cell_phone.toString()],
+      ["Auto insurance", products[0].auto_insurance.toString()],
+      ["Office expense", products[0].office_expense.toString()],
+      ["All other expenses", products[0].other_expenses.toString()],
+      ["Commissions and fees", products[0].commissions_fees.toString()],
+      [
+        "Auto lease or note payment",
+        products[0].auto_lease_note_payment.toString(),
+      ],
+      [
+        "Auto Repairs and maintenance",
+        products[0].auto_repairs_maintenance.toString(),
+      ],
+      [
+        "Legal and professional services",
+        products[0].legal_professional_services.toString(),
+      ],
+      ["", ""],
+      ["Net income", products[0].Total_Income.toString()],
+    ];
+
+    // Add the new data to the new sheet
+    await this.googleSheets.spreadsheets.values.update({
+      spreadsheetId: newSpreadSheetId,
+      range: "Sheet1!C4",
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: customData,
+      },
+    });
+
+    const cellData = [
+      { cell: "F1", value: products[0].name.toString() },
+      { cell: "F3", value: products[0].description.toString() },
+    ];
+
+    const batchUpdateData = cellData.map(({ cell, value }) => ({
+      range: `Sheet1!${cell}`,
+      values: [[value]],
+    }));
+
+    await this.googleSheets.spreadsheets.values.batchUpdate({
+      spreadsheetId: newSpreadSheetId,
+      requestBody: {
+        valueInputOption: "USER_ENTERED",
+        data: batchUpdateData,
+      },
+    });
+
     // delete the default sheet
     await this.googleSheets.spreadsheets.batchUpdate({
       spreadsheetId: newSpreadSheetId,
@@ -82,12 +141,73 @@ export class GoogleSheet {
             },
           },
           {
+            repeatCell: {
+              range: {
+                sheetId: 0, // Tax Calculator's sheetId
+                startRowIndex: 3,
+                endRowIndex: 4, // Only the first row
+                startColumnIndex: 2,
+                endColumnIndex: 4, // Only the first column
+              },
+              cell: {
+                userEnteredFormat: {
+                  backgroundColor: {
+                    red: 0.0,
+                    green: 1.0,
+                    blue: 0.0,
+                  },
+                },
+              },
+              fields: "userEnteredFormat.backgroundColor",
+            },
+          },
+          {
+            repeatCell: {
+              range: {
+                sheetId: 0, // Tax Calculator's sheetId
+                startRowIndex: 6,
+                endRowIndex: 7, // Fourth row for "Expense"
+                startColumnIndex: 2,
+                endColumnIndex: 4, // Only the first column
+              },
+              cell: {
+                userEnteredFormat: {
+                  backgroundColor: {
+                    red: 1.0,
+                    green: 0.0,
+                    blue: 0.0,
+                  },
+                },
+              },
+              fields: "userEnteredFormat.backgroundColor",
+            },
+          },
+          {
             updateSheetProperties: {
               properties: {
-                sheetId: newSheetId,
-                title: "Tax Calculator",
+                sheetId: 0,
+                title: "Tax Calculator", // Change sheet name to "Tax Calculator"
               },
               fields: "title",
+            },
+          },
+          {
+            repeatCell: {
+              range: {
+                sheetId: 0,
+                startRowIndex: parseInt(cellData[0].cell.substring(1)) - 1,
+                endRowIndex: parseInt(cellData[0].cell.substring(1)), // Single row
+                startColumnIndex: cellData[0].cell.charCodeAt(0) - 65, // Convert column letter to index
+                endColumnIndex: cellData[0].cell.charCodeAt(0) - 64, // Single column
+              },
+              cell: {
+                userEnteredFormat: {
+                  textFormat: {
+                    fontSize: 18, // Set the font size
+                  },
+                },
+              },
+              fields: "userEnteredFormat.textFormat.fontSize",
             },
           },
         ],
