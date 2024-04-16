@@ -60,7 +60,7 @@ public async copyTaxCalculatorContent(
   originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
 
   // If newSpreadSheetId is not provided, create a new sheet
-  newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
+  // newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
 
   // Copy content from the original sheet to the new sheet
   const response = await this.googleSheets.spreadsheets.sheets.copyTo({
