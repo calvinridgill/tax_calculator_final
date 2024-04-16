@@ -152,7 +152,7 @@ await this.googleSheets.spreadsheets.batchUpdate({
             startRowIndex: 6,
             endRowIndex: 7, // Fourth row for "Expense"
             startColumnIndex: 2,
-            endColumnIndex: 3, // Only the first column
+            endColumnIndex: 4, // Only the first column
           },
           cell: {
             userEnteredFormat: {
