@@ -70,7 +70,7 @@ export class GoogleSheet {
 
     await this.googleSheets.spreadsheets.values.clear({
       spreadsheetId: newSpreadSheetId,
-      range: "Sheet2!A1:Z",
+      range: "Sheet1!A1:Z",
     });
 
     const products = await Product.find({});
@@ -133,10 +133,15 @@ export class GoogleSheet {
       spreadsheetId: newSpreadSheetId,
       requestBody: {
         requests: [
+        {
+            deleteSheet: {
+              sheetId: 0,
+            },
+          },
           {
             repeatCell: {
               range: {
-                sheetId: 0,
+                sheetId: newSheetId,
                 startRowIndex: 3,
                 endRowIndex: 4,
                 startColumnIndex: 2,
@@ -157,7 +162,7 @@ export class GoogleSheet {
           {
             repeatCell: {
               range: {
-                sheetId: 0,
+                sheetId: newSheetId,
                 startRowIndex: 6,
                 endRowIndex: 7,
                 startColumnIndex: 2,
@@ -178,7 +183,7 @@ export class GoogleSheet {
           {
             updateSheetProperties: {
               properties: {
-                sheetId: 0,
+                sheetId: newSheetId,
                 title: "Tax Calculator",
               },
               fields: "title",
@@ -187,7 +192,7 @@ export class GoogleSheet {
           {
             repeatCell: {
               range: {
-                sheetId: 0,
+                sheetId: newSheetId,
                 startRowIndex: parseInt(cellData[0].cell.substring(1)) - 1,
                 endRowIndex: parseInt(cellData[0].cell.substring(1)),
                 startColumnIndex: cellData[0].cell.charCodeAt(0) - 65,
