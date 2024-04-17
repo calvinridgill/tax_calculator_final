@@ -34,11 +34,44 @@ export class GoogleSheet {
     return new GoogleSheet();
   }
 
-  public async addCustomDataToOriginalSheet(newUserEmail: string): Promise<string> {
-    const originalSpreadSheetId = this.originalSpreadSheetId;
+  public async createGoogleSheet(title = "Tax Calculator"): Promise<string> {
+    const spreadsheet = await this.googleSheets.spreadsheets.create({
+      requestBody: {
+        properties: {
+          title,
+        },
+      },
+    });
+    return spreadsheet.data.spreadsheetId;
+  }
 
-    if (!originalSpreadSheetId)
+  public async copyTaxCalculatorContent(
+    newUserEmail: string,
+    originalSpreadSheetId?: string,
+    newSpreadSheetId?: string
+  ): Promise<string> {
+
+    if (!originalSpreadSheetId && !this.originalSpreadSheetId)
       throw new Error("originalSpreadSheetId is not defined");
+
+    originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
+
+    newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
+
+    const response = await this.googleSheets.spreadsheets.sheets.copyTo({
+      spreadsheetId: originalSpreadSheetId,
+      sheetId: 0,
+      requestBody: {
+        destinationSpreadsheetId: newSpreadSheetId,
+      },
+    });
+
+    const newSheetId = response.data.sheetId;
+
+    await this.googleSheets.spreadsheets.values.clear({
+      spreadsheetId: newSpreadSheetId,
+      range: "Sheet1!A1:Z",
+    });
 
     const products = await Product.find({});
     const customData = [
@@ -70,7 +103,7 @@ export class GoogleSheet {
     ];
 
     await this.googleSheets.spreadsheets.values.update({
-      spreadsheetId: originalSpreadSheetId,
+      spreadsheetId: newSpreadSheetId,
       range: "Sheet1!C4",
       valueInputOption: "USER_ENTERED",
       requestBody: {
@@ -89,13 +122,113 @@ export class GoogleSheet {
     }));
 
     await this.googleSheets.spreadsheets.values.batchUpdate({
-      spreadsheetId: originalSpreadSheetId,
+      spreadsheetId: newSpreadSheetId,
       requestBody: {
         valueInputOption: "USER_ENTERED",
         data: batchUpdateData,
       },
     });
 
-    return `Custom data added to original spreadsheet: https://docs.google.com/spreadsheets/d/${originalSpreadSheetId}/edit`;
+    await this.googleSheets.spreadsheets.batchUpdate({
+      spreadsheetId: newSpreadSheetId,
+      requestBody: {
+        requests: [
+          {
+            repeatCell: {
+              range: {
+                sheetId: 0,
+                startRowIndex: 3,
+                endRowIndex: 4,
+                startColumnIndex: 2,
+                endColumnIndex: 4,
+              },
+              cell: {
+                userEnteredFormat: {
+                  backgroundColor: {
+                    red: 0.0,
+                    green: 1.0,
+                    blue: 0.0,
+                  },
+                },
+              },
+              fields: "userEnteredFormat.backgroundColor",
+            },
+          },
+          {
+            repeatCell: {
+              range: {
+                sheetId: 0,
+                startRowIndex: 6,
+                endRowIndex: 7,
+                startColumnIndex: 2,
+                endColumnIndex: 4,
+              },
+              cell: {
+                userEnteredFormat: {
+                  backgroundColor: {
+                    red: 1.0,
+                    green: 0.0,
+                    blue: 0.0,
+                  },
+                },
+              },
+              fields: "userEnteredFormat.backgroundColor",
+            },
+          },
+          {
+            updateSheetProperties: {
+              properties: {
+                sheetId: 0,
+                title: "Tax Calculator",
+              },
+              fields: "title",
+            },
+          },
+          {
+            repeatCell: {
+              range: {
+                sheetId: 0,
+                startRowIndex: parseInt(cellData[0].cell.substring(1)) - 1,
+                endRowIndex: parseInt(cellData[0].cell.substring(1)),
+                startColumnIndex: cellData[0].cell.charCodeAt(0) - 65,
+                endColumnIndex: cellData[0].cell.charCodeAt(0) - 64, 
+              },
+              cell: {
+                userEnteredFormat: {
+                  textFormat: {
+                    fontSize: 18,
+                  },
+                },
+              },
+              fields: "userEnteredFormat.textFormat.fontSize",
+            },
+          },
+        ],
+      },
+    });
+
+    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
+
+    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
+  }
+
+  private async addWriterPermission(
+    spreadsheetId: string,
+    emailAddress: string
+  ) {
+    const drive: drive_v3.Drive = google.drive({
+      version: "v3",
+      auth: GoogleSheet.client,
+    });
+
+    await drive.permissions.create({
+      fileId: spreadsheetId,
+      sendNotificationEmail: false,
+      requestBody: {
+        role: "writer",
+        type: "user",
+        emailAddress: emailAddress,
+      },
+    });
   }
 }
