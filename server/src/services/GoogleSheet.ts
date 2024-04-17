@@ -134,30 +134,3 @@ export class GoogleSheet {
     });
   }
 }
-
-async function main() {
-  const googleSheetInstance = await GoogleSheet.createInstance();
-  const newSpreadSheetId = await googleSheetInstance.createGoogleSheet();
-  const newUserEmail = "user@example.com"; // Change to the desired email
-
-  const customData = [
-    ["Income", "", ""],
-    ["Gross Income", 29000, ""],
-    ["Expense", "", ""],
-    ["Car", 5000, ""],
-    ["Gas", 4000, ""],
-    ["Insurance", 2000, ""],
-    ["Net Income", 18000, ""]
-  ];
-
-  const range = "Sheet1!A1:C7";
-
-  try {
-    await googleSheetInstance.addCustomData(newSpreadSheetId, range, customData);
-    console.log("Custom data added successfully!");
-  } catch (error) {
-    console.error("Error adding custom data:", error);
-  }
-}
-
-main();
