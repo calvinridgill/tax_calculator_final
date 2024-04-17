@@ -68,12 +68,26 @@ export class GoogleSheet {
 
     const newSheetId = response.data.sheetId;
 
+    await this.updateTaxCalculatorContent(newSpreadSheetId);
+
+    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
+
+    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
+  }
+
+  public async updateTaxCalculatorContent(
+    newSpreadSheetId: string,
+  ): Promise<void> {
+    // Clear existing data
     await this.googleSheets.spreadsheets.values.clear({
       spreadsheetId: newSpreadSheetId,
       range: "Sheet1!A1:Z",
     });
 
+    // Fetch new data, for example, from the Product model
     const products = await Product.find({});
+
+    // Prepare new data
     const customData = [
       ["Income", ""],
       ["Gross Income", products[0].income.toString()],
@@ -102,6 +116,7 @@ export class GoogleSheet {
       ["Net income", products[0].Total_Income.toString()],
     ];
 
+    // Update the sheet with new data
     await this.googleSheets.spreadsheets.values.update({
       spreadsheetId: newSpreadSheetId,
       range: "Sheet1!C4",
@@ -110,111 +125,6 @@ export class GoogleSheet {
         values: customData,
       },
     });
-
-    const cellData = [
-      { cell: "F1", value: products[0].name.toString() },
-      { cell: "F3", value: products[0].description.toString() },
-    ];
-
-    const batchUpdateData = cellData.map(({ cell, value }) => ({
-      range: `Sheet1!${cell}`,
-      values: [[value]],
-    }));
-
-    await this.googleSheets.spreadsheets.values.batchUpdate({
-      spreadsheetId: newSpreadSheetId,
-      requestBody: {
-        valueInputOption: "USER_ENTERED",
-        data: batchUpdateData,
-      },
-    });
-
-    await this.googleSheets.spreadsheets.batchUpdate({
-      spreadsheetId: newSpreadSheetId,
-      requestBody: {
-        requests: [
-        {
-            deleteSheet: {
-              sheetId: 0,
-            },
-          },
-          {
-            repeatCell: {
-              range: {
-                sheetId: newSheetId,
-                startRowIndex: 3,
-                endRowIndex: 4,
-                startColumnIndex: 2,
-                endColumnIndex: 4,
-              },
-              cell: {
-                userEnteredFormat: {
-                  backgroundColor: {
-                    red: 0.0,
-                    green: 1.0,
-                    blue: 0.0,
-                  },
-                },
-              },
-              fields: "userEnteredFormat.backgroundColor",
-            },
-          },
-          {
-            repeatCell: {
-              range: {
-                sheetId: newSheetId,
-                startRowIndex: 6,
-                endRowIndex: 7,
-                startColumnIndex: 2,
-                endColumnIndex: 4,
-              },
-              cell: {
-                userEnteredFormat: {
-                  backgroundColor: {
-                    red: 1.0,
-                    green: 0.0,
-                    blue: 0.0,
-                  },
-                },
-              },
-              fields: "userEnteredFormat.backgroundColor",
-            },
-          },
-          {
-            updateSheetProperties: {
-              properties: {
-                sheetId: newSheetId,
-                title: "Tax Calculator",
-              },
-              fields: "title",
-            },
-          },
-          {
-            repeatCell: {
-              range: {
-                sheetId: newSheetId,
-                startRowIndex: parseInt(cellData[0].cell.substring(1)) - 1,
-                endRowIndex: parseInt(cellData[0].cell.substring(1)),
-                startColumnIndex: cellData[0].cell.charCodeAt(0) - 65,
-                endColumnIndex: cellData[0].cell.charCodeAt(0) - 64, 
-              },
-              cell: {
-                userEnteredFormat: {
-                  textFormat: {
-                    fontSize: 18,
-                  },
-                },
-              },
-              fields: "userEnteredFormat.textFormat.fontSize",
-            },
-          },
-        ],
-      },
-    });
-
-    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
-
-    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
   }
 
   private async addWriterPermission(
