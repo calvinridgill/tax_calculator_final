@@ -45,11 +45,15 @@ export class GoogleSheet {
     return spreadsheet.data.spreadsheetId;
   }
 
-  public async copyTaxCalculatorContent(newUserEmail: string): Promise<string> {
-    const originalSpreadSheetId = this.originalSpreadSheetId;
+  public async copyTaxCalculatorContent(
+    newUserEmail: string,
+    originalSpreadSheetId?: string
+  ): Promise<string> {
 
-    if (!originalSpreadSheetId)
+    if (!originalSpreadSheetId && !this.originalSpreadSheetId)
       throw new Error("originalSpreadSheetId is not defined");
+
+    originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
 
     const products = await Product.find({});
     const customData = [
@@ -189,6 +193,8 @@ export class GoogleSheet {
 
     return `https://docs.google.com/spreadsheets/d/${originalSpreadSheetId}/edit`;
   }
+
+
   private async addWriterPermission(
     spreadsheetId: string,
     emailAddress: string
