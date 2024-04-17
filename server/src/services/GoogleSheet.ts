@@ -31,7 +31,8 @@ export class GoogleSheet {
 
   static async createInstance() {
     await GoogleSheet.initializeClient();
-    return new GoogleSheet();
+    const instance = new GoogleSheet();
+    return instance;
   }
 
   public async createGoogleSheet(title = "Tax Calculator"): Promise<string> {
@@ -49,13 +50,17 @@ export class GoogleSheet {
     newUserEmail: string,
     originalSpreadSheetId?: string
   ): Promise<string> {
-
+    // Check if originalSpreadSheetId is provided or use the default one
     if (!originalSpreadSheetId && !this.originalSpreadSheetId)
       throw new Error("originalSpreadSheetId is not defined");
 
-    originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
+    originalSpreadSheetId =
+      originalSpreadSheetId || this.originalSpreadSheetId;
 
+    // Fetch products data
     const products = await Product.find({});
+
+    // Define custom data
     const customData = [
       ["Income", ""],
       ["Gross Income", products[0].income.toString()],
@@ -84,15 +89,6 @@ export class GoogleSheet {
       ["Net income", products[0].Total_Income.toString()],
     ];
 
-    await this.googleSheets.spreadsheets.values.update({
-      spreadsheetId: originalSpreadSheetId,
-      range: "Sheet1!C4",
-      valueInputOption: "USER_ENTERED",
-      requestBody: {
-        values: customData,
-      },
-    });
-
     const cellData = [
       { cell: "F1", value: products[0].name.toString() },
       { cell: "F3", value: products[0].description.toString() },
@@ -103,14 +99,17 @@ export class GoogleSheet {
       values: [[value]],
     }));
 
-    await this.googleSheets.spreadsheets.values.batchUpdate({
+    // Update original spreadsheet with custom data
+    await this.googleSheets.spreadsheets.values.update({
       spreadsheetId: originalSpreadSheetId,
+      range: "Sheet1!C4", // Update the range accordingly
+      valueInputOption: "USER_ENTERED",
       requestBody: {
-        valueInputOption: "USER_ENTERED",
-        data: batchUpdateData,
+        values: customData,
       },
     });
 
+    // Apply formatting and other updates to the original sheet
     await this.googleSheets.spreadsheets.batchUpdate({
       spreadsheetId: originalSpreadSheetId,
       requestBody: {
@@ -173,7 +172,7 @@ export class GoogleSheet {
                 startRowIndex: parseInt(cellData[0].cell.substring(1)) - 1,
                 endRowIndex: parseInt(cellData[0].cell.substring(1)),
                 startColumnIndex: cellData[0].cell.charCodeAt(0) - 65,
-                endColumnIndex: cellData[0].cell.charCodeAt(0) - 64, 
+                endColumnIndex: cellData[0].cell.charCodeAt(0) - 64,
               },
               cell: {
                 userEnteredFormat: {
@@ -189,11 +188,12 @@ export class GoogleSheet {
       },
     });
 
+    // Assign permission to the user to view the sheet
     await this.addWriterPermission(originalSpreadSheetId, newUserEmail);
 
+    // Return the URL of the original spreadsheet
     return `https://docs.google.com/spreadsheets/d/${originalSpreadSheetId}/edit`;
   }
-
 
   private async addWriterPermission(
     spreadsheetId: string,
@@ -208,7 +208,7 @@ export class GoogleSheet {
       fileId: spreadsheetId,
       sendNotificationEmail: false,
       requestBody: {
-        role: "writer",
+        role: "writer", // Can be 'reader', 'writer', or 'owner'
         type: "user",
         emailAddress: emailAddress,
       },
