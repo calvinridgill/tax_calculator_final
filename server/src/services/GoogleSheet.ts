@@ -48,7 +48,8 @@ export class GoogleSheet {
   public async copyTaxCalculatorContent(
     newUserEmail: string,
     originalSpreadSheetId?: string,
-    newSpreadSheetId?: string
+    newSpreadSheetId?: string,
+    customData?: any[][]
   ): Promise<string> {
     if (!originalSpreadSheetId && !this.originalSpreadSheetId)
       throw new Error("originalSpreadSheetId is not defined");
@@ -67,144 +68,16 @@ export class GoogleSheet {
 
     const newSheetId = response.data.sheetId;
 
-    await this.googleSheets.spreadsheets.values.clear({
-      spreadsheetId: newSpreadSheetId,
-      range: "Sheet1!A1:Z",
-    });
-
-    const products = await Product.find({});
-    const customData = [
-      ["Income", ""],
-      ["Gross Income", products[0].income.toString()],
-      ["", ""],
-      ["Expense", ""],
-      ["Gas", products[0].gas.toString()],
-      ["Supplies", products[0].supplies.toString()],
-      ["Cell Phone", products[0].cell_phone.toString()],
-      ["Auto insurance", products[0].auto_insurance.toString()],
-      ["Office expense", products[0].office_expense.toString()],
-      ["All other expenses", products[0].other_expenses.toString()],
-      ["Commissions and fees", products[0].commissions_fees.toString()],
-      [
-        "Auto lease or note payment",
-        products[0].auto_lease_note_payment.toString(),
-      ],
-      [
-        "Auto Repairs and maintenance",
-        products[0].auto_repairs_maintenance.toString(),
-      ],
-      [
-        "Legal and professional services",
-        products[0].legal_professional_services.toString(),
-      ],
-      ["", ""],
-      ["Net income", products[0].Total_Income.toString()],
-    ];
-
-    await this.googleSheets.spreadsheets.values.update({
-      spreadsheetId: newSpreadSheetId,
-      range: "Sheet1!C4",
-      valueInputOption: "USER_ENTERED",
-      requestBody: {
-        values: customData,
-      },
-    });
-
-    const cellData = [
-      { cell: "F1", value: products[0].name.toString() },
-      { cell: "F3", value: products[0].description.toString() },
-    ];
-
-    const batchUpdateData = cellData.map(({ cell, value }) => ({
-      range: `Sheet1!${cell}`,
-      values: [[value]],
-    }));
-
-    await this.googleSheets.spreadsheets.values.batchUpdate({
-      spreadsheetId: newSpreadSheetId,
-      requestBody: {
+    if (customData && customData.length > 0) {
+      await this.googleSheets.spreadsheets.values.update({
+        spreadsheetId: newSpreadSheetId,
+        range: "Sheet1!A1",
         valueInputOption: "USER_ENTERED",
-        data: batchUpdateData,
-      },
-    });
-
-    await this.googleSheets.spreadsheets.batchUpdate({
-      spreadsheetId: newSpreadSheetId,
-      requestBody: {
-        requests: [
-          {
-            repeatCell: {
-              range: {
-                sheetId: 0,
-                startRowIndex: 3,
-                endRowIndex: 4,
-                startColumnIndex: 2,
-                endColumnIndex: 4,
-              },
-              cell: {
-                userEnteredFormat: {
-                  backgroundColor: {
-                    red: 0.0,
-                    green: 1.0,
-                    blue: 0.0,
-                  },
-                },
-              },
-              fields: "userEnteredFormat.backgroundColor",
-            },
-          },
-          {
-            repeatCell: {
-              range: {
-                sheetId: 0,
-                startRowIndex: 6,
-                endRowIndex: 7,
-                startColumnIndex: 2,
-                endColumnIndex: 4,
-              },
-              cell: {
-                userEnteredFormat: {
-                  backgroundColor: {
-                    red: 1.0,
-                    green: 0.0,
-                    blue: 0.0,
-                  },
-                },
-              },
-              fields: "userEnteredFormat.backgroundColor",
-            },
-          },
-          {
-            updateSheetProperties: {
-              properties: {
-                sheetId: 0,
-                title: "Tax Calculator",
-              },
-              fields: "title",
-            },
-          },
-          {
-            repeatCell: {
-              range: {
-                sheetId: 0,
-                startRowIndex: parseInt(cellData[0].cell.substring(1)) - 1,
-                endRowIndex: parseInt(cellData[0].cell.substring(1)),
-                startColumnIndex: cellData[0].cell.charCodeAt(0) - 65,
-                endColumnIndex: cellData[0].cell.charCodeAt(0) - 64,
-              },
-              cell: {
-                userEnteredFormat: {
-                  textFormat: {
-                    fontSize: 18,
-                  },
-                },
-              },
-              fields: "userEnteredFormat.textFormat.fontSize",
-            },
-          },
-        ],
-      },
-    });
+        requestBody: {
+          values: customData,
+        },
+      });
+    }
 
     await this.addWriterPermission(newSpreadSheetId, newUserEmail);
 
@@ -231,3 +104,20 @@ export class GoogleSheet {
     });
   }
 }
+
+// Example usage
+(async () => {
+  const googleSheet = await GoogleSheet.createInstance();
+  const customData = [
+    ["Custom Value 1", "Custom Value 2"],
+    ["Custom Value 3", "Custom Value 4"],
+    // Add more rows as needed
+  ];
+  const newSpreadsheetUrl = await googleSheet.copyTaxCalculatorContent(
+    "newUser@example.com",
+    "originalSpreadsheetId",
+    undefined, // If you want to create a new spreadsheet
+    customData
+  );
+  console.log("New spreadsheet URL:", newSpreadsheetUrl);
+})();
