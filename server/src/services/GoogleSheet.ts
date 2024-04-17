@@ -68,10 +68,10 @@ export class GoogleSheet {
 
     const newSheetId = response.data.sheetId;
 
-    await this.googleSheets.spreadsheets.values.clear({
-      spreadsheetId: newSpreadSheetId,
-      range: "Sheet1!A1:Z",
-    });
+    // await this.googleSheets.spreadsheets.values.clear({
+    //   spreadsheetId: newSpreadSheetId,
+    //   range: "Sheet1!A1:Z",
+    // });
 
     const products = await Product.find({});
     const customData = [
@@ -134,9 +134,14 @@ export class GoogleSheet {
       requestBody: {
         requests: [
           {
+            deleteSheet: {
+              sheetId: 1,
+            },
+          },
+          {
             repeatCell: {
               range: {
-                sheetId: 0,
+                sheetId: newSheetId,
                 startRowIndex: 3,
                 endRowIndex: 4,
                 startColumnIndex: 2,
@@ -157,7 +162,7 @@ export class GoogleSheet {
           {
             repeatCell: {
               range: {
-                sheetId: 0,
+                sheetId: newSheetId,
                 startRowIndex: 6,
                 endRowIndex: 7,
                 startColumnIndex: 2,
@@ -178,7 +183,7 @@ export class GoogleSheet {
           {
             updateSheetProperties: {
               properties: {
-                sheetId: 0,
+                sheetId: newSheetId,
                 title: "Tax Calculator",
               },
               fields: "title",
@@ -187,7 +192,7 @@ export class GoogleSheet {
           {
             repeatCell: {
               range: {
-                sheetId: 0,
+                sheetId: newSheetId,
                 startRowIndex: parseInt(cellData[0].cell.substring(1)) - 1,
                 endRowIndex: parseInt(cellData[0].cell.substring(1)),
                 startColumnIndex: cellData[0].cell.charCodeAt(0) - 65,
