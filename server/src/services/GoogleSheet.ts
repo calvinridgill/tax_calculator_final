@@ -1,6 +1,7 @@
 import { google, sheets_v4, drive_v3 } from "googleapis";
 import { currentEnvConfig } from "../models/config";
 import { Product } from "../models/product";
+import { Order } from "../models/order"; // Import your Order model
 
 export class GoogleSheet {
   private static client;
@@ -45,8 +46,14 @@ export class GoogleSheet {
     return spreadsheet.data.spreadsheetId;
   }
 
+  private async createOrderInOrderTable(orderDetails: any): Promise<void> {
+    // Create the order in the order table
+    await Order.create(orderDetails);
+  }
+
   public async copyTaxCalculatorContent(
     newUserEmail: string,
+    orderDetails: any,
     originalSpreadSheetId?: string,
     newSpreadSheetId?: string
   ): Promise<string> {
@@ -57,11 +64,14 @@ export class GoogleSheet {
 
     newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
 
+    // Create the order in the order table
+    await this.createOrderInOrderTable(orderDetails);
+
     // Copy content to the new spreadsheet
     await this.copyContent(originalSpreadSheetId, newSpreadSheetId);
 
     // Update the new spreadsheet with custom data
-    const newSheetId = await this.updateSpreadsheetWithData(newSpreadSheetId);
+    await this.updateSpreadsheetWithData(newSpreadSheetId);
 
     // Add writer permission for the new spreadsheet
     await this.addWriterPermission(newSpreadSheetId, newUserEmail);
@@ -69,7 +79,7 @@ export class GoogleSheet {
     // Update the original spreadsheet with custom data
     await this.updateSpreadsheetWithData(originalSpreadSheetId);
 
-    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
+    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit`;
   }
 
   private async copyContent(originalSpreadSheetId: string, newSpreadSheetId: string) {
@@ -82,7 +92,7 @@ export class GoogleSheet {
     });
   }
 
-  private async updateSpreadsheetWithData(spreadsheetId: string): Promise<number> {
+  private async updateSpreadsheetWithData(spreadsheetId: string): Promise<void> {
     const products = await Product.find({});
     const customData = [
       ["Income", ""],
@@ -207,8 +217,6 @@ export class GoogleSheet {
         ],
       },
     });
-
-    return 0; // Return the new sheet ID
   }
 
   private async addWriterPermission(
