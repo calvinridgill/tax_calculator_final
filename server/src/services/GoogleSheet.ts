@@ -68,144 +68,43 @@ export class GoogleSheet {
 
     const newSheetId = response.data.sheetId;
 
+    // Clear existing values in the new sheet
     await this.googleSheets.spreadsheets.values.clear({
       spreadsheetId: newSpreadSheetId,
       range: "Sheet1!A1:Z",
     });
 
-    const products = await Product.find({});
-    const customData = [
-      ["Income", ""],
-      ["Gross Income", products[0].income.toString()],
-      ["", ""],
-      ["Expense", ""],
-      ["Gas", products[0].gas.toString()],
-      ["Supplies", products[0].supplies.toString()],
-      ["Cell Phone", products[0].cell_phone.toString()],
-      ["Auto insurance", products[0].auto_insurance.toString()],
-      ["Office expense", products[0].office_expense.toString()],
-      ["All other expenses", products[0].other_expenses.toString()],
-      ["Commissions and fees", products[0].commissions_fees.toString()],
-      [
-        "Auto lease or note payment",
-        products[0].auto_lease_note_payment.toString(),
-      ],
-      [
-        "Auto Repairs and maintenance",
-        products[0].auto_repairs_maintenance.toString(),
-      ],
-      [
-        "Legal and professional services",
-        products[0].legal_professional_services.toString(),
-      ],
-      ["", ""],
-      ["Net income", products[0].Total_Income.toString()],
-    ];
+    // Retrieve original sheet formulas
+    const originalFormulas = await this.getOriginalSheetFormulas(originalSpreadSheetId);
 
-    await this.googleSheets.spreadsheets.values.update({
-      spreadsheetId: newSpreadSheetId,
-      range: "Sheet1!C4",
-      valueInputOption: "USER_ENTERED",
-      requestBody: {
-        values: customData,
-      },
-    });
-
-    const cellData = [
-      { cell: "F1", value: products[0].name.toString() },
-      { cell: "F3", value: products[0].description.toString() },
-    ];
-
-    const batchUpdateData = cellData.map(({ cell, value }) => ({
-      range: `Sheet1!${cell}`,
-      values: [[value]],
-    }));
-
-    await this.googleSheets.spreadsheets.values.batchUpdate({
-      spreadsheetId: newSpreadSheetId,
-      requestBody: {
-        valueInputOption: "USER_ENTERED",
-        data: batchUpdateData,
-      },
-    });
-
-    await this.googleSheets.spreadsheets.batchUpdate({
-      spreadsheetId: newSpreadSheetId,
-      requestBody: {
-        requests: [
-          {
-            repeatCell: {
-              range: {
-                sheetId: 0,
-                startRowIndex: 3,
-                endRowIndex: 4,
-                startColumnIndex: 2,
-                endColumnIndex: 4,
-              },
-              cell: {
-                userEnteredFormat: {
-                  backgroundColor: {
-                    red: 0.0,
-                    green: 1.0,
-                    blue: 0.0,
+    // Apply the formulas to the corresponding cells in the new sheet
+    for (let rowIndex = 0; rowIndex < originalFormulas.length; rowIndex++) {
+      for (let colIndex = 0; colIndex < originalFormulas[rowIndex].length; colIndex++) {
+        const formula = originalFormulas[rowIndex][colIndex];
+        if (formula) {
+          const range = `Sheet1!${String.fromCharCode(65 + colIndex)}${rowIndex + 1}`;
+          await this.googleSheets.spreadsheets.batchUpdate({
+            spreadsheetId: newSpreadSheetId,
+            requestBody: {
+              requests: [
+                {
+                  pasteData: {
+                    data: `=${formula}`,
+                    coordinate: {
+                      sheetId: 0,
+                      rowIndex: rowIndex,
+                      columnIndex: colIndex,
+                    },
+                    type: "PASTE_FORMULA",
+                    delimiter: ",",
                   },
                 },
-              },
-              fields: "userEnteredFormat.backgroundColor",
+              ],
             },
-          },
-          {
-            repeatCell: {
-              range: {
-                sheetId: 0,
-                startRowIndex: 6,
-                endRowIndex: 7,
-                startColumnIndex: 2,
-                endColumnIndex: 4,
-              },
-              cell: {
-                userEnteredFormat: {
-                  backgroundColor: {
-                    red: 1.0,
-                    green: 0.0,
-                    blue: 0.0,
-                  },
-                },
-              },
-              fields: "userEnteredFormat.backgroundColor",
-            },
-          },
-          {
-            updateSheetProperties: {
-              properties: {
-                sheetId: 0,
-                title: "Tax Calculator",
-              },
-              fields: "title",
-            },
-          },
-          {
-            repeatCell: {
-              range: {
-                sheetId: 0,
-                startRowIndex: parseInt(cellData[0].cell.substring(1)) - 1,
-                endRowIndex: parseInt(cellData[0].cell.substring(1)),
-                startColumnIndex: cellData[0].cell.charCodeAt(0) - 65,
-                endColumnIndex: cellData[0].cell.charCodeAt(0) - 64, 
-              },
-              cell: {
-                userEnteredFormat: {
-                  textFormat: {
-                    fontSize: 18,
-                  },
-                },
-              },
-              fields: "userEnteredFormat.textFormat.fontSize",
-            },
-          },
-        ],
-      },
-    });
+          });
+        }
+      }
+    }
 
     await this.addWriterPermission(newSpreadSheetId, newUserEmail);
 
@@ -230,5 +129,33 @@ export class GoogleSheet {
         emailAddress: emailAddress,
       },
     });
+  }
+
+  private async getOriginalSheetFormulas(spreadsheetId: string): Promise<string[][]> {
+    const response = await this.googleSheets.spreadsheets.get({
+      spreadsheetId: spreadsheetId,
+      ranges: ["Sheet1!A1:Z"],
+    });
+
+    // Extract formulas from the original sheet
+    const originalValues = response.data.sheets[0].data[0].rowData;
+    const originalFormulas = [];
+    if (originalValues) {
+      for (const row of originalValues) {
+        const rowFormulas = [];
+        if (row.values) {
+          for (const cell of row.values) {
+            if (cell && cell.userEnteredValue && cell.userEnteredValue.formulaValue) {
+              rowFormulas.push(cell.userEnteredValue.formulaValue);
+            } else {
+              rowFormulas.push(null);
+            }
+          }
+        }
+        originalFormulas.push(rowFormulas);
+      }
+    }
+
+    return originalFormulas;
   }
 }
