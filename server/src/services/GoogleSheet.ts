@@ -1,7 +1,6 @@
 import { google, sheets_v4, drive_v3 } from "googleapis";
 import { currentEnvConfig } from "../models/config";
 import { Product } from "../models/product";
-import { Order } from "../models/order"; // Import your Order model
 
 export class GoogleSheet {
   private static client;
@@ -46,17 +45,12 @@ export class GoogleSheet {
     return spreadsheet.data.spreadsheetId;
   }
 
-  private async createOrderInOrderTable(orderDetails: any): Promise<void> {
-    // Create the order in the order table
-    await Order.create(orderDetails);
-  }
-
   public async copyTaxCalculatorContent(
     newUserEmail: string,
-    orderDetails: any,
     originalSpreadSheetId?: string,
     newSpreadSheetId?: string
   ): Promise<string> {
+
     if (!originalSpreadSheetId && !this.originalSpreadSheetId)
       throw new Error("originalSpreadSheetId is not defined");
 
@@ -64,25 +58,6 @@ export class GoogleSheet {
 
     newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
 
-    // Create the order in the order table
-    await this.createOrderInOrderTable(orderDetails);
-
-    // Copy content to the new spreadsheet
-    await this.copyContent(originalSpreadSheetId, newSpreadSheetId);
-
-    // Update the new spreadsheet with custom data
-    await this.updateSpreadsheetWithData(newSpreadSheetId);
-
-    // Add writer permission for the new spreadsheet
-    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
-
-    // Update the original spreadsheet with custom data
-    await this.updateSpreadsheetWithData(originalSpreadSheetId);
-
-    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit`;
-  }
-
-  private async copyContent(originalSpreadSheetId: string, newSpreadSheetId: string) {
     const response = await this.googleSheets.spreadsheets.sheets.copyTo({
       spreadsheetId: originalSpreadSheetId,
       sheetId: 0,
@@ -90,9 +65,14 @@ export class GoogleSheet {
         destinationSpreadsheetId: newSpreadSheetId,
       },
     });
-  }
 
-  private async updateSpreadsheetWithData(spreadsheetId: string): Promise<void> {
+    const newSheetId = response.data.sheetId;
+
+    await this.googleSheets.spreadsheets.values.clear({
+      spreadsheetId: newSpreadSheetId,
+      range: "Sheet1!A1:Z",
+    });
+
     const products = await Product.find({});
     const customData = [
       ["Income", ""],
@@ -106,15 +86,24 @@ export class GoogleSheet {
       ["Office expense", products[0].office_expense.toString()],
       ["All other expenses", products[0].other_expenses.toString()],
       ["Commissions and fees", products[0].commissions_fees.toString()],
-      ["Auto lease or note payment", products[0].auto_lease_note_payment.toString()],
-      ["Auto Repairs and maintenance", products[0].auto_repairs_maintenance.toString()],
-      ["Legal and professional services", products[0].legal_professional_services.toString()],
+      [
+        "Auto lease or note payment",
+        products[0].auto_lease_note_payment.toString(),
+      ],
+      [
+        "Auto Repairs and maintenance",
+        products[0].auto_repairs_maintenance.toString(),
+      ],
+      [
+        "Legal and professional services",
+        products[0].legal_professional_services.toString(),
+      ],
       ["", ""],
       ["Net income", products[0].Total_Income.toString()],
     ];
 
     await this.googleSheets.spreadsheets.values.update({
-      spreadsheetId: spreadsheetId,
+      spreadsheetId: newSpreadSheetId,
       range: "Sheet1!C4",
       valueInputOption: "USER_ENTERED",
       requestBody: {
@@ -133,7 +122,7 @@ export class GoogleSheet {
     }));
 
     await this.googleSheets.spreadsheets.values.batchUpdate({
-      spreadsheetId: spreadsheetId,
+      spreadsheetId: newSpreadSheetId,
       requestBody: {
         valueInputOption: "USER_ENTERED",
         data: batchUpdateData,
@@ -141,7 +130,7 @@ export class GoogleSheet {
     });
 
     await this.googleSheets.spreadsheets.batchUpdate({
-      spreadsheetId: spreadsheetId,
+      spreadsheetId: newSpreadSheetId,
       requestBody: {
         requests: [
           {
@@ -217,6 +206,10 @@ export class GoogleSheet {
         ],
       },
     });
+
+    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
+
+    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
   }
 
   private async addWriterPermission(
