@@ -2,12 +2,12 @@ import { google, sheets_v4, drive_v3 } from "googleapis";
 import { currentEnvConfig } from "../models/config";
 import { Product } from "../models/product";
 
-class GoogleSheet {
+export class GoogleSheet {
   private static client;
   private googleSheets: sheets_v4.Sheets;
   private originalSpreadSheetId: string;
 
-  constructor() {
+  private constructor() {
     this.googleSheets = google.sheets({
       version: "v4",
       auth: GoogleSheet.client,
@@ -16,7 +16,7 @@ class GoogleSheet {
   }
 
   private static async initializeClient() {
-    if (!GoogleSheet.client) {
+    if (!this.client) {
       const auth = new google.auth.GoogleAuth({
         keyFile: "tax-calculator-new-391013-37b0d1adaaf9.json",
         scopes: [
@@ -25,7 +25,7 @@ class GoogleSheet {
           "https://www.googleapis.com/auth/spreadsheets",
         ],
       });
-      GoogleSheet.client = await auth.getClient();
+      this.client = await auth.getClient();
     }
   }
 
@@ -34,44 +34,12 @@ class GoogleSheet {
     return new GoogleSheet();
   }
 
-  async addCustomDataToOriginalSheet(customData: any[][]): Promise<void> {
-    await this.googleSheets.spreadsheets.values.update({
-      spreadsheetId: this.originalSpreadSheetId,
-      range: "Sheet1!A1",
-      valueInputOption: "USER_ENTERED",
-      requestBody: {
-        values: customData,
-      },
-    });
-  }
+  public async addCustomDataToOriginalSheet(newUserEmail: string): Promise<string> {
+    const originalSpreadSheetId = this.originalSpreadSheetId;
 
-  async addWriterPermission(
-    spreadsheetId: string,
-    emailAddress: string
-  ) {
-    const drive: drive_v3.Drive = google.drive({
-      version: "v3",
-      auth: GoogleSheet.client,
-    });
+    if (!originalSpreadSheetId)
+      throw new Error("originalSpreadSheetId is not defined");
 
-    await drive.permissions.create({
-      fileId: spreadsheetId,
-      sendNotificationEmail: false,
-      requestBody: {
-        role: "writer",
-        type: "user",
-        emailAddress: emailAddress,
-      },
-    });
-  }
-}
-
-// Example usage
-(async () => {
-  try {
-    const googleSheet = await GoogleSheet.createInstance();
-    
-    // Fetch custom data
     const products = await Product.find({});
     const customData = [
       ["Income", ""],
@@ -101,12 +69,33 @@ class GoogleSheet {
       ["Net income", products[0].Total_Income.toString()],
     ];
 
-    // Add custom data to the original sheet
-    await googleSheet.addCustomDataToOriginalSheet(customData);
+    await this.googleSheets.spreadsheets.values.update({
+      spreadsheetId: originalSpreadSheetId,
+      range: "Sheet1!C4",
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: customData,
+      },
+    });
 
-    // Add permission to the original spreadsheet
-    await googleSheet.addWriterPermission(currentEnvConfig.ORIGINAL_SPREADSHEET_ID, "newUser@example.com");
-  } catch (error) {
-    console.error("An error occurred:", error);
+    const cellData = [
+      { cell: "F1", value: products[0].name.toString() },
+      { cell: "F3", value: products[0].description.toString() },
+    ];
+
+    const batchUpdateData = cellData.map(({ cell, value }) => ({
+      range: `Sheet1!${cell}`,
+      values: [[value]],
+    }));
+
+    await this.googleSheets.spreadsheets.values.batchUpdate({
+      spreadsheetId: originalSpreadSheetId,
+      requestBody: {
+        valueInputOption: "USER_ENTERED",
+        data: batchUpdateData,
+      },
+    });
+
+    return `Custom data added to original spreadsheet: https://docs.google.com/spreadsheets/d/${originalSpreadSheetId}/edit`;
   }
-})();
+}
