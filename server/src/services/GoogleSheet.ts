@@ -134,11 +134,6 @@ export class GoogleSheet {
       requestBody: {
         requests: [
           {
-            deleteSheet: {
-              sheetId: 1,
-            },
-          },
-          {
             repeatCell: {
               range: {
                 sheetId: 0,
