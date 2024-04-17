@@ -31,8 +31,7 @@ export class GoogleSheet {
 
   static async createInstance() {
     await GoogleSheet.initializeClient();
-    const instance = new GoogleSheet();
-    return instance;
+    return new GoogleSheet();
   }
 
   public async createGoogleSheet(title = "Tax Calculator"): Promise<string> {
@@ -48,19 +47,32 @@ export class GoogleSheet {
 
   public async copyTaxCalculatorContent(
     newUserEmail: string,
-    originalSpreadSheetId?: string
+    originalSpreadSheetId?: string,
+    newSpreadSheetId?: string
   ): Promise<string> {
-    // Check if originalSpreadSheetId is provided or use the default one
     if (!originalSpreadSheetId && !this.originalSpreadSheetId)
       throw new Error("originalSpreadSheetId is not defined");
 
-    originalSpreadSheetId =
-      originalSpreadSheetId || this.originalSpreadSheetId;
+    originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
 
-    // Fetch products data
+    newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
+
+    const response = await this.googleSheets.spreadsheets.sheets.copyTo({
+      spreadsheetId: originalSpreadSheetId,
+      sheetId: 0,
+      requestBody: {
+        destinationSpreadsheetId: newSpreadSheetId,
+      },
+    });
+
+    const newSheetId = response.data.sheetId;
+
+    await this.googleSheets.spreadsheets.values.clear({
+      spreadsheetId: newSpreadSheetId,
+      range: "Sheet1!A1:Z",
+    });
+
     const products = await Product.find({});
-
-    // Define custom data
     const customData = [
       ["Income", ""],
       ["Gross Income", products[0].income.toString()],
@@ -89,6 +101,15 @@ export class GoogleSheet {
       ["Net income", products[0].Total_Income.toString()],
     ];
 
+    await this.googleSheets.spreadsheets.values.update({
+      spreadsheetId: newSpreadSheetId,
+      range: "Sheet1!C4",
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: customData,
+      },
+    });
+
     const cellData = [
       { cell: "F1", value: products[0].name.toString() },
       { cell: "F3", value: products[0].description.toString() },
@@ -99,19 +120,16 @@ export class GoogleSheet {
       values: [[value]],
     }));
 
-    // Update original spreadsheet with custom data
-    await this.googleSheets.spreadsheets.values.update({
-      spreadsheetId: originalSpreadSheetId,
-      range: "Sheet1!C4", // Update the range accordingly
-      valueInputOption: "USER_ENTERED",
+    await this.googleSheets.spreadsheets.values.batchUpdate({
+      spreadsheetId: newSpreadSheetId,
       requestBody: {
-        values: customData,
+        valueInputOption: "USER_ENTERED",
+        data: batchUpdateData,
       },
     });
 
-    // Apply formatting and other updates to the original sheet
     await this.googleSheets.spreadsheets.batchUpdate({
-      spreadsheetId: originalSpreadSheetId,
+      spreadsheetId: newSpreadSheetId,
       requestBody: {
         requests: [
           {
@@ -188,11 +206,9 @@ export class GoogleSheet {
       },
     });
 
-    // Assign permission to the user to view the sheet
-    await this.addWriterPermission(originalSpreadSheetId, newUserEmail);
+    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
 
-    // Return the URL of the original spreadsheet
-    return `https://docs.google.com/spreadsheets/d/${originalSpreadSheetId}/edit`;
+    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
   }
 
   private async addWriterPermission(
@@ -208,7 +224,7 @@ export class GoogleSheet {
       fileId: spreadsheetId,
       sendNotificationEmail: false,
       requestBody: {
-        role: "writer", // Can be 'reader', 'writer', or 'owner'
+        role: "writer",
         type: "user",
         emailAddress: emailAddress,
       },
