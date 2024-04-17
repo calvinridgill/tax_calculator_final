@@ -70,7 +70,7 @@ export class GoogleSheet {
 
     await this.googleSheets.spreadsheets.values.clear({
       spreadsheetId: newSpreadSheetId,
-      range: "Sheet1!A1:Z",
+      range: "Sheet2!A1:Z",
     });
 
     const products = await Product.find({});
