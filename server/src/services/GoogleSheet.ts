@@ -135,13 +135,13 @@ export class GoogleSheet {
         requests: [
           {
             deleteSheet: {
-              sheetId: 0,
+              sheetId: newSheetId,
             },
           },
           {
             repeatCell: {
               range: {
-                sheetId: newSheetId,
+                sheetId: 0,
                 startRowIndex: 3,
                 endRowIndex: 4,
                 startColumnIndex: 2,
@@ -162,7 +162,7 @@ export class GoogleSheet {
           {
             repeatCell: {
               range: {
-                sheetId: newSheetId,
+                sheetId: 0,
                 startRowIndex: 6,
                 endRowIndex: 7,
                 startColumnIndex: 2,
@@ -183,7 +183,7 @@ export class GoogleSheet {
           {
             updateSheetProperties: {
               properties: {
-                sheetId: newSheetId,
+                sheetId: 0,
                 title: "Tax Calculator",
               },
               fields: "title",
@@ -192,7 +192,7 @@ export class GoogleSheet {
           {
             repeatCell: {
               range: {
-                sheetId: newSheetId,
+                sheetId: 0,
                 startRowIndex: parseInt(cellData[0].cell.substring(1)) - 1,
                 endRowIndex: parseInt(cellData[0].cell.substring(1)),
                 startColumnIndex: cellData[0].cell.charCodeAt(0) - 65,
