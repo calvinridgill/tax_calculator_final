@@ -68,64 +68,65 @@ export class GoogleSheet {
 
     const newSheetId = response.data.sheetId;
 
-    await this.updateTaxCalculatorContent(newSpreadSheetId);
+    await this.updateTaxCalculatorContent();
 
     await this.addWriterPermission(newSpreadSheetId, newUserEmail);
 
     return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
   }
 
-  public async updateTaxCalculatorContent(
-    newSpreadSheetId: string,
-  ): Promise<void> {
-    // Clear existing data
-    await this.googleSheets.spreadsheets.values.clear({
-      spreadsheetId: newSpreadSheetId,
-      range: "Sheet1!A1:Z",
-    });
+  public async updateTaxCalculatorContent(): Promise<void> {
+  // Fetch original spreadsheet ID
+  const originalSpreadSheetId = currentEnvConfig.ORIGINAL_SPREADSHEET_ID;
 
-    // Fetch new data, for example, from the Product model
-    const products = await Product.find({});
+  // Clear existing data
+  await this.googleSheets.spreadsheets.values.clear({
+    spreadsheetId: originalSpreadSheetId,
+    range: "Sheet1!A1:Z",
+  });
 
-    // Prepare new data
-    const customData = [
-      ["Income", ""],
-      ["Gross Income", products[0].income.toString()],
-      ["", ""],
-      ["Expense", ""],
-      ["Gas", products[0].gas.toString()],
-      ["Supplies", products[0].supplies.toString()],
-      ["Cell Phone", products[0].cell_phone.toString()],
-      ["Auto insurance", products[0].auto_insurance.toString()],
-      ["Office expense", products[0].office_expense.toString()],
-      ["All other expenses", products[0].other_expenses.toString()],
-      ["Commissions and fees", products[0].commissions_fees.toString()],
-      [
-        "Auto lease or note payment",
-        products[0].auto_lease_note_payment.toString(),
-      ],
-      [
-        "Auto Repairs and maintenance",
-        products[0].auto_repairs_maintenance.toString(),
-      ],
-      [
-        "Legal and professional services",
-        products[0].legal_professional_services.toString(),
-      ],
-      ["", ""],
-      ["Net income", products[0].Total_Income.toString()],
-    ];
+  // Fetch new data, for example, from the Product model
+  const products = await Product.find({});
 
-    // Update the sheet with new data
-    await this.googleSheets.spreadsheets.values.update({
-      spreadsheetId: newSpreadSheetId,
-      range: "Sheet1!C4",
-      valueInputOption: "USER_ENTERED",
-      requestBody: {
-        values: customData,
-      },
-    });
-  }
+  // Prepare new data
+  const customData = [
+    ["Income", ""],
+    ["Gross Income", products[0].income.toString()],
+    ["", ""],
+    ["Expense", ""],
+    ["Gas", products[0].gas.toString()],
+    ["Supplies", products[0].supplies.toString()],
+    ["Cell Phone", products[0].cell_phone.toString()],
+    ["Auto insurance", products[0].auto_insurance.toString()],
+    ["Office expense", products[0].office_expense.toString()],
+    ["All other expenses", products[0].other_expenses.toString()],
+    ["Commissions and fees", products[0].commissions_fees.toString()],
+    [
+      "Auto lease or note payment",
+      products[0].auto_lease_note_payment.toString(),
+    ],
+    [
+      "Auto Repairs and maintenance",
+      products[0].auto_repairs_maintenance.toString(),
+    ],
+    [
+      "Legal and professional services",
+      products[0].legal_professional_services.toString(),
+    ],
+    ["", ""],
+    ["Net income", products[0].Total_Income.toString()],
+  ];
+
+  // Update the original sheet with new data
+  await this.googleSheets.spreadsheets.values.update({
+    spreadsheetId: originalSpreadSheetId,
+    range: "Sheet1!C4",
+    valueInputOption: "USER_ENTERED",
+    requestBody: {
+      values: customData,
+    },
+  });
+}
 
   private async addWriterPermission(
     spreadsheetId: string,
