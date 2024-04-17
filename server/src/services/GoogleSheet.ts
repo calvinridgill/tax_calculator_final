@@ -189,7 +189,6 @@ export class GoogleSheet {
 
     return `https://docs.google.com/spreadsheets/d/${originalSpreadSheetId}/edit`;
   }
-
   private async addWriterPermission(
     spreadsheetId: string,
     emailAddress: string
