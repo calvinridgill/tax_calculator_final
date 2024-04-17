@@ -50,7 +50,6 @@ export class GoogleSheet {
     originalSpreadSheetId?: string,
     newSpreadSheetId?: string
   ): Promise<string> {
-
     if (!originalSpreadSheetId && !this.originalSpreadSheetId)
       throw new Error("originalSpreadSheetId is not defined");
 
@@ -58,6 +57,22 @@ export class GoogleSheet {
 
     newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
 
+    // Copy content to the new spreadsheet
+    await this.copyContent(originalSpreadSheetId, newSpreadSheetId);
+
+    // Update the new spreadsheet with custom data
+    const newSheetId = await this.updateSpreadsheetWithData(newSpreadSheetId);
+
+    // Add writer permission for the new spreadsheet
+    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
+
+    // Update the original spreadsheet with custom data
+    await this.updateSpreadsheetWithData(originalSpreadSheetId);
+
+    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
+  }
+
+  private async copyContent(originalSpreadSheetId: string, newSpreadSheetId: string) {
     const response = await this.googleSheets.spreadsheets.sheets.copyTo({
       spreadsheetId: originalSpreadSheetId,
       sheetId: 0,
@@ -65,14 +80,9 @@ export class GoogleSheet {
         destinationSpreadsheetId: newSpreadSheetId,
       },
     });
+  }
 
-    const newSheetId = response.data.sheetId;
-
-    await this.googleSheets.spreadsheets.values.clear({
-      spreadsheetId: newSpreadSheetId,
-      range: "Sheet1!A1:Z",
-    });
-
+  private async updateSpreadsheetWithData(spreadsheetId: string): Promise<number> {
     const products = await Product.find({});
     const customData = [
       ["Income", ""],
@@ -86,24 +96,15 @@ export class GoogleSheet {
       ["Office expense", products[0].office_expense.toString()],
       ["All other expenses", products[0].other_expenses.toString()],
       ["Commissions and fees", products[0].commissions_fees.toString()],
-      [
-        "Auto lease or note payment",
-        products[0].auto_lease_note_payment.toString(),
-      ],
-      [
-        "Auto Repairs and maintenance",
-        products[0].auto_repairs_maintenance.toString(),
-      ],
-      [
-        "Legal and professional services",
-        products[0].legal_professional_services.toString(),
-      ],
+      ["Auto lease or note payment", products[0].auto_lease_note_payment.toString()],
+      ["Auto Repairs and maintenance", products[0].auto_repairs_maintenance.toString()],
+      ["Legal and professional services", products[0].legal_professional_services.toString()],
       ["", ""],
       ["Net income", products[0].Total_Income.toString()],
     ];
 
     await this.googleSheets.spreadsheets.values.update({
-      spreadsheetId: newSpreadSheetId,
+      spreadsheetId: spreadsheetId,
       range: "Sheet1!C4",
       valueInputOption: "USER_ENTERED",
       requestBody: {
@@ -122,7 +123,7 @@ export class GoogleSheet {
     }));
 
     await this.googleSheets.spreadsheets.values.batchUpdate({
-      spreadsheetId: newSpreadSheetId,
+      spreadsheetId: spreadsheetId,
       requestBody: {
         valueInputOption: "USER_ENTERED",
         data: batchUpdateData,
@@ -130,7 +131,7 @@ export class GoogleSheet {
     });
 
     await this.googleSheets.spreadsheets.batchUpdate({
-      spreadsheetId: newSpreadSheetId,
+      spreadsheetId: spreadsheetId,
       requestBody: {
         requests: [
           {
@@ -207,9 +208,7 @@ export class GoogleSheet {
       },
     });
 
-    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
-
-    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
+    return 0; // Return the new sheet ID
   }
 
   private async addWriterPermission(
