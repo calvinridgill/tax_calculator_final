@@ -135,7 +135,7 @@ export class GoogleSheet {
         requests: [
           {
             deleteSheet: {
-              sheetId: 1,
+              sheetId: 0,
             },
           },
           {
