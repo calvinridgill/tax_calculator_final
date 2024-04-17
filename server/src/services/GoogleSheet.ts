@@ -68,11 +68,6 @@ export class GoogleSheet {
 
     const newSheetId = response.data.sheetId;
 
-    // await this.googleSheets.spreadsheets.values.clear({
-    //   spreadsheetId: newSpreadSheetId,
-    //   range: "Sheet1!A1:Z",
-    // });
-
     const products = await Product.find({});
     const customData = [
       ["Income", ""],
@@ -99,7 +94,14 @@ export class GoogleSheet {
         products[0].legal_professional_services.toString(),
       ],
       ["", ""],
-      ["Net income", products[0].Total_Income.toString()],
+      ["Total Expenses", products[0].totalExpenses.toString()],
+      ["", ""],
+      ["Total Income", products[0].Total_Income.toString()],
+      ["", ""],
+      ["Net income", products[0].netIncome.toString()],
+      ["", ""],
+      ["Extra Income", products[0].extraIncome.toString()],
+      
     ];
 
     await this.googleSheets.spreadsheets.values.update({
