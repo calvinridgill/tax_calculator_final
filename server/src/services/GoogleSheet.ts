@@ -46,171 +46,88 @@ export class GoogleSheet {
   }
 
   public async copyTaxCalculatorContent(
-    newUserEmail: string,
-    originalSpreadSheetId?: string,
-    newSpreadSheetId?: string
-  ): Promise<string> {
+  newUserEmail: string,
+  originalSpreadSheetId?: string
+): Promise<string> {
+  if (!originalSpreadSheetId && !this.originalSpreadSheetId)
+    throw new Error("originalSpreadSheetId is not defined");
 
-    if (!originalSpreadSheetId && !this.originalSpreadSheetId)
-      throw new Error("originalSpreadSheetId is not defined");
+  originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
 
-    originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
+  const products = await Product.find({});
+  const customData = [
+    ["Income", ""],
+    ["Gross Income", products[0].income.toString()],
+    ["", ""],
+    ["Expense", ""],
+    ["Gas", products[0].gas.toString()],
+    ["Supplies", products[0].supplies.toString()],
+    ["Cell Phone", products[0].cell_phone.toString()],
+    ["Auto insurance", products[0].auto_insurance.toString()],
+    ["Office expense", products[0].office_expense.toString()],
+    ["All other expenses", products[0].other_expenses.toString()],
+    ["Commissions and fees", products[0].commissions_fees.toString()],
+    [
+      "Auto lease or note payment",
+      products[0].auto_lease_note_payment.toString(),
+    ],
+    [
+      "Auto Repairs and maintenance",
+      products[0].auto_repairs_maintenance.toString(),
+    ],
+    [
+      "Legal and professional services",
+      products[0].legal_professional_services.toString(),
+    ],
+    ["", ""],
+    ["Net income", products[0].Total_Income.toString()],
+  ];
 
-    newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
+  await this.googleSheets.spreadsheets.values.update({
+    spreadsheetId: originalSpreadSheetId,
+    range: "Sheet1!C4",
+    valueInputOption: "USER_ENTERED",
+    requestBody: {
+      values: customData,
+    },
+  });
 
-    const response = await this.googleSheets.spreadsheets.sheets.copyTo({
-      spreadsheetId: originalSpreadSheetId,
-      sheetId: 0,
-      requestBody: {
-        destinationSpreadsheetId: newSpreadSheetId,
-      },
-    });
+  const cellData = [
+    { cell: "F1", value: products[0].name.toString() },
+    { cell: "F3", value: products[0].description.toString() },
+  ];
 
-    const newSheetId = response.data.sheetId;
+  const batchUpdateData = cellData.map(({ cell, value }) => ({
+    range: `Sheet1!${cell}`,
+    values: [[value]],
+  }));
 
-    await this.googleSheets.spreadsheets.values.clear({
-      spreadsheetId: newSpreadSheetId,
-      range: "Sheet1!A1:Z",
-    });
-
-    const products = await Product.find({});
-    const customData = [
-      ["Income", ""],
-      ["Gross Income", products[0].income.toString()],
-      ["", ""],
-      ["Expense", ""],
-      ["Gas", products[0].gas.toString()],
-      ["Supplies", products[0].supplies.toString()],
-      ["Cell Phone", products[0].cell_phone.toString()],
-      ["Auto insurance", products[0].auto_insurance.toString()],
-      ["Office expense", products[0].office_expense.toString()],
-      ["All other expenses", products[0].other_expenses.toString()],
-      ["Commissions and fees", products[0].commissions_fees.toString()],
-      [
-        "Auto lease or note payment",
-        products[0].auto_lease_note_payment.toString(),
-      ],
-      [
-        "Auto Repairs and maintenance",
-        products[0].auto_repairs_maintenance.toString(),
-      ],
-      [
-        "Legal and professional services",
-        products[0].legal_professional_services.toString(),
-      ],
-      ["", ""],
-      ["Net income", products[0].Total_Income.toString()],
-    ];
-
-    await this.googleSheets.spreadsheets.values.update({
-      spreadsheetId: newSpreadSheetId,
-      range: "Sheet1!C4",
+  await this.googleSheets.spreadsheets.values.batchUpdate({
+    spreadsheetId: originalSpreadSheetId,
+    requestBody: {
       valueInputOption: "USER_ENTERED",
-      requestBody: {
-        values: customData,
-      },
-    });
+      data: batchUpdateData,
+    },
+  });
 
-    const cellData = [
-      { cell: "F1", value: products[0].name.toString() },
-      { cell: "F3", value: products[0].description.toString() },
-    ];
+  // Optionally, you can delete the new sheet if needed
+  // await this.googleSheets.spreadsheets.batchUpdate({
+  //   spreadsheetId: originalSpreadSheetId,
+  //   requestBody: {
+  //     requests: [
+  //       {
+  //         deleteSheet: {
+  //           sheetId: newSheetId,
+  //         },
+  //       },
+  //     ],
+  //   },
+  // });
 
-    const batchUpdateData = cellData.map(({ cell, value }) => ({
-      range: `Sheet1!${cell}`,
-      values: [[value]],
-    }));
+  await this.addWriterPermission(originalSpreadSheetId, newUserEmail);
 
-    await this.googleSheets.spreadsheets.values.batchUpdate({
-      spreadsheetId: newSpreadSheetId,
-      requestBody: {
-        valueInputOption: "USER_ENTERED",
-        data: batchUpdateData,
-      },
-    });
-
-    await this.googleSheets.spreadsheets.batchUpdate({
-      spreadsheetId: newSpreadSheetId,
-      requestBody: {
-        requests: [
-          {
-            repeatCell: {
-              range: {
-                sheetId: 0,
-                startRowIndex: 3,
-                endRowIndex: 4,
-                startColumnIndex: 2,
-                endColumnIndex: 4,
-              },
-              cell: {
-                userEnteredFormat: {
-                  backgroundColor: {
-                    red: 0.0,
-                    green: 1.0,
-                    blue: 0.0,
-                  },
-                },
-              },
-              fields: "userEnteredFormat.backgroundColor",
-            },
-          },
-          {
-            repeatCell: {
-              range: {
-                sheetId: 0,
-                startRowIndex: 6,
-                endRowIndex: 7,
-                startColumnIndex: 2,
-                endColumnIndex: 4,
-              },
-              cell: {
-                userEnteredFormat: {
-                  backgroundColor: {
-                    red: 1.0,
-                    green: 0.0,
-                    blue: 0.0,
-                  },
-                },
-              },
-              fields: "userEnteredFormat.backgroundColor",
-            },
-          },
-          {
-            updateSheetProperties: {
-              properties: {
-                sheetId: 0,
-                title: "Tax Calculator",
-              },
-              fields: "title",
-            },
-          },
-          {
-            repeatCell: {
-              range: {
-                sheetId: 0,
-                startRowIndex: parseInt(cellData[0].cell.substring(1)) - 1,
-                endRowIndex: parseInt(cellData[0].cell.substring(1)),
-                startColumnIndex: cellData[0].cell.charCodeAt(0) - 65,
-                endColumnIndex: cellData[0].cell.charCodeAt(0) - 64, 
-              },
-              cell: {
-                userEnteredFormat: {
-                  textFormat: {
-                    fontSize: 18,
-                  },
-                },
-              },
-              fields: "userEnteredFormat.textFormat.fontSize",
-            },
-          },
-        ],
-      },
-    });
-
-    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
-
-    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
-  }
+  return `https://docs.google.com/spreadsheets/d/${originalSpreadSheetId}/edit`;
+}
 
   private async addWriterPermission(
     spreadsheetId: string,
