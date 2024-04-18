@@ -106,7 +106,32 @@ export class GoogleSheet {
       },
     });
 
+    // Log the relevant data for debugging
+    console.log("Original Spreadsheet ID:", originalSpreadSheetId);
+    console.log("New Spreadsheet ID:", newSpreadSheetId);
+
+    const grossIncome = products[0].income;
+    const expenses = [
+      products[0].gas,
+      products[0].supplies,
+      products[0].cell_phone,
+      products[0].auto_insurance,
+      products[0].office_expense,
+      products[0].other_expenses,
+      products[0].commissions_fees,
+      products[0].auto_lease_note_payment,
+      products[0].auto_repairs_maintenance,
+      products[0].legal_professional_services,
+    ];
+
+    console.log("Gross Income:", grossIncome);
+    console.log("Expenses:", expenses);
+
+    // Construct the net income formula
     const netIncomeFormula = `=B2-SUM(C6:C16)`;
+    console.log("Net Income Formula:", netIncomeFormula);
+
+    // Apply the net income formula to the spreadsheet
     await this.googleSheets.spreadsheets.values.update({
       spreadsheetId: newSpreadSheetId,
       range: "Sheet1!C17",
