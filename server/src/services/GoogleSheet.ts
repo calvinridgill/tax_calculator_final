@@ -111,9 +111,6 @@ export class GoogleSheet {
     console.log("New Spreadsheet ID:", newSpreadSheetId);
 
     const grossIncome = products[0].income;
-     if (isNaN(grossIncome)) {
-        throw new Error("Invalid gross income value. Expected a number.");
-     }
     const expenses = [
       products[0].gas,
       products[0].supplies,
@@ -130,21 +127,19 @@ export class GoogleSheet {
     console.log("Gross Income:", grossIncome);
     console.log("Expenses:", expenses);
 
-    // Construct the net income formula using the converted gross income
-  const netIncomeFormula = `=${grossIncome}-SUM(C6:C16)`;
+    // Construct the net income formula
+    const netIncomeFormula = `=c4-SUM(C7:C17)`;
+    console.log("Net Income Formula:", netIncomeFormula);
 
-  // Log the constructed formula
-  console.log("Net Income Formula:", netIncomeFormula);
-
-  // Apply the net income formula to the spreadsheet
-  await this.googleSheets.spreadsheets.values.update({
-    spreadsheetId: newSpreadSheetId,
-    range: "Sheet1!C17",
-    valueInputOption: "USER_ENTERED",
-    requestBody: {
-      values: [[netIncomeFormula]],
-    },
-  });
+    // Apply the net income formula to the spreadsheet
+    await this.googleSheets.spreadsheets.values.update({
+      spreadsheetId: newSpreadSheetId,
+      range: "Sheet1!C17",
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [[netIncomeFormula]],
+      },
+    });
 
     const cellData = [
       { cell: "F1", value: products[0].name.toString() },
