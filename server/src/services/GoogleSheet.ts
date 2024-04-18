@@ -128,7 +128,7 @@ export class GoogleSheet {
     console.log("Expenses:", expenses);
 
     // Construct the net income formula
-    const netIncomeFormula = `=c4-SUM(C7:C17)`;
+    const netIncomeFormula = `=B2-SUM(C6:C16)`;
     console.log("Net Income Formula:", netIncomeFormula);
 
     // Apply the net income formula to the spreadsheet
