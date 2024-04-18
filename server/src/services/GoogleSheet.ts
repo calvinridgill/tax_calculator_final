@@ -40,6 +40,24 @@ export class GoogleSheet {
         properties: {
           title,
         },
+        sheets: [
+          {
+            properties: {
+              title: "Sheet1",
+            },
+            data: [
+              {
+                rowData: [
+                  {
+                    values: [
+                      { userEnteredValue: { formulaValue: "=B2-SUM(C6:C14)" } }, // Assuming gross income is in B2 and expenses are in the range C6:C14
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       },
     });
     return spreadsheet.data.spreadsheetId;
