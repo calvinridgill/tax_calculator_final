@@ -220,7 +220,6 @@ export class GoogleSheet {
     });
 
     await this.addWriterPermission(newSpreadSheetId, newUserEmail);
-
     return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
   }
 
