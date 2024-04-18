@@ -93,15 +93,8 @@ export class GoogleSheet {
         "Legal and professional services",
         products[0].legal_professional_services.toString(),
       ],
-      // ["", ""],
-      // ["Total Expenses", products[0].totalExpenses.toString()],
-      // ["", ""],
-      // ["Total Income", products[0].Total_Income.toString()],
       ["", ""],
-      ["Net income", products[0].netIncome.toString()],
-      // ["", ""],
-      // ["Extra Income", products[0].extraIncome.toString()],
-      
+      ["Net income", ""],
     ];
 
     await this.googleSheets.spreadsheets.values.update({
@@ -110,6 +103,16 @@ export class GoogleSheet {
       valueInputOption: "USER_ENTERED",
       requestBody: {
         values: customData,
+      },
+    });
+
+    const netIncomeFormula = `=B2-SUM(C6:C16)`;
+    await this.googleSheets.spreadsheets.values.update({
+      spreadsheetId: newSpreadSheetId,
+      range: "Sheet1!C17",
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [[netIncomeFormula]],
       },
     });
 
