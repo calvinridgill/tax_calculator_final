@@ -101,7 +101,6 @@ export class GoogleSheet {
       ["Net income", products[0].netIncome.toString()],
       // ["", ""],
       // ["Extra Income", products[0].extraIncome.toString()],
-      
     ];
 
     await this.googleSheets.spreadsheets.values.update({
