@@ -63,7 +63,8 @@ export function Hero() {
                     fontFamily: "Montserrat, sans-serif",
                   }}
                 >
-                  EZ Profit & Loss Statements plus Schedule C
+                  {/* EZ Profit & Loss Statements plus Schedule C */}
+                  Income Tax Calculator
                 </Typography>
                 <Typography
                   variant="h5"
