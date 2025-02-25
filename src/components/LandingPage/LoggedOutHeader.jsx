@@ -11,7 +11,12 @@ export function LoggedOutHeader() {
     if (
       location.pathname === "/tax-prep-tool" ||
       location.pathname.startsWith("/about/") ||
-      location.pathname.startsWith("/signin")
+      location.pathname.startsWith("/signin") ||
+      location.pathname.startsWith("/legal-notice") ||
+      location.pathname.startsWith("/merchant-policies") ||
+      location.pathname.startsWith("/terms-and-conditions") ||
+      location.pathname.startsWith("/privacy-policy") ||
+      location.pathname.startsWith("/return-and-refund-policy")
     )
       return setMoveTitleBar(true);
     function handleScroll() {
@@ -30,7 +35,7 @@ export function LoggedOutHeader() {
 
   return (
     <Box sx={{ position: "relative", zIndex: 2 }}>
-      <Box
+      {/* <Box
         sx={[
           {
             height: "60px",
@@ -42,12 +47,12 @@ export function LoggedOutHeader() {
           },
           moveTitleBar && { display: "none" },
         ]}
-      />
+      /> */}
       <Box
         sx={[
           {
             position: "fixed",
-            top: 60,
+            top: 0,
             transition: "top 0.5s ease",
             width: "100%",
           },

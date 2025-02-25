@@ -11,6 +11,11 @@ import { Box } from "@mui/material";
 import { AboutDetail, loader as aboutDetailLoader } from "../pages/AboutDetail";
 import { action as contactUsAction } from "../components/ContactUs";
 import Testing from "../pages/Testing";
+import MerchantPolicies from "../pages/MerchantPolicies";
+import TermsandCondition from "../pages/TermsandCondition";
+import Refundpolicy from "../pages/Refundpolicy";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import LegalNotice from "../pages/LegalNotice";
 
 export const commonRoutes = (
   <Route>
@@ -34,6 +39,11 @@ export const commonRoutes = (
         loader={aboutDetailLoader}
       />
       <Route path="/tax-prep-tool" element={<TaxPrepTool />} />
+      <Route path="/legal-notice" element={<LegalNotice />} />
+      <Route path="/merchant-policies" element={<MerchantPolicies />} />
+      <Route path="/terms-and-conditions" element={<TermsandCondition />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/return-and-refund-policy" element={<Refundpolicy />} />
     </Route>
     <Route
       element={

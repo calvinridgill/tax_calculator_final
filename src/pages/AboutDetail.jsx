@@ -20,7 +20,7 @@ export function AboutDetail() {
           </Service>
         </Box>
       </Container>
-      <SubHeader title={"Purchase Yours"} />
+      {/* <SubHeader title={"Purchase Yours"} />
       <Container maxWidth="lg">
         <Box sx={{ my: 5 }}>
           <Box sx={{ textAlign: "center", my: 4 }}>
@@ -37,7 +37,7 @@ export function AboutDetail() {
             </PurchaseButton>
           </Box>
         </Box>
-      </Container>
+      </Container> */}
       <ContactUs />
     </Box>
   );

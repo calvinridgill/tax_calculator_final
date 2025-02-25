@@ -2,3 +2,16 @@
   min-height: 100vh !important;
   overflow: hidden;
 }
+.privacy_policy{
+    white-space: pre-wrap;
+}
+.privacy_policy a {
+    color: inherit;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+
+@media screen and (max-width:750px) {
+    
+}

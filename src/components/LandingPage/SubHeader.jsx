@@ -23,7 +23,9 @@ export function SubHeader({ title }) {
           <Typography
             variant="h3"
             color="white"
-            sx={{ fontFamily: "Montserrat, sans-serif" }}
+            sx={{
+              fontFamily: "Montserrat, sans-serif",
+            }}
           >
             {title}
           </Typography>

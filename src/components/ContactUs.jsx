@@ -99,7 +99,7 @@ export function ContactUs() {
                           borderRadius: 10,
                         },
                         "& .MuiInputBase-input::placeholder": {
-                          fontSize: "14px", // Set the desired font size for the placeholder
+                          fontSize: "14px",
                         },
                       }}
                     />
@@ -125,7 +125,7 @@ export function ContactUs() {
                           borderRadius: 10,
                         },
                         "& .MuiInputBase-input::placeholder": {
-                          fontSize: "14px", // Set the desired font size for the placeholder
+                          fontSize: "14px",
                         },
                       }}
                     />
@@ -153,7 +153,7 @@ export function ContactUs() {
                           borderRadius: 10,
                         },
                         "& .MuiInputBase-input::placeholder": {
-                          fontSize: "14px", // Set the desired font size for the placeholder
+                          fontSize: "14px",
                         },
                       }}
                     />
@@ -180,7 +180,7 @@ export function ContactUs() {
                           borderRadius: 10,
                         },
                         "& .MuiInputBase-input::placeholder": {
-                          fontSize: "14px", // Set the desired font size for the placeholder
+                          fontSize: "14px",
                         },
                       }}
                     />
@@ -233,7 +233,19 @@ export function ContactUs() {
                   <Typography variant="body" fontWeight={500}>
                     Send us an email
                   </Typography>
-                  <Typography variant="body1">caltyrid@gmail.com</Typography>
+                  <Typography variant="body1">
+                    <a
+                      rel="nofollow noreferrer noopener"
+                      target="_blank"
+                      href="mailto:caltyrid@gmail.com"
+                      style={{
+                        textDecoration: "none",
+                        color: "#28323C",
+                      }}
+                    >
+                      caltyrid@gmail.com
+                    </a>
+                  </Typography>
                 </Stack>
               </Box>
             </Box>
@@ -251,7 +263,6 @@ export async function action({ request }) {
   const email = formData.get("email");
   const phone = formData.get("phone");
   const message = formData.get("message");
-  console.log("idid", "message", message, firstName, lastName, phone, email);
-  //TODO: create an api to save messages from users
+  console.log("Form Data : ", message, firstName, lastName, phone, email);
   return { status: "success" };
 }

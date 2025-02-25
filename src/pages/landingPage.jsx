@@ -18,16 +18,6 @@ export function LandingPage() {
   };
 
   return (
-    // <div style={{ width: "100%", height: "600px", overflow: "hidden" }}>
-    //   <iframe
-    //     src="https://ezplstatements.com/"
-    //     width="100%"
-    //     height="100%"
-    //     style={{ border: "none", overflow: "hidden" }}
-    //     scrolling="no"
-    //     title="EZPL Statements"
-    //   ></iframe>
-    // </div>
     <Box>
       <Hero />
       <Promo />

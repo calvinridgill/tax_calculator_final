@@ -2,6 +2,8 @@ import React from "react";
 import { SubHeader } from "./SubHeader";
 import { Box, Stack, Container, Typography } from "@mui/material";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
+import { PurchaseButton } from "../PurchaseButton";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 const commonStyles = {
   element: {
@@ -42,7 +44,7 @@ export function Why() {
           lg: "1024px",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 8, mb: 8 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 8, mb: 4 }}>
           <Stack
             gap={3}
             sx={{
@@ -86,6 +88,54 @@ export function Why() {
               </Box>
             </Stack>
           </Stack>
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4, mb: 8 }}>
+          <PurchaseButton
+            sx={{
+              bgcolor: "transparent !important",
+              borderWidth: "0px !important",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                p: 1,
+                bgcolor: "#ededed",
+                width: 150,
+                height: 60,
+                boxShadow: "0px 10px 25px 0px rgba(0,0,0,.1)",
+                borderRadius: "30px",
+                // border: "1px solid #4ce5ca",
+                border: "1px solid #ff00de",
+                animation: "moving-border 3s infinite",
+                "@keyframes moving-border": {
+                  "0%": {
+                    borderColor: "#ff00de",
+                  },
+                  "50%": {
+                    borderColor: "#00ffea",
+                  },
+                  "100%": {
+                    borderColor: "#ff00de",
+                  },
+                },
+                justifyContent: "center",
+                alignItems: "center",
+                "&:hover": {
+                  bgcolor: "#343434",
+                },
+                "&:hover #shopping-cart-icon": {
+                  fill: "white",
+                },
+              }}
+            >
+              <ShoppingCartIcon
+                id="shopping-cart-icon"
+                sx={{ fill: "black" }}
+              />
+              &nbsp; Buy Now
+            </Box>
+          </PurchaseButton>
         </Box>
       </Container>
     </Box>

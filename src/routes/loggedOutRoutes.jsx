@@ -23,10 +23,10 @@ export const loggedOutRoutes = (
         </Box>
       }
     >
-      <Route path="/offering" element={<div>This is the offering page</div>} />
+      <Route path="/offering" element={<>This is the offering page</>} />
       <Route
         path="/forgot-password"
-        element={<div>This is the forgot password</div>}
+        element={<>This is the forgot password</>}
       />
       <Route path="/testing" element={<Testing />} />
       <Route path="/*" element={<PageNotFound />} />

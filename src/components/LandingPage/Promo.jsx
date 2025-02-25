@@ -44,6 +44,29 @@ export function Promo() {
               >
                 $20 limited time!
               </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  fontFamily: "Montserrat, sans-serif",
+                  // color: "#2ce4c4",
+                  color: "#fff",
+                  animation: "color-animation 3s infinite",
+                  "@keyframes color-animation": {
+                    "0%": {
+                      color: "#fff",
+                    },
+                    "50%": {
+                      color: "#00ffea",
+                    },
+                    "100%": {
+                      color: "#fff",
+                    },
+                  },
+                }}
+              >
+                Buy now!
+              </Typography>
             </Stack>
           </Stack>
         </PurchaseButton>
@@ -67,7 +90,7 @@ function PromoIcon() {
           borderBottomColor: "transparent",
           width: 0,
           height: 0,
-          borderTopWidth: 80,
+          borderTopWidth: 120,
           borderBottomWidth: 30,
         }}
       />
@@ -76,7 +99,7 @@ function PromoIcon() {
         src="/icons/star.svg"
         width={35}
         height={35}
-        sx={{ position: "absolute", top: 25, left: 23 }}
+        sx={{ position: "absolute", top: 40, left: 23 }}
       />
     </Box>
   );
