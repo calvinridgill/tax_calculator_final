@@ -21,6 +21,7 @@ export async function createCheckoutSession(req, res, next) {
 
     // Calling fulfillOrder function (This may not have complete details)
     console.log("⏳ Calling fulfillOrder immediately (May not have full data yet)");
+    console.log("checking session", session)
     fulfillOrder(session);
   } catch (error) {
     console.error("❌ Error in createCheckoutSession:", error);
@@ -78,8 +79,12 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
       throw new Error("Customer details are missing in Stripe session");
     }
 
-    const { email, name, phone } = session.customer_details;
-    console.log("👤 Customer Details:", { email, name, phone });
+    // const { email, name, phone } = session.customer_details;
+    // console.log("👤 Customer Details:", { email, name, phone });
+
+    let email: 'suresh.linuxbean@gmail.com',
+let name: 'Suresh Sharma',
+let phone: '+919174373248',
 
     // Check if user exists in the database
     let user = await User.findOne({ email });
