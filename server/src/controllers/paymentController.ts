@@ -75,16 +75,18 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
 
     // Check if customer details exist
     if (!session.customer_details) {
-      console.error("❌ Error: session.customer_details is missing");
-      throw new Error("Customer details are missing in Stripe session");
+      console.error("❌ Error: session.customer_details is missing, using static test data");
+      
+      // Use static test data if customer details are missing
+      var email = "suresh.linuxbean@gmail.com";
+      var name = "Suresh Sharma";
+      var phone = "+919174373248";
+    } else {
+      // Extract customer details from the session
+      var { email, name, phone } = session.customer_details;
     }
 
-    // const { email, name, phone } = session.customer_details;
-    // console.log("👤 Customer Details:", { email, name, phone });
-
-    let email: 'suresh.linuxbean@gmail.com',
-let name: 'Suresh Sharma',
-let phone: '+919174373248',
+    console.log("👤 Customer Details:", { email, name, phone });
 
     // Check if user exists in the database
     let user = await User.findOne({ email });
@@ -138,12 +140,6 @@ let phone: '+919174373248',
       quantity: product.quantity,
     });
 
-    // Create Google Sheet entry
-    console.log("📊 Copying Google Sheet content for:", user.email);
-    // const googleSheet = await GoogleSheet.createInstance();
-    // const spreadSheetUrl = await googleSheet.copyTaxCalculatorContent(user.email);
-    // console.log("✅ Google Sheet URL:", spreadSheetUrl);
-
     // Create new order
     console.log("📝 Creating new order...");
     const newOrder = new Order({
@@ -156,7 +152,6 @@ let phone: '+919174373248',
       ],
       status: "completed",
       user: user._id,
-      // spreadSheetUrl,
     });
 
     await newOrder.save();
@@ -166,3 +161,4 @@ let phone: '+919174373248',
     throw error;
   }
 }
+
