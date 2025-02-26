@@ -110,6 +110,6 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
     })
     await newOrder.save()
   } catch (error) {
-    console.log("error in fulfilling order ", error)
+    console.log("error in fulfilling order test", error)
   }
 }
