@@ -135,9 +135,9 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
 
     // Create Google Sheet entry
     console.log("📊 Copying Google Sheet content for:", user.email);
-    const googleSheet = await GoogleSheet.createInstance();
-    const spreadSheetUrl = await googleSheet.copyTaxCalculatorContent(user.email);
-    console.log("✅ Google Sheet URL:", spreadSheetUrl);
+    // const googleSheet = await GoogleSheet.createInstance();
+    // const spreadSheetUrl = await googleSheet.copyTaxCalculatorContent(user.email);
+    // console.log("✅ Google Sheet URL:", spreadSheetUrl);
 
     // Create new order
     console.log("📝 Creating new order...");
@@ -151,7 +151,7 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
       ],
       status: "completed",
       user: user._id,
-      spreadSheetUrl,
+      // spreadSheetUrl,
     });
 
     await newOrder.save();
