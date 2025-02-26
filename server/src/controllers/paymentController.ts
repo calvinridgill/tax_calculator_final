@@ -15,6 +15,7 @@ export async function createCheckoutSession(req, res, next) {
     res
       .status(200)
       .send({ status: "success", data: { checkoutURL: session.url } })
+    console.log("session before", session)
     fulfillOrder(session)
   } catch (error) {
     next(error)
@@ -58,6 +59,7 @@ export async function handleStripeCheckOutFulfillment(req, res, next) {
 }
 
 async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
+  console.log("session",session)
   try {
     // - get the user information
     const { email, name, phone } = session.customer_details
