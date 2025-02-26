@@ -86,7 +86,8 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
       var { email, name, phone } = session.customer_details;
     }
 
-    console.log("👤 Customer Details:", { email, name, phone });
+    // const { email, name, phone } = session.customer_details;
+    // console.log("👤 Customer Details:", { email, name, phone });
 
     // Check if user exists in the database
     let user = await User.findOne({ email });
@@ -140,6 +141,12 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
       quantity: product.quantity,
     });
 
+    // Create Google Sheet entry
+    console.log("📊 Copying Google Sheet content for:", user.email);
+    const googleSheet = await GoogleSheet.createInstance();
+    const spreadSheetUrl = await googleSheet.copyTaxCalculatorContent(user.email);
+    console.log("✅ Google Sheet URL:", spreadSheetUrl);
+
     // Create new order
     console.log("📝 Creating new order...");
     const newOrder = new Order({
@@ -152,6 +159,7 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
       ],
       status: "completed",
       user: user._id,
+      spreadSheetUrl,
     });
 
     await newOrder.save();
@@ -161,4 +169,3 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
     throw error;
   }
 }
-
