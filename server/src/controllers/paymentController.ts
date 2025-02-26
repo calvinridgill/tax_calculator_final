@@ -8,6 +8,7 @@ import { GoogleSheet } from "../services/GoogleSheet"
 import { currentEnvConfig } from "../models/config"
 
 export async function createCheckoutSession(req, res, next) {
+  console.log("check")
   try {
     const { productId, quantity = 1 } = req.body
     const myStripe = new MyStripe()
