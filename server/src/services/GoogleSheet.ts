@@ -1,37 +1,41 @@
-import { google, sheets_v4, drive_v3 } from "googleapis";
-import { currentEnvConfig } from "../models/config";
-import { Product } from "../models/product";
+import { google, sheets_v4, drive_v3 } from "googleapis"
+import { currentEnvConfig } from "../models/config"
+import { Product } from "../models/product"
+const path = require("path")
 
 export class GoogleSheet {
-  private static client;
-  private googleSheets: sheets_v4.Sheets;
-  private originalSpreadSheetId: string;
+  private static client
+  private googleSheets: sheets_v4.Sheets
+  private originalSpreadSheetId: string
 
   private constructor() {
     this.googleSheets = google.sheets({
       version: "v4",
       auth: GoogleSheet.client,
-    });
-    this.originalSpreadSheetId = currentEnvConfig.ORIGINAL_SPREADSHEET_ID;
+    })
+    this.originalSpreadSheetId = currentEnvConfig.ORIGINAL_SPREADSHEET_ID
   }
 
   private static async initializeClient() {
     if (!this.client) {
       const auth = new google.auth.GoogleAuth({
-        keyFile: "tax-calculator-new-391013-37b0d1adaaf9.json",
+        keyFile: path.join(
+          __dirname,
+          "../file/tax-calculator-new-391013-37b0d1adaaf9.json",
+        ),
         scopes: [
           "https://www.googleapis.com/auth/drive",
           "https://www.googleapis.com/auth/drive.file",
           "https://www.googleapis.com/auth/spreadsheets",
         ],
-      });
-      this.client = await auth.getClient();
+      })
+      this.client = await auth.getClient()
     }
   }
 
   static async createInstance() {
-    await GoogleSheet.initializeClient();
-    return new GoogleSheet();
+    await GoogleSheet.initializeClient()
+    return new GoogleSheet()
   }
 
   public async createGoogleSheet(title = "Tax Calculator"): Promise<string> {
@@ -41,22 +45,21 @@ export class GoogleSheet {
           title,
         },
       },
-    });
-    return spreadsheet.data.spreadsheetId;
+    })
+    return spreadsheet.data.spreadsheetId
   }
 
   public async copyTaxCalculatorContent(
     newUserEmail: string,
     originalSpreadSheetId?: string,
-    newSpreadSheetId?: string
+    newSpreadSheetId?: string,
   ): Promise<string> {
-
     if (!originalSpreadSheetId && !this.originalSpreadSheetId)
-      throw new Error("originalSpreadSheetId is not defined");
+      throw new Error("originalSpreadSheetId is not defined")
 
-    originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
+    originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId
 
-    newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
+    newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet())
 
     const response = await this.googleSheets.spreadsheets.sheets.copyTo({
       spreadsheetId: originalSpreadSheetId,
@@ -64,11 +67,11 @@ export class GoogleSheet {
       requestBody: {
         destinationSpreadsheetId: newSpreadSheetId,
       },
-    });
+    })
 
-    const newSheetId = response.data.sheetId;
+    const newSheetId = response.data.sheetId
 
-    const products = await Product.find({});
+    const products = await Product.find({})
     const customData = [
       ["Income", ""],
       ["Gross Income", products[0].income.toString()],
@@ -93,12 +96,12 @@ export class GoogleSheet {
         "Legal and professional services",
         products[0].legal_professional_services.toString(),
       ],
-      ["", ""]
-    ];
+      ["", ""],
+    ]
 
-    const netIncomeFormula = `=D5-SUM(D8:D17)`;
-    const netIncomeCellRange = "D19";
-    customData.push(["Net income", netIncomeFormula]);
+    const netIncomeFormula = `=D5-SUM(D8:D17)`
+    const netIncomeCellRange = "D19"
+    customData.push(["Net income", netIncomeFormula])
 
     await this.googleSheets.spreadsheets.values.update({
       spreadsheetId: newSpreadSheetId,
@@ -107,7 +110,7 @@ export class GoogleSheet {
       requestBody: {
         values: customData,
       },
-    });
+    })
 
     await this.googleSheets.spreadsheets.values.update({
       spreadsheetId: newSpreadSheetId,
@@ -116,17 +119,17 @@ export class GoogleSheet {
       requestBody: {
         values: [[netIncomeFormula]],
       },
-    });
+    })
 
     const cellData = [
       { cell: "F1", value: products[0].name.toString() },
       { cell: "F3", value: products[0].description.toString() },
-    ];
+    ]
 
     const batchUpdateData = cellData.map(({ cell, value }) => ({
       range: `Sheet1!${cell}`,
       values: [[value]],
-    }));
+    }))
 
     await this.googleSheets.spreadsheets.values.batchUpdate({
       spreadsheetId: newSpreadSheetId,
@@ -134,7 +137,7 @@ export class GoogleSheet {
         valueInputOption: "USER_ENTERED",
         data: batchUpdateData,
       },
-    });
+    })
 
     await this.googleSheets.spreadsheets.batchUpdate({
       spreadsheetId: newSpreadSheetId,
@@ -203,7 +206,7 @@ export class GoogleSheet {
                 startRowIndex: parseInt(cellData[0].cell.substring(1)) - 1,
                 endRowIndex: parseInt(cellData[0].cell.substring(1)),
                 startColumnIndex: cellData[0].cell.charCodeAt(0) - 65,
-                endColumnIndex: cellData[0].cell.charCodeAt(0) - 64, 
+                endColumnIndex: cellData[0].cell.charCodeAt(0) - 64,
               },
               cell: {
                 userEnteredFormat: {
@@ -217,20 +220,20 @@ export class GoogleSheet {
           },
         ],
       },
-    });
+    })
 
-    await this.addWriterPermission(newSpreadSheetId, newUserEmail);
-    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
+    await this.addWriterPermission(newSpreadSheetId, newUserEmail)
+    return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`
   }
 
   private async addWriterPermission(
     spreadsheetId: string,
-    emailAddress: string
+    emailAddress: string,
   ) {
     const drive: drive_v3.Drive = google.drive({
       version: "v3",
       auth: GoogleSheet.client,
-    });
+    })
 
     await drive.permissions.create({
       fileId: spreadsheetId,
@@ -240,6 +243,6 @@ export class GoogleSheet {
         type: "user",
         emailAddress: emailAddress,
       },
-    });
+    })
   }
 }
