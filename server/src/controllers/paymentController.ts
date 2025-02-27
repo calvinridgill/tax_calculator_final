@@ -64,20 +64,21 @@ export async function handleStripeCheckOutFulfillment(req, res, next) {
 async function fulfillOrder(session) {
   try {
     if (!session.customer_details) {
-      console.error("❌ Missing customer details in session:", JSON.stringify(session, null, 2));
+      console.error("Missing customer details in session:", JSON.stringify(session, null, 2));
       return;
     }
 
     const { email, name, phone } = session.customer_details || {};
     if (!email) {
-      console.error("❌ Email is missing from customer details:", session.customer_details);
+      console.error("Email is missing from customer details:", session.customer_details);
       return;
     }
 
-    console.log("✅ Processing order for:", email);
+    console.log("Processing order for:", email);
 
-    // Check if user exists, otherwise create new user
+    // 1. Check if user already exists
     let user = await User.findOne({ email });
+
     if (!user) {
       const password = generatePassword(10);
       user = new User({
@@ -89,10 +90,10 @@ async function fulfillOrder(session) {
       });
       await user.save();
 
-      const loginUrl = `${currentEnvConfig.CLIENT_APP_URL}/signin?email=${user.email}&password=${password}`;
-      console.log("✅ User created successfully, login URL:", loginUrl);
+      console.log("User created:", user._id);
 
-      // Send welcome email
+      const loginUrl = `${currentEnvConfig.CLIENT_APP_URL}/signin?email=${user.email}&password=${password}`;
+
       await new Email(user.email).sendAccountCreated({
         firstname: user.firstName,
         lastname: user.lastname || "",
@@ -100,36 +101,34 @@ async function fulfillOrder(session) {
         password,
         loginUrl,
       });
+
+      console.log("Welcome email sent to:", email);
+    } else {
+      console.log("Existing user found:", user._id);
     }
 
-    console.log("✅ User verified/created:", user._id);
-
-    // Ensure metadata exists and contains productId
+    // 2. Ensure metadata exists
     if (!session.metadata || !session.metadata.productId) {
-      console.error("❌ Missing productId in session metadata:", session.metadata);
+      console.error("Missing productId in session metadata:", session.metadata);
       return;
     }
 
     const productId = session.metadata.productId;
-    const product = session.line_items?.data?.[0];
 
+    // 3. Get the product details from session
+    const product = session.line_items?.data?.[0];
     if (!product) {
-      console.error("❌ No line items found in session:", session.line_items);
+      console.error("No line items found in session:", session.line_items);
       return;
     }
 
-    console.log("✅ Product details:", product);
+    console.log("Product details:", product);
 
-    // Copy Google Sheet for user (if applicable)
-    let spreadSheetUrl = "";
-    try {
-      const googleSheet = await GoogleSheet.createInstance();
-      spreadSheetUrl = await googleSheet.copyTaxCalculatorContent(user.email);
-    } catch (sheetError) {
-      console.error("⚠️ Failed to copy Google Sheet:", sheetError);
-    }
+    // 4. Generate Google Sheet for the user
+    const googleSheet = await GoogleSheet.createInstance();
+    const spreadSheetUrl = await googleSheet.copyTaxCalculatorContent(user.email);
 
-    // Create new order
+    // 5. Create and Save the Order in DB
     const newOrder = new Order({
       total: session.amount_total || 0,
       products: [
@@ -141,14 +140,13 @@ async function fulfillOrder(session) {
       status: "completed",
       user: user._id,
       spreadSheetUrl,
-      stripeSessionId: session.id,
-      createdAt: new Date(),
     });
 
     await newOrder.save();
-    console.log("✅ Order successfully created and stored in DB:", newOrder);
+    console.log("Order successfully created:", newOrder);
 
   } catch (error) {
-    console.error("❌ Error in fulfilling order:", error);
+    console.error("Error in fulfilling order:", error);
   }
 }
+
