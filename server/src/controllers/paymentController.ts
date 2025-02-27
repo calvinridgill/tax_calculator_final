@@ -150,7 +150,7 @@ async function fulfillOrder(session) {
 
     // 5. Create and Save the Order in DB
     const newOrder = new Order({
-      total: session.amount_total || 0,
+      total: session.amount_total || 0, 
       products: [
         {
           product: productId,
