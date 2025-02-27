@@ -1,7 +1,6 @@
 import { google, sheets_v4, drive_v3 } from "googleapis"
 import { currentEnvConfig } from "../models/config"
 import { Product } from "../models/product"
-const path = require("path")
 
 export class GoogleSheet {
   private static client
@@ -19,10 +18,7 @@ export class GoogleSheet {
   private static async initializeClient() {
     if (!this.client) {
       const auth = new google.auth.GoogleAuth({
-        keyFile: path.join(
-          __dirname,
-          "../file/tax-calculator-new-391013-37b0d1adaaf9.json",
-        ),
+        keyFile: "tax-calculator-new-391013-37b0d1adaaf9.json",
         scopes: [
           "https://www.googleapis.com/auth/drive",
           "https://www.googleapis.com/auth/drive.file",
