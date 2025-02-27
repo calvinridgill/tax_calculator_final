@@ -11,12 +11,17 @@ import { currentEnvConfig } from "../models/config";
 export async function createCheckoutSession(req, res, next) {
   try {
     const { productId, quantity = 1 } = req.body;
+
+    if (!productId) {
+      return res.status(400).send({ status: "error", message: "Product ID is required" });
+    }
+
     const myStripe = new MyStripe();
     const session = await myStripe.createCheckoutSession(productId, quantity);
 
-    res.status(200).send({ status: "success", data: { checkoutURL: session.url } });
-
     console.log("Checkout session created successfully:", session);
+    return res.status(200).json({ status: "success", data: { checkoutURL: session.url } });
+
   } catch (error) {
     console.error("Error in createCheckoutSession:", error);
     next(error);
@@ -30,8 +35,13 @@ export async function handleStripeCheckOutFulfillment(req, res, next) {
     const payload = req.body;
     const endpointSecret = currentEnvConfig.STRIPE_END_POINT_SECRET;
     const sig = req.headers["stripe-signature"];
-    let event;
 
+    if (!sig) {
+      console.error("Missing Stripe signature");
+      return res.status(400).send({ status: "error", message: "Invalid webhook request" });
+    }
+
+    let event;
     try {
       event = myStripe._stripe.webhooks.constructEvent(payload, sig, endpointSecret);
     } catch (err) {
@@ -53,7 +63,8 @@ export async function handleStripeCheckOutFulfillment(req, res, next) {
       await fulfillOrder(sessionWithLineItems);
     }
 
-    res.status(200).send({ status: "success" });
+    return res.status(200).json({ status: "success" });
+
   } catch (error) {
     console.error("Error in handleStripeCheckOutFulfillment:", error);
     next(error);
@@ -68,7 +79,7 @@ async function fulfillOrder(session) {
       return;
     }
 
-    const { email, name, phone } = session.customer_details || {};
+    const { email, name, phone } = session.customer_details;
     if (!email) {
       console.error("Email is missing from customer details:", session.customer_details);
       return;
@@ -88,27 +99,31 @@ async function fulfillOrder(session) {
         phone: phone || "",
         generatedPassword: password,
       });
-      await user.save();
 
+      await user.save();
       console.log("User created:", user._id);
 
       const loginUrl = `${currentEnvConfig.CLIENT_APP_URL}/signin?email=${user.email}&password=${password}`;
 
-      await new Email(user.email).sendAccountCreated({
-        firstname: user.firstName,
-        lastname: user.lastname || "",
-        email,
-        password,
-        loginUrl,
-      });
+      try {
+        await new Email(user.email).sendAccountCreated({
+          firstname: user.firstName,
+          lastname: user.lastname || "",
+          email,
+          password,
+          loginUrl,
+        });
+        console.log("Welcome email sent to:", email);
+      } catch (emailError) {
+        console.error("Failed to send welcome email:", emailError);
+      }
 
-      console.log("Welcome email sent to:", email);
     } else {
       console.log("Existing user found:", user._id);
     }
 
     // 2. Ensure metadata exists
-    if (!session.metadata || !session.metadata.productId) {
+    if (!session.metadata?.productId) {
       console.error("Missing productId in session metadata:", session.metadata);
       return;
     }
@@ -125,8 +140,13 @@ async function fulfillOrder(session) {
     console.log("Product details:", product);
 
     // 4. Generate Google Sheet for the user
-    const googleSheet = await GoogleSheet.createInstance();
-    const spreadSheetUrl = await googleSheet.copyTaxCalculatorContent(user.email);
+    let spreadSheetUrl = null;
+    try {
+      const googleSheet = await GoogleSheet.createInstance();
+      spreadSheetUrl = await googleSheet.copyTaxCalculatorContent(user.email);
+    } catch (sheetError) {
+      console.error("Failed to generate Google Sheet:", sheetError);
+    }
 
     // 5. Create and Save the Order in DB
     const newOrder = new Order({
@@ -149,4 +169,3 @@ async function fulfillOrder(session) {
     console.error("Error in fulfilling order:", error);
   }
 }
-
