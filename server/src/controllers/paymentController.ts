@@ -15,13 +15,14 @@ export async function createCheckoutSession(req, res, next) {
     res
       .status(200)
       .send({ status: "success", data: { checkoutURL: session.url } })
-    fulfillOrder(session)
+    //fulfillOrder(session)
   } catch (error) {
     next(error)
   }
 }
 
 export async function handleStripeCheckOutFulfillment(req, res, next) {
+  console.log("inside handleStripeCheckOutFulfillment")
   try {
     const myStripe = new MyStripe()
     const payload = req.body
@@ -37,7 +38,9 @@ export async function handleStripeCheckOutFulfillment(req, res, next) {
         endpointSecret,
       )
       // Handle the checkout.session.completed event
+      
       if (event.type === "checkout.session.completed") {
+         console.log("heckout session completed")
         // Retrieve the session. If you require line items in the response, you may include them by expanding line_items.
         const session = event.data.object as Stripe.Checkout.Session
         const sessionWithLineItems =
@@ -58,6 +61,7 @@ export async function handleStripeCheckOutFulfillment(req, res, next) {
 }
 
 async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
+   console.log("session", session)
   try {
     // - get the user information
     const { email, name, phone } = session.customer_details
@@ -89,6 +93,7 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
     const productId = session.metadata.productId
     const product = session.line_items.data[0]
     // - create a new order in the database
+    console.log("product and productId", productId, product)
 
     const googleSheet = await GoogleSheet.createInstance()
     const spreadSheetUrl = await googleSheet.copyTaxCalculatorContent(
@@ -107,8 +112,9 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
       user: user._id,
       spreadSheetUrl,
     })
+    console.log("newOrder", newOrder)
     await newOrder.save()
   } catch (error) {
-    console.log("error in fulfilling order ", error)
+    console.log("error in fulfilling order..", error)
   }
 }
