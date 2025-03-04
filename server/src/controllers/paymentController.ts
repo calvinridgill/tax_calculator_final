@@ -9,7 +9,7 @@ import { currentEnvConfig } from "../models/config"
 
 export async function createCheckoutSession(req, res, next) {
   try {
-    const { productId, quantity = 1 } = req.body
+    const { productId, quantity = 1 } = req.body 
     const myStripe = new MyStripe()
     const session = await myStripe.createCheckoutSession(productId, quantity)
     res
@@ -40,7 +40,7 @@ export async function handleStripeCheckOutFulfillment(req, res, next) {
       // Handle the checkout.session.completed event
       
       if (event.type === "checkout.session.completed") {
-         console.log("heckout session completed")
+         console.log("checkout session completed")
         // Retrieve the session. If you require line items in the response, you may include them by expanding line_items.
         const session = event.data.object as Stripe.Checkout.Session
         const sessionWithLineItems =
@@ -61,7 +61,7 @@ export async function handleStripeCheckOutFulfillment(req, res, next) {
 }
 
 async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
-   console.log("session", session)
+   console.log("fulfillOrder session", session)
   try {
     // - get the user information
     const { email, name, phone } = session.customer_details
