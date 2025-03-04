@@ -99,7 +99,7 @@ async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
     const spreadSheetUrl = await googleSheet.copyTaxCalculatorContent(
       user.email,
     )
-
+ 
     const newOrder = new Order({
       total: session.amount_total,
       products: [
