@@ -59,10 +59,7 @@ export async function createCheckoutSession(req, res, next) {
 //     next(error)
 //   }
 // }
-import Stripe from "stripe";
-import { currentEnvConfig } from "./config";
-import { fulfillOrder } from "./orderService";
-import { MyStripe } from "./myStripe";
+
 
 export async function handleStripeCheckOutFulfillment(req, res, next) {
   console.log("🚀 Inside handleStripeCheckOutFulfillment");
