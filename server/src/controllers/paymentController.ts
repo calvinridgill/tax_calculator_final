@@ -21,98 +21,46 @@ export async function createCheckoutSession(req, res, next) {
   }
 }
 
-// export async function handleStripeCheckOutFulfillment(req, res, next) {
-//   console.log("inside handleStripeCheckOutFulfillment")
-//   try {
-//     const myStripe = new MyStripe()
-//     const payload = req.body
-//     // Verify events came from Stripe
-//     const endpointSecret = currentEnvConfig.STRIPE_END_POINT_SECRET
-//     const sig = req.headers["stripe-signature"]
-//     let event
-
-//     try {
-//       event = myStripe._stripe.webhooks.constructEvent(
-//         payload,
-//         sig,
-//         endpointSecret,
-//       )
-//       // Handle the checkout.session.completed event
-      
-//       if (event.type === "checkout.session.completed") {
-//          console.log("heckout session completed")
-//         // Retrieve the session. If you require line items in the response, you may include them by expanding line_items.
-//         const session = event.data.object as Stripe.Checkout.Session
-//         const sessionWithLineItems =
-//           await myStripe._stripe.checkout.sessions.retrieve(session.id, {
-//             expand: ["line_items"],
-//           })
-//         // Fulfill the purchase...
-//         await fulfillOrder(sessionWithLineItems)
-//       }
-//     } catch (err) {
-//       console.log("error in handling stripe checkout fulfilment ", err)
-//       return res.status(400).send(`Webhook Error: ${err.message}`)
-//     }
-//     res.status(200).send({ status: "success" })
-//   } catch (error) {
-//     next(error)
-//   }
-// }
-
-
 export async function handleStripeCheckOutFulfillment(req, res, next) {
-  console.log("🚀 Inside handleStripeCheckOutFulfillment");
+  console.log("inside handleStripeCheckOutFulfillment")
   try {
-    const myStripe = new MyStripe();
-    const payload = req.body;
-    const sig = req.headers["stripe-signature"];
-    const endpointSecret = currentEnvConfig.STRIPE_END_POINT_SECRET;
+    const myStripe = new MyStripe()
+    const payload = req.body
+    // Verify events came from Stripe
+    const endpointSecret = currentEnvConfig.STRIPE_END_POINT_SECRET
+    const sig = req.headers["stripe-signature"]
+    let event
 
-    if (!sig) {
-      console.error("❌ Missing Stripe signature");
-      return res.status(400).send("Missing Stripe signature");
-    }
-
-    let event;
     try {
-      // Verify the Stripe webhook signature
-      event = myStripe._stripe.webhooks.constructEvent(payload, sig, endpointSecret);
-    } catch (err) {
-      console.error("❌ Error verifying Stripe signature:", err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    // Handle checkout.session.completed event
-    if (event.type === "checkout.session.completed") {
-      console.log("✅ Checkout session completed");
-
-      const session = event.data.object;
-
-      try {
-        // Retrieve session with expanded line items
-        const sessionWithLineItems = await myStripe._stripe.checkout.sessions.retrieve(session.id, {
-          expand: ["line_items"],
-        });
-
-        console.log("📦 Session with line items retrieved:", sessionWithLineItems);
-
-        // Fulfill the order
-        await fulfillOrder(sessionWithLineItems);
-      } catch (err) {
-        console.error("❌ Error retrieving session or fulfilling order:", err);
-        return res.status(500).send("Internal server error during fulfillment");
+      event = myStripe._stripe.webhooks.constructEvent(
+        payload,
+        sig,
+        endpointSecret,
+      )
+      // Handle the checkout.session.completed event
+      
+      if (event.type === "checkout.session.completed") {
+         console.log("heckout session completed")
+        // Retrieve the session. If you require line items in the response, you may include them by expanding line_items.
+        const session = event.data.object as Stripe.Checkout.Session
+        const sessionWithLineItems =
+          await myStripe._stripe.checkout.sessions.retrieve(session.id, {
+            expand: ["line_items"],
+          })
+        // Fulfill the purchase...
+        await fulfillOrder(sessionWithLineItems)
       }
-    } else {
-      console.log(`ℹ️ Unhandled event type: ${event.type}`);
+    } catch (err) {
+      console.log("error in handling stripe checkout fulfilment ", err)
+      return res.status(400).send(`Webhook Error: ${err.message}`)
     }
-
-    res.status(200).send({ status: "success" });
+    res.status(200).send({ status: "success" })
   } catch (error) {
-    console.error("❌ Unexpected error in Stripe fulfillment:", error);
-    next(error);
+    next(error)
   }
 }
+
+
 
 async function fulfillOrder(session: Stripe.Response<Stripe.Checkout.Session>) {
    console.log("session", session)
