@@ -15,7 +15,7 @@ export async function createCheckoutSession(req, res, next) {
     res
       .status(200)
       .send({ status: "success", data: { checkoutURL: session.url } })
-     fulfillOrder(session)
+    fulfillOrder(session)
   } catch (error) {
     next(error)
   }
