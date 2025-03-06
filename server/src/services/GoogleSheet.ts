@@ -29,7 +29,7 @@ export class GoogleSheet {
           throw new Error(`Failed to download key file: ${response.statusText}`);
         }
         const keyData = await response.json();
-        fs.writeFileSync(keyFilePath, JSON.stringify(response.data));
+        fs.writeFileSync(keyFilePath, JSON.stringify(keyData));
 
         const auth = new google.auth.GoogleAuth({
           keyFile: keyFilePath, // Use the downloaded key
