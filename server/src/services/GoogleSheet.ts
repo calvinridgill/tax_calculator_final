@@ -3,6 +3,8 @@ import { currentEnvConfig } from "../models/config"
 import { Product } from "../models/product"
 import path from "path";
 import fs from "fs";
+import https from "https";
+
 
 
 
@@ -24,11 +26,13 @@ export class GoogleSheet {
       const keyFilePath = path.join(__dirname, "service-account.json");
       const keyUrl = "https://odeskthemes.com/13/tax-calculator-new-391013-37b0d1adaaf9.json";
       try {
-        const response = await fetch(keyUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to download key file: ${response.statusText}`);
-        }
-        const keyData = await response.json();
+        const keyData = await new Promise((resolve, reject) => {
+          https.get(keyUrl, (res) => {
+            let data = "";
+            res.on("data", (chunk) => (data += chunk));
+            res.on("end", () => resolve(JSON.parse(data)));
+          }).on("error", reject);
+        });
         fs.writeFileSync(keyFilePath, JSON.stringify(keyData));
 
         const auth = new google.auth.GoogleAuth({
