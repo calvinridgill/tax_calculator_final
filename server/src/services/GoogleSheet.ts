@@ -12,8 +12,7 @@ export class GoogleSheet {
       version: "v4",
       auth: GoogleSheet.client,
     })
-    // this.originalSpreadSheetId = currentEnvConfig.ORIGINAL_SPREADSHEET_ID
-    this.originalSpreadSheetId = "14GEeVK1l0GB_tv4PjmtuKRtYBmpz-ZDWxMkimkayGNc"
+    this.originalSpreadSheetId = currentEnvConfig.ORIGINAL_SPREADSHEET_ID
   }
 
   private static async initializeClient() {
