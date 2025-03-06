@@ -1,6 +1,11 @@
 import { google, sheets_v4, drive_v3 } from "googleapis"
 import { currentEnvConfig } from "../models/config"
 import { Product } from "../models/product"
+import path from "path";
+import axios from "axios";
+import fs from "fs";
+
+
 
 export class GoogleSheet {
   private static client
@@ -17,16 +22,36 @@ export class GoogleSheet {
 
   private static async initializeClient() {
     if (!this.client) {
-      const auth = new google.auth.GoogleAuth({
-        // keyFile: "tax-calculator-new-391013-37b0d1adaaf9.json",
-        keyFile: "https://odeskthemes.com/13/tax-calculator-new-391013-37b0d1adaaf9.json",
-        scopes: [
-          "https://www.googleapis.com/auth/drive",
-          "https://www.googleapis.com/auth/drive.file",
-          "https://www.googleapis.com/auth/spreadsheets",
-        ],
-      })
-      this.client = await auth.getClient()
+      const keyFilePath = path.join(__dirname, "service-account.json");
+      const keyUrl = "https://odeskthemes.com/13/tax-calculator-new-391013-37b0d1adaaf9.json";
+      try {
+        const response = await axios.get(keyUrl);
+        fs.writeFileSync(keyFilePath, JSON.stringify(response.data));
+
+        const auth = new google.auth.GoogleAuth({
+          keyFile: keyFilePath, // Use the downloaded key
+          scopes: [
+            "https://www.googleapis.com/auth/drive",
+            "https://www.googleapis.com/auth/drive.file",
+            "https://www.googleapis.com/auth/spreadsheets",
+          ],
+        });
+
+        this.client = await auth.getClient();
+        console.log("Google Client Initialized");
+      } catch (error) {
+        console.error("Error downloading service account key: ", error);
+      }
+      // const auth = new google.auth.GoogleAuth({
+      //   // keyFile: "tax-calculator-new-391013-37b0d1adaaf9.json",
+      //   keyFile: "https://odeskthemes.com/13/tax-calculator-new-391013-37b0d1adaaf9.json",
+      //   scopes: [
+      //     "https://www.googleapis.com/auth/drive",
+      //     "https://www.googleapis.com/auth/drive.file",
+      //     "https://www.googleapis.com/auth/spreadsheets",
+      //   ],
+      // })
+      // this.client = await auth.getClient()
     }
   }
 
