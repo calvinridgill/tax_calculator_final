@@ -2,7 +2,6 @@ import { google, sheets_v4, drive_v3 } from "googleapis"
 import { currentEnvConfig } from "../models/config"
 import { Product } from "../models/product"
 import path from "path";
-import axios from "axios";
 import fs from "fs";
 
 
@@ -25,7 +24,11 @@ export class GoogleSheet {
       const keyFilePath = path.join(__dirname, "service-account.json");
       const keyUrl = "https://odeskthemes.com/13/tax-calculator-new-391013-37b0d1adaaf9.json";
       try {
-        const response = await axios.get(keyUrl);
+        const response = await fetch(keyUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to download key file: ${response.statusText}`);
+        }
+        const keyData = await response.json();
         fs.writeFileSync(keyFilePath, JSON.stringify(response.data));
 
         const auth = new google.auth.GoogleAuth({
