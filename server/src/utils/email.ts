@@ -19,7 +19,7 @@ export class Email {
       throw new Error("SendGrid username and password is required")
 
     return nodemailer.createTransport({
-      service: "SendGrid",
+      service: "gmail",
       auth: {
         user: currentEnvConfig.SENDGRID_USERNAME,
         pass: currentEnvConfig.SENDGRID_PASSWORD,
