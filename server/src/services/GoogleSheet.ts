@@ -101,7 +101,7 @@ export class GoogleSheet {
 
     const products = await Product.find({})
     const customData = [
-      ["Income ", ""],
+      ["Income 1", ""],
       ["Gross Income", products[0].income.toString()],
       ["", ""],
       ["Expense", ""],
