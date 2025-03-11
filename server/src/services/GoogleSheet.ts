@@ -78,6 +78,74 @@ export class GoogleSheet {
   }
 
   public async copyTaxCalculatorContent(
+        newUserEmail: string,
+        originalSpreadSheetId?: string,
+        newSpreadSheetId?: string
+    ): Promise<string> {
+        if (!originalSpreadSheetId && !this.originalSpreadSheetId) {
+            throw new Error("originalSpreadSheetId is not defined");
+        }
+
+        originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
+
+        newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
+
+        const originalSpreadsheet = await this.googleSheets.spreadsheets.get({
+            spreadsheetId: originalSpreadSheetId,
+        });
+
+        console.log("Original Spreadsheet Data:", JSON.stringify(originalSpreadsheet.data, null, 2));
+
+        const originalSheet = originalSpreadsheet.data.sheets?.[0];
+        if (!originalSheet) throw new Error("Original spreadsheet is empty.");
+
+        const originalSheetId = originalSheet.properties?.sheetId;
+        const originalSheetTitle = originalSheet.properties?.title;
+
+
+        const copyResponse = await this.googleSheets.spreadsheets.sheets.copyTo({
+            spreadsheetId: originalSpreadSheetId,
+            sheetId: originalSheetId,
+            requestBody: {
+                destinationSpreadsheetId: newSpreadSheetId,
+            },
+        });
+
+        const newSheetId = copyResponse.data.sheetId;
+        if (!newSheetId) throw new Error("Failed to copy the sheet.");
+
+        console.log("New Copied Sheet ID:", newSheetId);
+
+        await this.googleSheets.spreadsheets.batchUpdate({
+            spreadsheetId: newSpreadSheetId,
+            requestBody: {
+                requests: [
+                    {
+                        deleteSheet: {
+                            sheetId: 0,
+                        },
+                    },
+                    {
+                        updateSheetProperties: {
+                            properties: {
+                                sheetId: newSheetId,
+                                title: "Tax Calculator",
+                                gridProperties: {
+                                    hideGridlines: false,
+                                },
+                            },
+                            fields: "title,gridProperties.hideGridlines",
+                        },
+                    },
+                ],
+            },
+        });
+
+        await this.addWriterPermission(newSpreadSheetId, newUserEmail);
+
+        return `https://docs.google.com/spreadsheets/d/${newSpreadSheetId}/edit#gid=${newSheetId}`;
+    }
+  public async copyTaxCalculatorContent123(
     newUserEmail: string,
     originalSpreadSheetId?: string,
     newSpreadSheetId?: string,
