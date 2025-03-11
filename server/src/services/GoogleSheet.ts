@@ -88,6 +88,7 @@ export class GoogleSheet {
 
         originalSpreadSheetId = originalSpreadSheetId || this.originalSpreadSheetId;
 
+    console.log(originalSpreadSheetId);
         newSpreadSheetId = newSpreadSheetId || (await this.createGoogleSheet());
 
         const originalSpreadsheet = await this.googleSheets.spreadsheets.get({
