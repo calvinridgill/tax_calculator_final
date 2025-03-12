@@ -6,7 +6,7 @@ import { generatePassword } from "../utils"
 import { Email } from "../utils/email"
 import { GoogleSheet } from "../services/GoogleSheet"
 import { currentEnvConfig } from "../models/config"
-
+ 
 export async function createCheckoutSession(req, res, next) {
   try {
     const { productId, quantity = 1 } = req.body
