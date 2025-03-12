@@ -16,7 +16,6 @@ export async function createCheckoutSession(req, res, next) {
       .status(200)
       .send({ status: "success", data: { checkoutURL: session.url } })
     // fulfillOrder(session)
-   console.log(session)
   } catch (error) {
     next(error)
   }
