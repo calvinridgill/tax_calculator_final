@@ -28,31 +28,30 @@ export class MyStripe {
     }
 
     const session = await this.stripe.checkout.sessions.create({
-  mode: "payment",
-  line_items: [
-    {
-      quantity,
-      price_data: {
-        currency: "usd", // Currency is correctly placed here
-        unit_amount: product.income * 100,
-        product_data: {
-          name: product.name,
-          description: product.description,
+      mode: "payment",
+      line_items: [
+        {
+          quantity,
+          price_data: {
+            currency: "usd",
+            unit_amount: product.income * 100,
+            product_data: {
+              name: product.name,
+              description: product.description,
+            },
+          },
         },
+      ],
+      phone_number_collection: {
+        enabled: true,
       },
-    },
-  ],
-  phone_number_collection: {
-    enabled: true,
-  },
-  success_url: this.successURL,
-  cancel_url: this.cancelURL,
-  metadata: {
-    productId: productId.toString(), // Ensure productId is a string
-  },
-})
-
-    
+      success_url: this.successURL,
+      cancel_url: this.cancelURL,
+      currency: "usd",
+      metadata: {
+        productId,
+      },
+    })
     return session
   }
 
