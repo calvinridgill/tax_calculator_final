@@ -11,6 +11,7 @@ export class MyStripe {
   constructor(apiKey?: string, successURL?: string, cancelURL?: string) {
     if (!apiKey)
       apiKey = currentEnvConfig.STRIPE_API_KEY
+    console.log(apiKey)
     this.stripe = new Stripe(apiKey, { apiVersion: "2022-11-15" })
     if (successURL) this.successURL = successURL
     if (cancelURL) this.cancelURL = cancelURL
