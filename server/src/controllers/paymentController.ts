@@ -8,7 +8,7 @@ import { GoogleSheet } from "../services/GoogleSheet"
 import { currentEnvConfig } from "../models/config"
   
 export async function createCheckoutSession(req, res, next) {
-  try {
+  try { 
     const { productId, quantity = 1 } = req.body
     const myStripe = new MyStripe()
     const session = await myStripe.createCheckoutSession(productId, quantity)
