@@ -7,11 +7,11 @@ export class MyStripe {
   private stripe: Stripe
   private successURL = `${currentEnvConfig.CLIENT_APP_URL}/checkout?success=true`
   private cancelURL = `${currentEnvConfig.CLIENT_APP_URL}/checkout?success=false`
-
+// 2022-11-15
   constructor(apiKey?: string, successURL?: string, cancelURL?: string) {
     if (!apiKey)
       apiKey = currentEnvConfig.STRIPE_API_KEY
-    this.stripe = new Stripe(apiKey, { apiVersion: "2022-11-15" })
+    this.stripe = new Stripe(apiKey, { apiVersion: "2023-10-16" })
     if (successURL) this.successURL = successURL
     if (cancelURL) this.cancelURL = cancelURL
   }
