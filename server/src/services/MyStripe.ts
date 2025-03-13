@@ -26,31 +26,7 @@ export class MyStripe {
     if (!product) {
       throw { statusCode: 400, message: "Invalid product id" }
     }
-console.log("session  11", JSON.stringify({
-      mode: "payment",
-      line_items: [
-        {
-          quantity,
-          price_data: {
-            currency: "usd",
-            unit_amount: product.income * 100,
-            product_data: {
-              name: product.name,
-              description: product.description,
-            },
-          },
-        },
-      ],
-      phone_number_collection: {
-        enabled: true,
-      },
-      success_url: this.successURL,
-      cancel_url: this.cancelURL,
-      currency: "usd",
-      metadata: {
-        productId,
-      },
-    }))
+
     const session = await this.stripe.checkout.sessions.create({
       mode: "payment",
       line_items: [
