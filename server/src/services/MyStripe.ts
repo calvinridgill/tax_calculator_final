@@ -51,6 +51,7 @@ export class MyStripe {
         productId,
       },
     })
+    console.log("session  11", session)
     return session
   }
 
