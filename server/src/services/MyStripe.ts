@@ -2,7 +2,7 @@ import Stripe from "stripe"
 import { Product } from "../models/product"
 import { currentEnvConfig } from "../models/config"
 import { Types } from "mongoose"
-
+ 
 export class MyStripe {
   private stripe: Stripe
   private successURL = `${currentEnvConfig.CLIENT_APP_URL}/checkout?success=true`
