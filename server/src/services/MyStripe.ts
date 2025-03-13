@@ -18,6 +18,7 @@ export class MyStripe {
   }
 
   public async createCheckoutSession(productId: string, quantity = 1) {
+    console.log("session  11", session)
     if (!Types.ObjectId.isValid(productId)) {
       throw { statusCode: 400, message: "Invalid product id" }
     }
@@ -51,7 +52,7 @@ export class MyStripe {
         productId,
       },
     })
-    console.log("session  11", session)
+    
     return session
   }
 
