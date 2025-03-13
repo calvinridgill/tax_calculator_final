@@ -9,6 +9,7 @@ import { currentEnvConfig } from "../models/config"
   
 export async function createCheckoutSession(req, res, next) {
   try { 
+    console.log("test  11")
     const { productId, quantity = 1 } = req.body
     const myStripe = new MyStripe()
     const session = await myStripe.createCheckoutSession(productId, quantity)
