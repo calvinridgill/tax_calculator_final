@@ -109,7 +109,7 @@ export function TaxPrepTool() {
                 <Link style={{ color: "inherit" }}>Learn more</Link>
               </Box>
               <Typography sx={{ pb: 2, fontFamily: "Lato, sans-serif" }}>
-                <b>$20.00</b> per access
+                <b>$5.00</b> per access
               </Typography>
               <PurchaseButton
                 sx={{
