@@ -42,7 +42,7 @@ export function Promo() {
               <Typography
                 sx={{ fontWeight: 700, fontFamily: "Lato, sans-serif" }}
               >
-                $20 limited time!
+                $5 limited time!
               </Typography>
               <Typography
                 variant="h6"
