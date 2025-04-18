@@ -161,7 +161,7 @@ export const aboutContents = [
     title:
       "The Best Federal Income Tax Refund or Amount Owed Calculator For Individuals",
     link: "/about/the-best-federal-income-tax-refund-or-amount-owed-calculator-for-individuals",
-    imgSrc: "/images/finance_r_1240_800.webp",
+    imgSrc: "/images/taxes-646509_1280.jpg",
     description_short: `
     <p>Our Income Tax Calculator has a simple, easy-to-use format.</p>
       <p><strong>Just enter your income, and it shows you your refund or amount owed.</strong></p>
@@ -229,7 +229,7 @@ export const aboutContents = [
   {
     title: "Do-It-Yourself Profit & Loss Statement",
     link: "/about/do-it-yourself-profit-and-loss-statement",
-    imgSrc: "/images/spreadsheet_and_pen.jpg",
+    imgSrc: "/images/accounting-6063321_1280.png",
     description_short:
       "<p>A must-have for gig workers, freelancers, independent contractors, and 1099 recipients, this spreadsheet is designed to simplify the process of income tax preparation. \
      Whether you're a small business owner, a freelancer, or an individual, this tool will help you manage and organize your financial records, including ...</p>",
